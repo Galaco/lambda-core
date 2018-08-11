@@ -1,38 +1,82 @@
 package event
 
 import (
-	"github.com/galaco/bsp-viewer/engine/core"
-	"github.com/galaco/bsp-viewer/engine/interfaces"
+	"github.com/galaco/go-me-engine/engine/core"
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"sync"
 )
 
 type Manager struct {
-	listenerMap map[string]map[core.Handle]interfaces.IComponent
+	listenerMap map[Id]map[core.Handle]interfaces.IComponent
+	mu sync.Mutex
+	eventQueue []*QueueItem
+	runAsync bool
 }
 
 //Register a new component to listen to an event
-func (manager *Manager) RegisterEvent(eventName string, component interfaces.IComponent) core.Handle{
+func (manager *Manager) RegisterEvent(eventName Id, component interfaces.IComponent) core.Handle{
 	handle := core.NewHandle()
+	manager.mu.Lock()
 	if _,ok := manager.listenerMap[eventName]; !ok {
 		manager.listenerMap[eventName] = make(map[core.Handle]interfaces.IComponent)
 	}
 	manager.listenerMap[eventName][handle] = component
+	manager.mu.Unlock()
 
 	return handle
 }
 
+// Runs the event queue in its own go routine
+func (manager *Manager) RunConcurrent() {
+	manager.runAsync = true
+	go func() {
+		for manager.runAsync == true {
+
+			manager.mu.Lock()
+				queue := manager.eventQueue
+
+			manager.mu.Unlock()
+			if len(queue) > 0 {
+				// FIFO - ensure dispatch order, and concurrency integrity
+				item := queue[0]
+				manager.mu.Lock()
+				manager.eventQueue = manager.eventQueue[1:]
+
+				// Fire event
+				listeners := manager.listenerMap[item.EventName]
+				manager.mu.Unlock()
+				for _,component := range listeners {
+					component.ReceiveMessage(item.Message)
+				}
+			}
+		}
+	}()
+}
+
 //Remove a listener from listening for an event
-func (manager *Manager) UnregisterEvent(eventName string, handle core.Handle) {
+func (manager *Manager) UnregisterEvent(eventName Id, handle core.Handle) {
+	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName][handle]; ok {
 		delete(manager.listenerMap[eventName], handle)
 	}
+	manager.mu.Unlock()
 }
 
 //Fires an event to all listening components
-func (manager *Manager) FireEvent(eventName string, message interfaces.IMessage) {
-	message.SetType(eventName)
-	for _,component := range manager.listenerMap[eventName] {
-		component.ReceiveMessage(message)
+func (manager *Manager) FireEvent(eventName Id, message interfaces.IMessage) {
+	message.SetType(eventName.String())
+	queueItem := &QueueItem{
+		EventName: eventName,
+		Message: message,
 	}
+	manager.mu.Lock()
+	manager.eventQueue = append(manager.eventQueue, queueItem)
+	manager.mu.Unlock()
+}
+
+func (manager *Manager) Unregister() {
+	// Ensure async event queue is halted
+	manager.runAsync = false
 }
 
 
@@ -45,7 +89,7 @@ var eventManager Manager
 
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[string]map[core.Handle]interfaces.IComponent)
+		eventManager.listenerMap = make(map[Id]map[core.Handle]interfaces.IComponent)
 	}
 	return &eventManager
 }

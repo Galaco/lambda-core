@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/galaco/bsp-viewer/engine/core"
+import "github.com/galaco/go-me-engine/engine/core"
 
 type Entity struct {
 	handle core.Handle

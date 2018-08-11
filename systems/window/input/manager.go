@@ -2,8 +2,8 @@ package input
 
 import (
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/galaco/bsp-viewer/engine/event"
-	"github.com/galaco/bsp-viewer/message/input"
+	"github.com/galaco/go-me-engine/engine/event"
+	"github.com/galaco/go-me-engine/message/input"
 )
 
 type Manager struct {

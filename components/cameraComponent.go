@@ -1,11 +1,11 @@
 package components
 
 import (
-	"github.com/galaco/bsp-viewer/engine/interfaces"
-	"github.com/galaco/bsp-viewer/engine/event"
-	"github.com/galaco/bsp-viewer/message/input"
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/engine/event"
+	"github.com/galaco/go-me-engine/message/input"
 	"log"
-	"github.com/galaco/bsp-viewer/engine/entity"
+	"github.com/galaco/go-me-engine/engine/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 

@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/galaco/bsp-viewer/engine/core"
+import "github.com/galaco/go-me-engine/engine/core"
 
 type IComponent interface {
 	SetHandle(core.Handle)

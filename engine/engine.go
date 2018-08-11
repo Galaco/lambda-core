@@ -1,13 +1,15 @@
 package engine
 
 import (
-	"github.com/galaco/bsp-viewer/engine/interfaces"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/bradhe/stopwatch"
+	"github.com/galaco/go-me-engine/engine/event"
 )
 
 const FRAMERATE = 16.6666667
 
 type Engine struct {
+	EventManager event.Manager
 	Managers []interfaces.IManager
 	Running bool
 
@@ -20,11 +22,19 @@ func (engine *Engine) Initialise() {
 	for _, manager := range engine.Managers {
 		manager.Register()
 	}
+
 }
 
 // Run the engine
 func (engine *Engine) Run() {
 	engine.Running = true
+
+	// Begin the event manager thread in the background
+	event.GetEventManager().RunConcurrent()
+	// Anything that runs concurrently can start now
+	for _, manager := range engine.Managers {
+		manager.RunConcurrent()
+	}
 
 	dt := 0.0
 	timer := stopwatch.Start()
@@ -36,8 +46,6 @@ func (engine *Engine) Run() {
 
 		// Restart timer
 		dt = 1 / float64(timer.Milliseconds())
-		//log.Println(dt)
-		//log.Printf("Frametime: %f\n", dt)
 		timer.Stop()
 		timer = stopwatch.Start()
 	}

@@ -1,6 +1,6 @@
 package renderer
 
-import "github.com/galaco/bsp-viewer/systems/renderer/gl"
+import "github.com/galaco/go-me-engine/systems/renderer/gl"
 
 type Manager struct {
 	glContext gl.Context
@@ -8,6 +8,10 @@ type Manager struct {
 
 func (manager *Manager) Register() {
 	manager.glContext = gl.NewContext()
+
+}
+
+func (manager *Manager)  RunConcurrent() {
 
 }
 

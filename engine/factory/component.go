@@ -1,8 +1,8 @@
 package factory
 
 import (
-	"github.com/galaco/bsp-viewer/engine/interfaces"
-	"github.com/galaco/bsp-viewer/engine/core"
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/engine/core"
 )
 
 func NewComponent(component interfaces.IComponent, owner *interfaces.IEntity) *interfaces.IComponent{

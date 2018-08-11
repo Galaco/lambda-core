@@ -1,8 +1,8 @@
 package window
 
 import (
-	"github.com/galaco/bsp-viewer/systems/window/input"
-	"github.com/galaco/bsp-viewer/systems/window/window"
+	"github.com/galaco/go-me-engine/systems/window/input"
+	"github.com/galaco/go-me-engine/systems/window/window"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -16,8 +16,11 @@ func (manager *Manager) Register() {
 	manager.input.Register(manager.window)
 }
 
+func (manager *Manager)  RunConcurrent() {
+}
+
 func (manager *Manager) Update(dt float64) {
-	manager.input.Update(dt)
+	manager.input.Update(0)
 }
 
 func (manager *Manager) Unregister() {

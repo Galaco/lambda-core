@@ -5,7 +5,7 @@ import (
 	"strings"
 	"fmt"
 	"log"
-	"github.com/galaco/bsp-viewer/systems/renderer/gl/shaders"
+	"github.com/galaco/go-me-engine/systems/renderer/gl/shaders"
 )
 
 type Context struct {

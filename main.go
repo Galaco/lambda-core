@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/galaco/bsp-viewer/engine"
-	"github.com/galaco/bsp-viewer/systems/window"
-	"github.com/galaco/bsp-viewer/engine/entity"
-	"github.com/galaco/bsp-viewer/components"
-	"github.com/galaco/bsp-viewer/engine/factory"
-	"github.com/galaco/bsp-viewer/systems/renderer"
+	"github.com/galaco/go-me-engine/engine"
+	"github.com/galaco/go-me-engine/systems/window"
+	"github.com/galaco/go-me-engine/engine/entity"
+	"github.com/galaco/go-me-engine/components"
+	"github.com/galaco/go-me-engine/engine/factory"
+	"github.com/galaco/go-me-engine/systems/renderer"
 )
 
 func main() {
