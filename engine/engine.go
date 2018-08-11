@@ -44,6 +44,11 @@ func (engine *Engine) Run() {
 			manager.Update(dt)
 		}
 
+
+		for _, manager := range engine.Managers {
+			manager.PostUpdate()
+		}
+
 		// Restart timer
 		dt = 1 / float64(timer.Milliseconds())
 		timer.Stop()

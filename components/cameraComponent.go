@@ -5,13 +5,13 @@ import (
 	"github.com/galaco/go-me-engine/engine/event"
 	"github.com/galaco/go-me-engine/message/messages"
 	"log"
-	"github.com/galaco/go-me-engine/engine/entity"
+	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/galaco/go-me-engine/message/messagetype"
 )
 
 type CameraComponent struct {
-	entity.Component
+	base.Component
 }
 
 func (component *CameraComponent) Initialize() {
@@ -61,6 +61,9 @@ func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 	}
 }
 
-func (component *CameraComponent) Update(dt float64) {
+func NewCameraComponent() *CameraComponent{
+	c := &CameraComponent{}
+	c.Etype = T_CameraComponent
 
+	return c
 }

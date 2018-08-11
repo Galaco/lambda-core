@@ -3,11 +3,18 @@ package main
 import (
 	"github.com/galaco/go-me-engine/engine"
 	"github.com/galaco/go-me-engine/systems/window"
-	"github.com/galaco/go-me-engine/engine/entity"
+	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/components"
 	"github.com/galaco/go-me-engine/engine/factory"
 	"github.com/galaco/go-me-engine/systems/renderer"
+	"github.com/galaco/go-me-engine/components/renderable"
 )
+
+var triangle = []float32{
+	0, 0.5, 0,
+	-0.5, -0.5, 0,
+	0.5, -0.5, 0,
+}
 
 func main() {
 	viewer := engine.Engine{}
@@ -17,9 +24,13 @@ func main() {
 
 	viewer.Initialise()
 
-	sampleEnt := factory.NewEntity(&entity.Entity{})
-	factory.NewComponent(&components.CameraComponent{}, sampleEnt)
+	cameraEnt := factory.NewEntity(&base.Entity{})
+	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
+	renderableEnt := factory.NewEntity(&base.Entity{})
+	renderableComponent := components.NewRenderableComponent()
+	renderableComponent.SetRenderableResource(renderable.NewGPUResource(triangle))
+	factory.NewComponent(renderableComponent, renderableEnt)
 
 
 	viewer.Run()

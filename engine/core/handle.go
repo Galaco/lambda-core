@@ -1,10 +1,12 @@
 package core
 
-type Handle uint
+import "strconv"
 
-var handleCounter = Handle(0)
+type Handle string
+
+var handleCounter = int64(0)
 
 func NewHandle() Handle {
 	handleCounter++
-	return handleCounter
+	return Handle("handle&" + strconv.FormatInt(handleCounter, 10))
 }

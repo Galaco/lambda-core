@@ -7,4 +7,5 @@ type IManager interface {
 	RunConcurrent()
 	Update(float64)
 	Unregister()
+	PostUpdate()
 }

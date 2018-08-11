@@ -1,6 +1,8 @@
-package entity
+package base
 
-import "github.com/galaco/go-me-engine/engine/core"
+import (
+	"github.com/galaco/go-me-engine/engine/core"
+)
 
 type Entity struct {
 	handle core.Handle

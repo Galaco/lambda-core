@@ -1,4 +1,4 @@
-package entity
+package base
 
 import (
 	"github.com/go-gl/mathgl/mgl32"

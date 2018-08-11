@@ -35,11 +35,10 @@ func (manager *Manager) RunConcurrent() {
 	manager.runAsync = true
 	go func() {
 		for manager.runAsync == true {
-
 			manager.mu.Lock()
-				queue := manager.eventQueue
-
+			queue := manager.eventQueue
 			manager.mu.Unlock()
+
 			if len(queue) > 0 {
 				// FIFO - ensure dispatch order, and concurrency integrity
 				item := queue[0]

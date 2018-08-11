@@ -1,4 +1,4 @@
-package entity
+package base
 
 import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
@@ -8,6 +8,7 @@ import (
 type Component struct {
 	handle core.Handle
 	owner core.Handle
+	Etype core.EType
 }
 
 func (component *Component) SetHandle(handle core.Handle) {
@@ -15,6 +16,11 @@ func (component *Component) SetHandle(handle core.Handle) {
 }
 
 func (component *Component) Initialize() {
+
+}
+
+func (component *Component) GetType() core.EType {
+	return component.Etype
 }
 
 func (component *Component) GetHandle() core.Handle{

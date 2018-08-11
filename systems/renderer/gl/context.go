@@ -1,7 +1,7 @@
 package gl
 
 import (
-	opengl "github.com/go-gl/gl/v2.1/gl"
+	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"strings"
 	"fmt"
 	"log"
@@ -13,8 +13,8 @@ type Context struct {
 }
 
 
-func (context *Context) AddShader(source string) {
-	shader, err := context.compileShader(source, opengl.VERTEX_SHADER)
+func (context *Context) AddShader(source string, shaderType uint32) {
+	shader, err := context.compileShader(source, shaderType)
 	if err != nil {
 		panic(err)
 	}
@@ -24,6 +24,10 @@ func (context *Context) AddShader(source string) {
 
 func (context *Context) Finalize() {
 	opengl.LinkProgram(context.context)
+}
+
+func (context *Context) UseProgram() {
+	opengl.UseProgram(context.context)
 }
 
 func (context *Context) compileShader(source string, shaderType uint32) (uint32, error) {
@@ -60,8 +64,8 @@ func NewContext() Context{
 	context := Context{
 		context: opengl.CreateProgram(),
 	}
-	context.AddShader(shaders.Vertex)
-	context.AddShader(shaders.Fragment)
+	context.AddShader(shaders.Vertex, opengl.VERTEX_SHADER)
+	context.AddShader(shaders.Fragment, opengl.FRAGMENT_SHADER)
 	context.Finalize()
 
 	return context
