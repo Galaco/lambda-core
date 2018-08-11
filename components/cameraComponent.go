@@ -3,10 +3,11 @@ package components
 import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/engine/event"
-	"github.com/galaco/go-me-engine/message/input"
+	"github.com/galaco/go-me-engine/message/messages"
 	"log"
 	"github.com/galaco/go-me-engine/engine/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/galaco/go-me-engine/message/messagetype"
 )
 
 type CameraComponent struct {
@@ -14,15 +15,15 @@ type CameraComponent struct {
 }
 
 func (component *CameraComponent) Initialize() {
-	event.GetEventManager().RegisterEvent(event.KeyDown, component)
-	event.GetEventManager().RegisterEvent(event.KeyHeld, component)
-	event.GetEventManager().RegisterEvent(event.KeyReleased, component)
+	event.GetEventManager().Listen(messagetype.KeyDown, component)
+	event.GetEventManager().Listen(messagetype.KeyHeld, component)
+	event.GetEventManager().Listen(messagetype.KeyReleased, component)
 }
 
 func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 	switch message.GetType() {
-	case "KeyDown":
-		m := message.(*input.KeyDown)
+	case messagetype.KeyDown:
+		m := message.(*messages.KeyDown)
 		switch m.Key {
 		case glfw.KeyA:
 			log.Println("A pressed")
@@ -33,8 +34,8 @@ func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 		case glfw.KeyD:
 			log.Println("D pressed")
 		}
-	case "KeyHeld":
-		m := message.(*input.KeyHeld)
+	case messagetype.KeyHeld:
+		m := message.(*messages.KeyHeld)
 		switch m.Key {
 		case glfw.KeyA:
 			log.Println("A held")
@@ -45,8 +46,8 @@ func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 		case glfw.KeyD:
 			log.Println("D held")
 		}
-	case "KeyReleased":
-		m := message.(*input.KeyReleased)
+	case messagetype.KeyReleased:
+		m := message.(*messages.KeyReleased)
 		switch m.Key {
 		case glfw.KeyA:
 			log.Println("A released")

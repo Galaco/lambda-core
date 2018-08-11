@@ -1,6 +1,8 @@
 package interfaces
 
+import "github.com/galaco/go-me-engine/engine/core"
+
 type IMessage interface {
-	SetType(string)
-	GetType() string
+	SetType(core.EventId)
+	GetType() core.EventId
 }

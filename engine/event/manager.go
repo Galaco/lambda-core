@@ -7,14 +7,14 @@ import (
 )
 
 type Manager struct {
-	listenerMap map[Id]map[core.Handle]interfaces.IComponent
+	listenerMap map[core.EventId]map[core.Handle]interfaces.IComponent
 	mu sync.Mutex
 	eventQueue []*QueueItem
 	runAsync bool
 }
 
 //Register a new component to listen to an event
-func (manager *Manager) RegisterEvent(eventName Id, component interfaces.IComponent) core.Handle{
+func (manager *Manager) Listen(eventName core.EventId, component interfaces.IComponent) core.Handle{
 	handle := core.NewHandle()
 	manager.mu.Lock()
 	if _,ok := manager.listenerMap[eventName]; !ok {
@@ -28,6 +28,10 @@ func (manager *Manager) RegisterEvent(eventName Id, component interfaces.ICompon
 
 // Runs the event queue in its own go routine
 func (manager *Manager) RunConcurrent() {
+	// Block double-running
+	if manager.runAsync == true {
+		return
+	}
 	manager.runAsync = true
 	go func() {
 		for manager.runAsync == true {
@@ -54,7 +58,7 @@ func (manager *Manager) RunConcurrent() {
 }
 
 //Remove a listener from listening for an event
-func (manager *Manager) UnregisterEvent(eventName Id, handle core.Handle) {
+func (manager *Manager) Unlisten(eventName core.EventId, handle core.Handle) {
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName][handle]; ok {
 		delete(manager.listenerMap[eventName], handle)
@@ -63,8 +67,8 @@ func (manager *Manager) UnregisterEvent(eventName Id, handle core.Handle) {
 }
 
 //Fires an event to all listening components
-func (manager *Manager) FireEvent(eventName Id, message interfaces.IMessage) {
-	message.SetType(eventName.String())
+func (manager *Manager) Dispatch(eventName core.EventId, message interfaces.IMessage) {
+	message.SetType(eventName)
 	queueItem := &QueueItem{
 		EventName: eventName,
 		Message: message,
@@ -89,7 +93,7 @@ var eventManager Manager
 
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[Id]map[core.Handle]interfaces.IComponent)
+		eventManager.listenerMap = make(map[core.EventId]map[core.Handle]interfaces.IComponent)
 	}
 	return &eventManager
 }
