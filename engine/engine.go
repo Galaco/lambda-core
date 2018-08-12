@@ -19,6 +19,7 @@ type Engine struct {
 
 // Initialise the engine, and attached managers
 func (engine *Engine) Initialise() {
+
 	for _, manager := range engine.Managers {
 		manager.Register()
 	}

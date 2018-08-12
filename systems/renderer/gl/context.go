@@ -30,6 +30,10 @@ func (context *Context) UseProgram() {
 	opengl.UseProgram(context.context)
 }
 
+func (context *Context) GetUniform(name string) int32 {
+	return opengl.GetUniformLocation(context.context, opengl.Str(name + "\x00"))
+}
+
 func (context *Context) compileShader(source string, shaderType uint32) (uint32, error) {
 	shader := opengl.CreateShader(shaderType)
 

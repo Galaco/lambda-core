@@ -7,18 +7,18 @@ import (
 )
 
 type Manager struct {
-	listenerMap map[core.EventId]map[core.Handle]interfaces.IComponent
+	listenerMap map[core.EventId]map[core.Handle]interfaces.IEventListenable
 	mu sync.Mutex
 	eventQueue []*QueueItem
 	runAsync bool
 }
 
 //Register a new component to listen to an event
-func (manager *Manager) Listen(eventName core.EventId, component interfaces.IComponent) core.Handle{
+func (manager *Manager) Listen(eventName core.EventId, component interfaces.IEventListenable) core.Handle{
 	handle := core.NewHandle()
 	manager.mu.Lock()
 	if _,ok := manager.listenerMap[eventName]; !ok {
-		manager.listenerMap[eventName] = make(map[core.Handle]interfaces.IComponent)
+		manager.listenerMap[eventName] = make(map[core.Handle]interfaces.IEventListenable)
 	}
 	manager.listenerMap[eventName][handle] = component
 	manager.mu.Unlock()
@@ -92,7 +92,7 @@ var eventManager Manager
 
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[core.EventId]map[core.Handle]interfaces.IComponent)
+		eventManager.listenerMap = make(map[core.EventId]map[core.Handle]interfaces.IEventListenable)
 	}
 	return &eventManager
 }

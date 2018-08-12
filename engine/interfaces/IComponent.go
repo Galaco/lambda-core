@@ -9,8 +9,6 @@ type IComponent interface {
 	Initialize()
 	GetOwnerHandle() core.Handle
 	SetOwnerHandle(core.Handle)
-	ReceiveMessage(IMessage)
-	SendMessage() IMessage
 	Update(float64)
 	Destroy()
 }
