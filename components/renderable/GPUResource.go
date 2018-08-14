@@ -4,47 +4,39 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
-
-
 type GPUResource struct {
-	isBound bool
-	vao uint32
-	vertexData []float32
+	buffer uint32
+	vertices []float32
+	primitives []IPrimitive
 }
 
-func (resource *GPUResource) BindData() {
-	if resource.isBound == false {
-		resource.vao = resource.generateVao(resource.vertexData)
-		resource.isBound = true
-	}
+func (resource *GPUResource) Bind() {
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, resource.buffer)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+}
+
+func (resource *GPUResource) AddPrimitive(primitive IPrimitive) {
+	primitive.GenerateGPUBuffer()
+	resource.primitives = append(resource.primitives, primitive)
+}
+
+func (resource *GPUResource) GetPrimitives() []IPrimitive {
+	return resource.primitives
 }
 
 func (resource *GPUResource) GetVertexData() []float32 {
-	return resource.vertexData
+	return resource.vertices
 }
 
-func (resource *GPUResource) GetVao() uint32 {
-	return resource.vao
+func (resource *GPUResource) GenerateGPUBuffer() {
+	gl.GenBuffers(1, &resource.buffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, resource.buffer)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(resource.vertices), gl.Ptr(resource.vertices), gl.STATIC_DRAW)
 }
 
-func (resource *GPUResource) generateVao(points []float32) uint32 {
-	var vbo uint32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.BufferData(gl.ARRAY_BUFFER, 4*len(points), gl.Ptr(points), gl.STATIC_DRAW)
-
-	var vao uint32
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-	gl.EnableVertexAttribArray(0)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
-
-	return vao
-}
-
-func NewGPUResource(vertexData []float32) *GPUResource {
+func NewGPUResource(vertices []float32) *GPUResource {
 	return &GPUResource{
-		vertexData: vertexData,
+		vertices: vertices,
 	}
 }

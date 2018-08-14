@@ -11,7 +11,6 @@ import (
 	"github.com/galaco/go-me-engine/engine/event"
 	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/galaco/go-me-engine/message/messages"
-	"log"
 )
 
 const cameraSpeed = float64(10)
@@ -55,7 +54,6 @@ func (component *CameraComponent) Update(dt float64) {
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Right.Mul(float32(vel)))
 	}
 
-	log.Println(component.owner.GetTransformComponent().Rotation)
 	component.owner.GetTransformComponent().Rotation[0] += float32(input.GetMouse().GetCoordinates()[0] * sensitivity)// * dt)
 	component.owner.GetTransformComponent().Rotation[1] += float32(input.GetMouse().GetCoordinates()[1] * sensitivity)// * dt)
 

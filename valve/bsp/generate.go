@@ -8,9 +8,9 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-func GenerateTrianglesFromBSP(file *bsp.Bsp) ([]float32, []uint16) {
-	var expVerts []float32
-	var expIndices []uint16
+func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]uint16) {
+	var verts []float32
+	var expFaces [][]uint16
 
 	fl := *file.GetLump(bsp.LUMP_FACES).GetContents()
 	faces := (fl).(lumps.Face).GetData().(*[]face.Face)
@@ -26,26 +26,31 @@ func GenerateTrianglesFromBSP(file *bsp.Bsp) ([]float32, []uint16) {
 
 
 	for _,v := range *vertexes {
-		expVerts = append(expVerts, v.X(), v.Y(), v.Z())
+		verts = append(verts, v.X(), v.Y(), v.Z())
 	}
 
 	for _,f := range *faces {
+		expF := make([]uint16, 0)
 		//// Just so we render triangles
 
-		// rewrite to just get a flat vertex array, then create indices into the vertex data for the quads
+		// All surfedges associated with this face
+		// surfEdges are basically indices into the edges lump
 		surfEdges := (*surfEdges)[f.FirstEdge:(f.FirstEdge+int32(f.NumEdges))]
 		for _,surfEdge := range surfEdges {
 			edge := (*edges)[int(math.Abs(float64(surfEdge)))]
 
 			// Fix reverse ordering
 			if surfEdge >= 0 {
-				expIndices = append(expIndices, edge[0], edge[1])
+				expF = append(expF, edge[0], edge[1])
 			} else {
-				expIndices = append(expIndices, edge[0], edge[1])
+				//negative surfedge reverses edge order
+				expF = append(expF, edge[1], edge[0])
 			}
 		}
+
+		expFaces = append(expFaces, expF)
 	}
 
-	return expVerts,expIndices
+	return verts, expFaces
 }
 

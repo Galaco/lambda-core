@@ -51,12 +51,15 @@ func (manager *Manager) Update(dt float64) {
 
 	for _,c := range factory.GetObjectManager().GetAllComponents() {
 		if c.GetType() == components.T_RenderableComponent {
-			resource := c.(*components.RenderableComponent).GetRenderable()
-			resource.BindData()
-			opengl.BindVertexArray(resource.GetVao())
-			//opengl.DrawArrays(opengl.TRIANGLES, 0, 6*2*3)
-			//opengl.DrawArrays(opengl.TRIANGLES, 0, int32(len(resource.GetVertexData()) / 4))
-			opengl.DrawArrays(opengl.LINES, 0, int32(len(resource.GetVertexData())))
+			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
+				resource.Bind()
+				for _, primitive := range resource.GetPrimitives() {
+					//primitive.Bind()
+					opengl.DrawElements(opengl.LINES, int32(len(primitive.GetIndices())), opengl.UNSIGNED_SHORT, opengl.Ptr(primitive.GetIndices()))
+				}
+
+				//opengl.DrawArrays(opengl.LINES, 0, int32(len(resource.GetVertexData())))
+			}
 		}
 	}
 }

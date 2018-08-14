@@ -2,7 +2,7 @@ package engine
 
 import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
-		"github.com/bradhe/stopwatch"
+	"github.com/bradhe/stopwatch"
 	"github.com/galaco/go-me-engine/engine/event"
 )
 

@@ -9,18 +9,19 @@ import (
 
 type RenderableComponent struct {
 	base.Component
-	renderable *renderable.GPUResource
+	renderables []*renderable.GPUResource
 }
 
 func (component *RenderableComponent) Initialize() {
 }
 
-func (component *RenderableComponent) SetRenderableResource(resource *renderable.GPUResource) {
-	component.renderable = resource
+func (component *RenderableComponent) AddRenderableResource(resource *renderable.GPUResource) {
+	resource.GenerateGPUBuffer()
+	component.renderables = append(component.renderables, resource)
 }
 
-func (component *RenderableComponent) GetRenderable() *renderable.GPUResource {
-	return component.renderable
+func (component *RenderableComponent) GetRenderables() []*renderable.GPUResource {
+	return component.renderables
 }
 
 
