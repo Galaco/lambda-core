@@ -11,9 +11,11 @@ import (
 
 type Manager struct {
 	MouseCoordinates mgl64.Vec2
+	window *glfw.Window
 }
 
 func (manager *Manager) Register(window *glfw.Window) {
+	manager.window = window
 	window.SetKeyCallback(manager.KeyCallback)
 	window.SetCursorPosCallback(manager.MouseCallback)
 
@@ -23,6 +25,11 @@ func (manager *Manager) Register(window *glfw.Window) {
 }
 
 func (manager *Manager) Update(dt float64) {
+	if input.GetKeyboard().IsKeyDown(glfw.KeyZ) {
+		manager.window.SetCursorPos(320, 240)
+		manager.window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
+	}
+
 	input.GetMouse().Update()
 	glfw.PollEvents()
 }
@@ -43,10 +50,11 @@ func (manager *Manager) KeyCallback(window *glfw.Window, key glfw.Key, scancode 
 }
 
 func (manager *Manager) MouseCallback(window *glfw.Window, xpos float64, ypos float64) {
+	manager.MouseCoordinates[0], manager.MouseCoordinates[1] = window.GetCursorPos()
+	w,h := window.GetSize()
 	event.GetEventManager().Dispatch(messagetype.MouseMove, &messages.MouseMove{
-		X: manager.MouseCoordinates[0] - xpos,
-		Y: manager.MouseCoordinates[1] - ypos,
+		X: float64(float64(w/2) - manager.MouseCoordinates[0]),
+		Y: float64(float64(h/2) - manager.MouseCoordinates[1]),
 	})
-	manager.MouseCoordinates[0] = xpos
-	manager.MouseCoordinates[1] = ypos
+	window.SetCursorPos(float64(w/2), float64(h/2))
 }

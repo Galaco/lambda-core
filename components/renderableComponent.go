@@ -25,8 +25,8 @@ func (component *RenderableComponent) GetRenderable() *renderable.GPUResource {
 
 
 func NewRenderableComponent() *RenderableComponent{
-	c := &RenderableComponent{}
+	c := RenderableComponent{}
 	c.Etype = T_RenderableComponent
 
-	return c
+	return &c
 }

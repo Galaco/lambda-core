@@ -9,32 +9,24 @@ import (
 
 type Mouse struct {
 	previousPosition mgl64.Vec2
-	position mgl64.Vec2
+	change mgl64.Vec2
 }
 
 func (mouse *Mouse) GetCoordinates() mgl64.Vec2 {
-	return mouse.position
-}
-
-func (mouse *Mouse) GetPreviousCoordinates() mgl64.Vec2 {
-	return mouse.previousPosition
-}
-
-func (mouse *Mouse) GetChange() mgl64.Vec2 {
-	return mouse.previousPosition.Sub(mouse.position)
+	return mouse.change
 }
 
 func (mouse *Mouse) ReceiveMessage(message interfaces.IMessage) {
 	if message.GetType() == messagetype.MouseMove {
 		msg := message.(*messages.MouseMove)
-		mouse.previousPosition = mouse.position
-		mouse.position[0] = msg.X
-		mouse.position[1] = msg.Y
+		mouse.change[0] = msg.X
+		mouse.change[1] = msg.Y
 	}
 }
 
 func (mouse *Mouse) Update()  {
-	mouse.previousPosition = mouse.position
+	mouse.change[0] = 0
+	mouse.change[1] = 0
 }
 
 func (mouse *Mouse) SendMessage() interfaces.IMessage {

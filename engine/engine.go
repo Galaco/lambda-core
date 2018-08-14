@@ -2,7 +2,7 @@ package engine
 
 import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/bradhe/stopwatch"
+		"github.com/bradhe/stopwatch"
 	"github.com/galaco/go-me-engine/engine/event"
 )
 
@@ -41,6 +41,14 @@ func (engine *Engine) Run() {
 	timer := stopwatch.Start()
 
 	for engine.Running == true {
+		dt = 1 / float64(timer.Milliseconds())
+		//if dt < FRAMERATE {
+		//	continue
+		//}
+		// Restart timer now so we can record loop time
+		timer.Stop()
+		timer = stopwatch.Start()
+
 		for _, manager := range engine.Managers {
 			manager.Update(dt)
 		}
@@ -49,11 +57,6 @@ func (engine *Engine) Run() {
 		for _, manager := range engine.Managers {
 			manager.PostUpdate()
 		}
-
-		// Restart timer
-		dt = 1 / float64(timer.Milliseconds())
-		timer.Stop()
-		timer = stopwatch.Start()
 	}
 }
 
