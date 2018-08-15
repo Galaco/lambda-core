@@ -13,7 +13,7 @@ import (
 	"github.com/galaco/go-me-engine/message/messages"
 )
 
-const cameraSpeed = float64(10)
+const cameraSpeed = float64(100)
 const sensitivity = float64(0.1)
 
 type CameraComponent struct {

@@ -48,5 +48,5 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 }
 
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
-	return mgl32.Perspective(70, 640/480, 0.1, 16384)
+	return mgl32.Perspective(70, 640/480, 0.1, 4096)
 }

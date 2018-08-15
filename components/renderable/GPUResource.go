@@ -5,15 +5,18 @@ import (
 )
 
 type GPUResource struct {
-	buffer uint32
-	vertices []float32
+	vbo        uint32
+	vao        uint32
+	vertices   []float32
 	primitives []IPrimitive
 }
 
 func (resource *GPUResource) Bind() {
-	gl.EnableVertexAttribArray(0)
-	gl.BindBuffer(gl.ARRAY_BUFFER, resource.buffer)
-	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+	gl.BindVertexArray(resource.vao)
+	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(resource.vertices) / 3))
+	//gl.BindBuffer(gl.ARRAY_BUFFER, resource.vbo)
+	//gl.EnableVertexAttribArray(0)
+	//gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 }
 
 func (resource *GPUResource) AddPrimitive(primitive IPrimitive) {
@@ -30,9 +33,17 @@ func (resource *GPUResource) GetVertexData() []float32 {
 }
 
 func (resource *GPUResource) GenerateGPUBuffer() {
-	gl.GenBuffers(1, &resource.buffer)
-	gl.BindBuffer(gl.ARRAY_BUFFER, resource.buffer)
+	// Gen vbo data
+	gl.GenBuffers(1, &resource.vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, resource.vbo)
 	gl.BufferData(gl.ARRAY_BUFFER, 4*len(resource.vertices), gl.Ptr(resource.vertices), gl.STATIC_DRAW)
+
+	// gen vao data
+	gl.GenVertexArrays(1, &resource.vao)
+	gl.BindVertexArray(resource.vao)
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, resource.vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
 }
 
 func NewGPUResource(vertices []float32) *GPUResource {

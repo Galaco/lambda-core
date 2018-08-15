@@ -18,14 +18,8 @@ type Manager struct {
 func (manager *Manager) Register() {
 	manager.glContext = gl.NewContext()
 	manager.currentCamera.Initialize()
-	//
-	//modelUniform := manager.glContext.GetUniform("model")
-	//model := manager.currentCamera.ModelMatrix()
-	//opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-	//projectionUniform := manager.glContext.GetUniform("projection")
-	//projection := manager.currentCamera.ProjectionMatrix()
-	//opengl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
+	// Since we only have 1 shader for now..
 	manager.glContext.UseProgram()
 	projectionUniform := manager.glContext.GetUniform("projection")
 	projection := manager.currentCamera.ProjectionMatrix()
@@ -37,7 +31,6 @@ func (manager *Manager) Register() {
 
 func (manager *Manager) Update(dt float64) {
 	manager.currentCamera.Update(dt)
-
 
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 //	manager.glContext.UseProgram()
@@ -54,8 +47,8 @@ func (manager *Manager) Update(dt float64) {
 			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
 				resource.Bind()
 				for _, primitive := range resource.GetPrimitives() {
-					//primitive.Bind()
-					opengl.DrawElements(opengl.LINES, int32(len(primitive.GetIndices())), opengl.UNSIGNED_SHORT, opengl.Ptr(primitive.GetIndices()))
+					primitive.Bind()
+					opengl.DrawElements(opengl.TRIANGLES, int32(len(primitive.GetIndices())), opengl.UNSIGNED_SHORT, opengl.Ptr(primitive.GetIndices()))
 				}
 
 				//opengl.DrawArrays(opengl.LINES, 0, int32(len(resource.GetVertexData())))
