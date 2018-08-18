@@ -25,29 +25,12 @@ type Primitive struct {
 	uvBuffer uint32
 	faceMode uint32
 	material material.IMaterial
+	isBoundToGPU bool
 }
 
 func (primitive *Primitive) Bind() {
 	gl.EnableVertexAttribArray(0)
 	gl.BindVertexArray(primitive.vao)
-
-	//gl.DrawArrays(gl.TRIANGLES, 0, int32(len(resource.vertices) / 3))
-	//gl.BindBuffer(gl.ARRAY_BUFFER, resource.vbo)
-	//gl.EnableVertexAttribArray(0)
-	//gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
-	//gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
-	//gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive.indicesBuffer)
-
-	//gl.EnableVertexAttribArray(0)
-	//gl.BindBuffer(gl.ARRAY_BUFFER, primitive.vao)
-	//gl.VertexAttribPointer(
-	//	0, // The attribute we want to configure
-	//	3,                  // size
-	//	gl.FLOAT,           // type
-	//	false,           // normalized?
-	//	0,                  // stride
-	//	nil)           // array buffer offset
-
 
 	// UV's
 	gl.EnableVertexAttribArray(1)
@@ -97,6 +80,9 @@ func (primitive *Primitive) AddMaterial(material material.IMaterial) {
 }
 
 func (primitive *Primitive) GenerateGPUBuffer() {
+	if primitive.isBoundToGPU == true {
+		return
+	}
 	// Gen vbo data
 	gl.GenBuffers(1, &primitive.vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.vbo)
@@ -142,5 +128,6 @@ func NewPrimitive(vertices []float32, indices []uint16) *Primitive {
 	return &Primitive{
 		vertices: vertices,
 		indices: indices,
+		isBoundToGPU: false,
 	}
 }

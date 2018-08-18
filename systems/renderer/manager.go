@@ -45,7 +45,7 @@ func (manager *Manager) Update(dt float64) {
 	for _,c := range factory.GetObjectManager().GetAllComponents() {
 		if c.GetType() == components.T_RenderableComponent {
 			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
-				//resource.Bind()
+				//resource.Prepare()
 				for _, primitive := range resource.GetPrimitives() {
 					// For now, just skip faces with no material
 					//if primitive.GetMaterial() == nil {

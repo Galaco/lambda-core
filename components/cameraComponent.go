@@ -60,15 +60,16 @@ func (component *CameraComponent) Update(dt float64) {
 	component.updateVectors()
 }
 
+// Update the camera directional properties with any changes
 func (component *CameraComponent) updateVectors() {
 	rot := component.owner.GetTransformComponent().Rotation
 	//rot[0] = YAW, rot[1] = PITCH
 
 	// Calculate the new Front vector
 	component.Direction = mgl32.Vec3{
-		float32(math.Cos(float64((rot[1]))) * math.Sin(float64((rot[0])))),
-		float32(math.Sin(float64((rot[1])))),
-		float32(math.Cos(float64((rot[1]))) * math.Cos(float64((rot[0])))),
+		float32(math.Cos(float64(rot[1])) * math.Sin(float64(rot[0]))),
+		float32(math.Sin(float64(rot[1]))),
+		float32(math.Cos(float64(rot[1])) * math.Cos(float64(rot[0]))),
 	}
 	// Also re-calculate the Right and Up vector
 	component.Right = mgl32.Vec3{

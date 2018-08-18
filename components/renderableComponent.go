@@ -21,6 +21,8 @@ func (component *RenderableComponent) AddRenderableResource(resource *renderable
 	component.renderables = append(component.renderables, resource)
 }
 
+// Return a list of all renderable from this component
+// this can be many different collections of primitives
 func (component *RenderableComponent) GetRenderables() []*renderable.GPUResource {
 	return component.renderables
 }

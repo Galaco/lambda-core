@@ -11,13 +11,11 @@ import (
 	"github.com/galaco/go-me-engine/valve/bsp"
 	"log"
 	"runtime"
-	bsplib "github.com/galaco/bsp"
-	"github.com/galaco/bsp/lumps"
-	"github.com/galaco/source-tools-common/texdatastringtable"
 	"github.com/galaco/vtf"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/filesystem"
-	vpk2 "github.com/galaco/vpk2"
+	"github.com/galaco/go-me-engine/valve/stringtable"
+	"github.com/galaco/go-me-engine/valve/vpk"
 )
 
 func main() {
@@ -38,42 +36,17 @@ func main() {
 	cameraEnt := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
-	// Create an example entity for rendering
-	renderableEnt := factory.NewEntity(&base.Entity{})
-	renderableComponent := components.NewRenderableComponent()
-
-
 	// Load bsp data
 	bspData := bsp.LoadBsp("data/maps/de_dust2.bsp")
 	vertices, faceVertices, faceIndices, texInfos := bsp.GenerateFacesFromBSP(bspData)
 	log.Printf("%d vertices found\n", len(vertices))
 
-	stringDataLump := *bspData.GetLump(bsplib.LUMP_TEXDATA_STRING_DATA).GetContents()
-	stringTableLump := *bspData.GetLump(bsplib.LUMP_TEXDATA_STRING_TABLE).GetContents()
-	stringtable := texdatastringtable.NewTable(
-		*stringDataLump.GetData().(*string),
-		*stringTableLump.(lumps.TexDataStringTable).GetData().(*[]int32))
-
-
+	stringTable := stringtable.GetTable(bspData)
 	// Derive a unique list of all materials referenced in the map
-	materialList := []string{}
-	for _,ti := range texInfos {
-		target,_ := stringtable.GetString(int(ti.TexData))
-		found := false
-		for _,cur := range materialList {
-			if cur == target {
-				found = true
-				break
-			}
-		}
-		if found == false {
-			materialList = append(materialList, target)
-		}
-	}
+	materialList := stringtable.SortUnique(stringTable, texInfos)
 
 	// Load all reference materials into memory
-	vpkHandle,err := vpk2.Open(vpk2.MultiVPK("data/cstrike/cstrike_pak"))
-
+	vpkHandle,err := vpk.OpenVPK("data/cstrike/cstrike_pak")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,27 +59,21 @@ func main() {
 		}
 		file,err := vpkFile.Open()
 
-		// Lets not fatal error if a texture is missing
+		// Its quite possible for a texture to be missing, just skip it.
 		if err != nil {
 			continue
 		}
-		// Convert from vtf to raw rgb
-		//s,_ := file.Stat()
-		//buf := make([]byte, s.Size())
-		//buf.
+		// Attempt to parse the vtf into color data we can use,
+		// if this fails (it shouldn't) we can treat it like it was missing
 		texture,err := vtf.ReadFromStream(file)
-		// Again if texture is broke, still continue
 		if err != nil {
 			continue
 		}
-		//a := texture.GetHighestResolutionImageForFrame(0)
-		//log.Println(a)
 		// Store file containing raw data in memory
 		FileManager.AddFile(
 			material.NewMaterial(
 				materialPath,
 				texture.GetLowResImageData(),
-				//texture.GetHighestResolutionImageForFrame(0),
 				int(texture.GetHeader().LowResImageWidth),
 				int(texture.GetHeader().LowResImageHeight)))
 		// Finally generate the gpu buffer for the material
@@ -114,11 +81,10 @@ func main() {
 	}
 
 	// construct renderable component from bsp primitives
-
 	bspPrimitives := make([]renderable.IPrimitive, len(faceIndices))
 	for idx,f := range faceIndices {
 		// This is basically creating a primitive for each face, with material
-		target,_ := stringtable.GetString(int(texInfos[idx].TexData))
+		target,_ := stringTable.GetString(int(texInfos[idx].TexData))
 		primitive := renderable.NewPrimitive(faceVertices[idx], f)
 		primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx]))
 		// @TODO Ensure a default material is set when not found
@@ -127,7 +93,13 @@ func main() {
 		}
 		bspPrimitives[idx] = primitive
 	}
+
+	// Prepare a renderable component from our bsp primitives
+	renderableComponent := components.NewRenderableComponent()
 	renderableComponent.AddRenderableResource(renderable.NewGPUResource(bspPrimitives))
+
+	// Add component to an entity
+	renderableEnt := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(renderableComponent, renderableEnt)
 
 	// Run the engine
