@@ -7,17 +7,16 @@ var Vertex = `
 	uniform mat4 view;
 	uniform mat4 model;
 
+    layout(location = 0) in vec3 vertexPosition;
 	layout(location = 1) in vec2 vertexUV;
 
 	// Output data ; will be interpolated for each fragment.
 	out vec2 UV;
 
-    in vec3 vp;
-
     void main() {
-        gl_Position = projection * view * model * vec4(vp, 1.0);
+        gl_Position = projection * view * model * vec4(vertexPosition, 1.0);
 
     	// UV of the vertex. No special space for this one.
-    	//UV = vertexUV;
+    	UV = vertexUV;
     }
 ` + "\x00"

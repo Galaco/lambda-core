@@ -45,7 +45,7 @@ func main() {
 
 	// Load bsp data
 	bspData := bsp.LoadBsp("data/maps/de_dust2.bsp")
-	vertices, faceIndices, texInfos := bsp.GenerateFacesFromBSP(bspData)
+	vertices, faceVertices, faceIndices, texInfos := bsp.GenerateFacesFromBSP(bspData)
 	log.Printf("%d vertices found\n", len(vertices))
 
 	stringDataLump := *bspData.GetLump(bsplib.LUMP_TEXDATA_STRING_DATA).GetContents()
@@ -107,27 +107,27 @@ func main() {
 				materialPath,
 				texture.GetLowResImageData(),
 				//texture.GetHighestResolutionImageForFrame(0),
-				int(texture.GetHeader().Width),
-				int(texture.GetHeader().Height)))
+				int(texture.GetHeader().LowResImageWidth),
+				int(texture.GetHeader().LowResImageHeight)))
 		// Finally generate the gpu buffer for the material
 		FileManager.GetFile(materialPath).(*material.Material).GenerateGPUBuffer()
 	}
 
 	// construct renderable component from bsp primitives
-	gpures := renderable.NewGPUResource(vertices)
+
+	bspPrimitives := make([]renderable.IPrimitive, len(faceIndices))
 	for idx,f := range faceIndices {
 		// This is basically creating a primitive for each face, with material
 		target,_ := stringtable.GetString(int(texInfos[idx].TexData))
-		primitive := renderable.NewPrimitive([]float32{}, f)
+		primitive := renderable.NewPrimitive(faceVertices[idx], f)
+		primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx]))
 		// @TODO Ensure a default material is set when not found
 		if FileManager.GetFile(target) != nil {
-			uvs := bsp.TexCoordsForFaceFromTexInfo(vertices, &texInfos[idx])
-			primitive.AddTextureCoordinateData(uvs)
 			primitive.AddMaterial(FileManager.GetFile(target).(*material.Material))
 		}
-		gpures.AddPrimitive(primitive)
+		bspPrimitives[idx] = primitive
 	}
-	renderableComponent.AddRenderableResource(gpures)
+	renderableComponent.AddRenderableResource(renderable.NewGPUResource(bspPrimitives))
 	factory.NewComponent(renderableComponent, renderableEnt)
 
 	// Run the engine

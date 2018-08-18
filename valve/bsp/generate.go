@@ -9,9 +9,10 @@ import (
 	"github.com/galaco/bsp/primitives/texinfo"
 )
 
-func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]uint16, []texinfo.TexInfo) {
+func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []texinfo.TexInfo) {
 	var verts []float32
-	var expFaces [][]uint16
+	var expVerts [][]float32
+	var expIndices [][]uint16
 	var expTexInfos []texinfo.TexInfo
 
 	fl := *file.GetLump(bsp.LUMP_FACES).GetContents()
@@ -37,6 +38,8 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]uint16, []texinfo.TexIn
 	// NOTE: We are converting from face to triangles here.
 	for _,f := range *faces {
 		expF := make([]uint16, 0)
+		expV := make([]float32, 0)
+
 		//// Just so we render triangles
 
 		// All surfedges associated with this face
@@ -57,14 +60,18 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]uint16, []texinfo.TexIn
 			} else {
 				// Just create a triangle for every edge now
 				expF = append(expF, rootIndex, edge[e1], edge[e2])
+				expV = append(expV, (*vertexes)[rootIndex].X(), (*vertexes)[rootIndex].Y(), (*vertexes)[rootIndex].Z())
+				expV = append(expV, (*vertexes)[edge[e1]].X(), (*vertexes)[edge[e1]].Y(), (*vertexes)[edge[e1]].Z())
+				expV = append(expV, (*vertexes)[edge[e2]].X(), (*vertexes)[edge[e2]].Y(), (*vertexes)[edge[e2]].Z())
 			}
 		}
 
-		expFaces = append(expFaces, expF)
+		expVerts = append(expVerts, expV)
+		expIndices = append(expIndices, expF)
 		expTexInfos = append(expTexInfos, (*texInfos)[f.TexInfo])
 	}
 
-	return verts, expFaces, expTexInfos
+	return verts, expVerts, expIndices, expTexInfos
 }
 
 func TexCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo) []float32{

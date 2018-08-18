@@ -45,15 +45,15 @@ func (manager *Manager) Update(dt float64) {
 	for _,c := range factory.GetObjectManager().GetAllComponents() {
 		if c.GetType() == components.T_RenderableComponent {
 			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
-				resource.Bind()
+				//resource.Bind()
 				for _, primitive := range resource.GetPrimitives() {
 					// For now, just skip faces with no material
-					if primitive.GetMaterial() == nil {
-						continue
-					}
+					//if primitive.GetMaterial() == nil {
+					//	continue
+					//}
 					primitive.Bind()
-					primitive.GetMaterial().Bind()
-					opengl.DrawElements(primitive.GetFaceMode(), int32(len(primitive.GetIndices())), opengl.UNSIGNED_SHORT, opengl.Ptr(primitive.GetIndices()))
+					//primitive.GetMaterial().Bind()
+					opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices())) / 3)
 				}
 			}
 		}

@@ -16,7 +16,8 @@ func (component *RenderableComponent) Initialize() {
 }
 
 func (component *RenderableComponent) AddRenderableResource(resource *renderable.GPUResource) {
-	resource.GenerateGPUBuffer()
+	// Ensure our GPU resource is ready to use
+	resource.Prepare()
 	component.renderables = append(component.renderables, resource)
 }
 

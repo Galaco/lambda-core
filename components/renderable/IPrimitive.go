@@ -19,13 +19,46 @@ type Primitive struct {
 	vertices []float32
 	indices []uint16
 	textureCoordinates []float32
-	buffer uint32
+	vbo uint32
+	vao uint32
+	indicesBuffer uint32
+	uvBuffer uint32
 	faceMode uint32
 	material material.IMaterial
 }
 
 func (primitive *Primitive) Bind() {
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive.buffer)
+	gl.EnableVertexAttribArray(0)
+	gl.BindVertexArray(primitive.vao)
+
+	//gl.DrawArrays(gl.TRIANGLES, 0, int32(len(resource.vertices) / 3))
+	//gl.BindBuffer(gl.ARRAY_BUFFER, resource.vbo)
+	//gl.EnableVertexAttribArray(0)
+	//gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+	//gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
+	//gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive.indicesBuffer)
+
+	//gl.EnableVertexAttribArray(0)
+	//gl.BindBuffer(gl.ARRAY_BUFFER, primitive.vao)
+	//gl.VertexAttribPointer(
+	//	0, // The attribute we want to configure
+	//	3,                  // size
+	//	gl.FLOAT,           // type
+	//	false,           // normalized?
+	//	0,                  // stride
+	//	nil)           // array buffer offset
+
+
+	// UV's
+	gl.EnableVertexAttribArray(1)
+	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
+	gl.VertexAttribPointer(
+		1,                // The attribute we want to configure
+		2,                 // size : U+V => 2
+		gl.FLOAT,               // type
+		false,		// normalized?
+		0,               // stride
+		nil)        // array buffer offset
 }
 
 func (primitive *Primitive) GetFaceMode() uint32 {
@@ -64,9 +97,32 @@ func (primitive *Primitive) AddMaterial(material material.IMaterial) {
 }
 
 func (primitive *Primitive) GenerateGPUBuffer() {
-	gl.GenBuffers(1, &primitive.buffer)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive.buffer)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(primitive.indices) * 4, gl.Ptr(primitive.indices), gl.STATIC_DRAW)
+	// Gen vbo data
+	gl.GenBuffers(1, &primitive.vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.vbo)
+	gl.BufferData(gl.ARRAY_BUFFER, 4*len(primitive.vertices), gl.Ptr(primitive.vertices), gl.STATIC_DRAW)
+
+	// gen vao data
+	gl.GenVertexArrays(1, &primitive.vao)
+	gl.BindVertexArray(primitive.vao)
+	gl.EnableVertexAttribArray(0)
+	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.vbo)
+	gl.VertexAttribPointer(0, 3, gl.FLOAT, false, 0, nil)
+
+	// gen uv data
+	gl.GenBuffers(1, &primitive.uvBuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
+	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.textureCoordinates) * 2, gl.Ptr(primitive.textureCoordinates), gl.STATIC_DRAW)
+
+
+	//gl.GenBuffers(1, &primitive.indicesBuffer)
+	//gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, primitive.indicesBuffer)
+	//gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(primitive.indices) * 4, gl.Ptr(primitive.indices), gl.STATIC_DRAW)
+	//
+	//gl.EnableVertexAttribArray(1)
+	//gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
+	//gl.VertexAttribPointer(0, 2, gl.FLOAT, false, 0, nil)
+	//gl.BufferData(gl.ARRAY_BUFFER, len(primitive.textureCoordinates) * 4, gl.Ptr(primitive.textureCoordinates), gl.STATIC_DRAW)
 
 	switch len(primitive.indices) {
 	case 1:
