@@ -47,11 +47,14 @@ func (manager *Manager) Update(dt float64) {
 			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
 				resource.Bind()
 				for _, primitive := range resource.GetPrimitives() {
+					// For now, just skip faces with no material
+					if primitive.GetMaterial() == nil {
+						continue
+					}
 					primitive.Bind()
-					opengl.DrawElements(opengl.TRIANGLES, int32(len(primitive.GetIndices())), opengl.UNSIGNED_SHORT, opengl.Ptr(primitive.GetIndices()))
+					primitive.GetMaterial().Bind()
+					opengl.DrawElements(primitive.GetFaceMode(), int32(len(primitive.GetIndices())), opengl.UNSIGNED_SHORT, opengl.Ptr(primitive.GetIndices()))
 				}
-
-				//opengl.DrawArrays(opengl.LINES, 0, int32(len(resource.GetVertexData())))
 			}
 		}
 	}

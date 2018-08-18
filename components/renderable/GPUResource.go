@@ -2,6 +2,7 @@ package renderable
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/galaco/go-me-engine/components/renderable/material"
 )
 
 type GPUResource struct {
@@ -9,6 +10,7 @@ type GPUResource struct {
 	vao        uint32
 	vertices   []float32
 	primitives []IPrimitive
+	material *material.Material
 }
 
 func (resource *GPUResource) Bind() {

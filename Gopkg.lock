@@ -3,13 +3,91 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/BenLubar/vpk"
+  packages = ["."]
+  revision = "64af5088e2366615e09231f0fe5c45cac65b447f"
+
+[[projects]]
+  branch = "master"
   name = "github.com/bradhe/stopwatch"
   packages = ["."]
   revision = "fd55e776a960ff999fa1dc7f2a64e0a82d8b1f07"
 
+[[projects]]
+  branch = "dev"
+  name = "github.com/galaco/bsp"
+  packages = [
+    ".",
+    "lumps",
+    "primitives/area",
+    "primitives/areaportal",
+    "primitives/brush",
+    "primitives/brushside",
+    "primitives/common",
+    "primitives/cubemap",
+    "primitives/dispinfo",
+    "primitives/disptris",
+    "primitives/dispvert",
+    "primitives/face",
+    "primitives/faceid",
+    "primitives/facemacrotextureinfo",
+    "primitives/game",
+    "primitives/leaf",
+    "primitives/leafambientindex",
+    "primitives/leafambientlighting",
+    "primitives/leafwaterdata",
+    "primitives/mapflags",
+    "primitives/model",
+    "primitives/node",
+    "primitives/occlusion",
+    "primitives/overlay",
+    "primitives/overlayfade",
+    "primitives/physcollide",
+    "primitives/plane",
+    "primitives/primitive",
+    "primitives/primvert",
+    "primitives/texdata",
+    "primitives/texinfo",
+    "primitives/vertnormal",
+    "primitives/visibility",
+    "primitives/worldlight",
+    "versions"
+  ]
+  revision = "a66f8b32ab0f6e4e63acffad7a0e335223a99b69"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/go-gl/gl"
+  packages = ["v4.1-core/gl"]
+  revision = "68e2537930806bfcee1b92a0e14b4e9b8bb3a3e3"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/go-gl/glfw"
+  packages = ["v3.2/glfw"]
+  revision = "2484f3e51bc432ea9f7daa182e418d5522201176"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/go-gl/mathgl"
+  packages = [
+    "mgl32",
+    "mgl64"
+  ]
+  revision = "cdf14b6b8f8a4a1bfb003dd5119205c5f711d85a"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/image"
+  packages = [
+    "math/f32",
+    "math/f64"
+  ]
+  revision = "c73c2afc3b812cdd6385de5a50616511c4a3d458"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f6eac27884d14e1b23b42c46fbe14a4c452dc7ee4a223c4b87dfe98376860cc5"
+  inputs-digest = "3150ec55d1364e7cad62d63c5992c163d4dc00d42739176b745fccbc3465c93d"
   solver-name = "gps-cdcl"
   solver-version = 1
