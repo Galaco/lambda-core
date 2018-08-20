@@ -73,9 +73,9 @@ func main() {
 		FileManager.AddFile(
 			material.NewMaterial(
 				materialPath,
-				texture.GetLowResImageData(),
-				int(texture.GetHeader().LowResImageWidth),
-				int(texture.GetHeader().LowResImageHeight)))
+				texture.GetHighestResolutionImageForFrame(0),
+				int(texture.GetHeader().Width),
+				int(texture.GetHeader().Height)))
 		// Finally generate the gpu buffer for the material
 		FileManager.GetFile(materialPath).(*material.Material).GenerateGPUBuffer()
 	}
@@ -86,10 +86,13 @@ func main() {
 		// This is basically creating a primitive for each face, with material
 		target,_ := stringTable.GetString(int(texInfos[idx].TexData))
 		primitive := renderable.NewPrimitive(faceVertices[idx], f)
-		primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx]))
 		// @TODO Ensure a default material is set when not found
 		if FileManager.GetFile(target) != nil {
-			primitive.AddMaterial(FileManager.GetFile(target).(*material.Material))
+			mat := FileManager.GetFile(target).(*material.Material)
+			primitive.AddMaterial(mat)
+			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], mat.GetWidth(), mat.GetHeight()))
+		} else {
+			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], 1, 1))
 		}
 		bspPrimitives[idx] = primitive
 	}

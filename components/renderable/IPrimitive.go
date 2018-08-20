@@ -41,7 +41,7 @@ func (primitive *Primitive) Bind() {
 		gl.FLOAT,               // type
 		false,		// normalized?
 		0,               // stride
-		nil)        // array buffer offset
+		nil)        		// array buffer offset
 }
 
 func (primitive *Primitive) GetFaceMode() uint32 {

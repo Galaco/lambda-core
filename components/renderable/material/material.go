@@ -24,6 +24,14 @@ func (material *Material) GetFilePath() string {
 	return material.filePath
 }
 
+func (material *Material) GetWidth() int {
+	return material.width
+}
+
+func (material *Material) GetHeight() int {
+	return material.height
+}
+
 //Get all RGB data from this material
 func (material *Material) GetColourData() []uint8 {
 	return material.rgb

@@ -14,7 +14,7 @@ import (
 )
 
 const cameraSpeed = float64(100)
-const sensitivity = float64(0.1)
+const sensitivity = float64(0.05)
 
 type CameraComponent struct {
 	base.Component

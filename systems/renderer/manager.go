@@ -27,6 +27,7 @@ func (manager *Manager) Register() {
 
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
+	opengl.Enable(opengl.DEPTH_TEST)
 }
 
 func (manager *Manager) Update(dt float64) {
@@ -47,12 +48,13 @@ func (manager *Manager) Update(dt float64) {
 			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
 				//resource.Prepare()
 				for _, primitive := range resource.GetPrimitives() {
-					// For now, just skip faces with no material
-					//if primitive.GetMaterial() == nil {
-					//	continue
-					//}
+					// Missing materials will be flat coloured
+					if primitive.GetMaterial() == nil {
+						// We need the fall backmaterial
+						continue
+					}
 					primitive.Bind()
-					//primitive.GetMaterial().Bind()
+					primitive.GetMaterial().Bind()
 					opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices())) / 3)
 				}
 			}
