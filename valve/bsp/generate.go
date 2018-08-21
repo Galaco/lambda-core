@@ -7,16 +7,23 @@ import (
 	"github.com/galaco/bsp/lumps"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/galaco/bsp/primitives/texinfo"
+	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	"log"
+	"github.com/galaco/bsp/primitives/plane"
 )
 
-func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []texinfo.TexInfo) {
+func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []texinfo.TexInfo, [][]float32) {
 	var verts []float32
 	var expVerts [][]float32
 	var expIndices [][]uint16
 	var expTexInfos []texinfo.TexInfo
+	var expNormals [][]float32
 
 	fl := *file.GetLump(bsp.LUMP_FACES).GetContents()
 	faces := (fl).(lumps.Face).GetData().(*[]face.Face)
+
+	pls := *file.GetLump(bsp.LUMP_PLANES).GetContents()
+	planes := (pls).(lumps.Planes).GetData().([]plane.Plane)
 
 	vs := *file.GetLump(bsp.LUMP_VERTEXES).GetContents()
 	vertexes := (vs).(lumps.Vertex).GetData().(*[]mgl32.Vec3)
@@ -30,6 +37,9 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []
 	ti := *file.GetLump(bsp.LUMP_TEXINFO).GetContents()
 	texInfos := ti.(lumps.TexInfo).GetData().(*[]texinfo.TexInfo)
 
+	roots := tree.BuildTree(file)
+	log.Println(roots)
+
 
 	for _,v := range *vertexes {
 		verts = append(verts, v.X(), v.Y(), v.Z())
@@ -39,6 +49,9 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []
 	for _,f := range *faces {
 		expF := make([]uint16, 0)
 		expV := make([]float32, 0)
+		expN := make([]float32, 0)
+
+		planeNormal := planes[f.Planenum].Normal
 
 		//// Just so we render triangles
 
@@ -61,17 +74,21 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []
 				// Just create a triangle for every edge now
 				expF = append(expF, rootIndex, edge[e1], edge[e2])
 				expV = append(expV, (*vertexes)[rootIndex].X(), (*vertexes)[rootIndex].Y(), (*vertexes)[rootIndex].Z())
+				expN = append(expN, planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 				expV = append(expV, (*vertexes)[edge[e1]].X(), (*vertexes)[edge[e1]].Y(), (*vertexes)[edge[e1]].Z())
+				expN = append(expN, planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 				expV = append(expV, (*vertexes)[edge[e2]].X(), (*vertexes)[edge[e2]].Y(), (*vertexes)[edge[e2]].Z())
+				expN = append(expN, planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 			}
 		}
 
 		expVerts = append(expVerts, expV)
 		expIndices = append(expIndices, expF)
 		expTexInfos = append(expTexInfos, (*texInfos)[f.TexInfo])
+		expNormals = append(expNormals, expN)
 	}
 
-	return verts, expVerts, expIndices, expTexInfos
+	return verts, expVerts, expIndices, expTexInfos, expNormals
 }
 
 func TexCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) []float32{

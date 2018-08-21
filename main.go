@@ -38,7 +38,7 @@ func main() {
 
 	// Load bsp data
 	bspData := bsp.LoadBsp("data/maps/de_dust2.bsp")
-	vertices, faceVertices, faceIndices, texInfos := bsp.GenerateFacesFromBSP(bspData)
+	vertices, faceVertices, faceIndices, texInfos, faceNormals := bsp.GenerateFacesFromBSP(bspData)
 	log.Printf("%d vertices found\n", len(vertices))
 
 	stringTable := stringtable.GetTable(bspData)
@@ -85,7 +85,7 @@ func main() {
 	for idx,f := range faceIndices {
 		// This is basically creating a primitive for each face, with material
 		target,_ := stringTable.GetString(int(texInfos[idx].TexData))
-		primitive := renderable.NewPrimitive(faceVertices[idx], f)
+		primitive := renderable.NewPrimitive(faceVertices[idx], f, faceNormals[idx])
 		// @TODO Ensure a default material is set when not found
 		if FileManager.GetFile(target) != nil {
 			mat := FileManager.GetFile(target).(*material.Material)

@@ -34,7 +34,6 @@ func (manager *Manager) Update(dt float64) {
 	manager.currentCamera.Update(dt)
 
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
-//	manager.glContext.UseProgram()
 
 	modelUniform := manager.glContext.GetUniform("model")
 	model := manager.currentCamera.ModelMatrix()
@@ -46,7 +45,6 @@ func (manager *Manager) Update(dt float64) {
 	for _,c := range factory.GetObjectManager().GetAllComponents() {
 		if c.GetType() == components.T_RenderableComponent {
 			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
-				//resource.Prepare()
 				for _, primitive := range resource.GetPrimitives() {
 					// Missing materials will be flat coloured
 					if primitive.GetMaterial() == nil {
