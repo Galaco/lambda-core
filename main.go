@@ -17,6 +17,7 @@ import (
 	"github.com/galaco/go-me-engine/valve/stringtable"
 	"github.com/galaco/go-me-engine/valve/vpk"
 	vpk2 "github.com/galaco/vpk2"
+	bsp2 "github.com/galaco/bsp"
 )
 
 func main() {
@@ -37,15 +38,11 @@ func main() {
 	cameraEnt := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
-	// Load bsp data
-	bspData := bsp.LoadBsp("data/maps/de_train.bsp")
-	if bspData.GetHeader().Version < 20 {
-		log.Fatal("Unsupported BSP Version. Exiting...")
-	}
-
+	// BSP
+	bspData := LoadBSP("data/maps/de_dust2.bsp")
 	faceVertices, faceIndices, texInfos, faceNormals := bsp.GenerateFacesFromBSP(bspData)
 
-	// Load VPK filesystem
+	// Open VPK filesystem
 	vpkHandle,err := vpk.OpenVPK("data/cstrike/cstrike_pak")
 	if err != nil {
 		log.Fatal(err)
@@ -84,6 +81,15 @@ func main() {
 
 	// Run the engine
 	Application.Run()
+}
+
+func LoadBSP(filename string) *bsp2.Bsp {
+	f := bsp.LoadBsp(filename)
+	if f.GetHeader().Version < 20 {
+		log.Fatal("Unsupported BSP Version. Exiting...")
+	}
+
+	return f
 }
 
 func LoadMaterials(vpkHandle *vpk2.VPK, materialList []string) {
