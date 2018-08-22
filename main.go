@@ -16,6 +16,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/valve/stringtable"
 	"github.com/galaco/go-me-engine/valve/vpk"
+	vpk2 "github.com/galaco/vpk2"
 )
 
 func main() {
@@ -37,19 +38,57 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load bsp data
-	bspData := bsp.LoadBsp("data/maps/de_dust2.bsp")
-	vertices, faceVertices, faceIndices, texInfos, faceNormals := bsp.GenerateFacesFromBSP(bspData)
-	log.Printf("%d vertices found\n", len(vertices))
+	bspData := bsp.LoadBsp("data/maps/de_train.bsp")
+	if bspData.GetHeader().Version < 20 {
+		log.Fatal("Unsupported BSP Version. Exiting...")
+	}
 
-	stringTable := stringtable.GetTable(bspData)
-	// Derive a unique list of all materials referenced in the map
-	materialList := stringtable.SortUnique(stringTable, texInfos)
+	faceVertices, faceIndices, texInfos, faceNormals := bsp.GenerateFacesFromBSP(bspData)
 
-	// Load all reference materials into memory
+	// Load VPK filesystem
 	vpkHandle,err := vpk.OpenVPK("data/cstrike/cstrike_pak")
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// MATERIALS
+	stringTable := stringtable.GetTable(bspData)
+	// Derive a unique list of all materials referenced in the map
+	materialList := stringtable.SortUnique(stringTable, texInfos)
+	LoadMaterials(vpkHandle, materialList)
+
+	// construct renderable component from bsp primitives
+	bspPrimitives := make([]renderable.IPrimitive, len(faceIndices))
+	for idx,f := range faceIndices {
+		// This is basically creating a primitive for each face, with material
+		target,_ := stringTable.GetString(int(texInfos[idx].TexData))
+		primitive := renderable.NewPrimitive(faceVertices[idx], f, faceNormals[idx])
+		// @TODO Ensure a default material is set when not found
+		if FileManager.GetFile(target) != nil {
+			mat := FileManager.GetFile(target).(*material.Material)
+			primitive.AddMaterial(mat)
+			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], mat.GetWidth(), mat.GetHeight()))
+		} else {
+			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], 1, 1))
+		}
+		bspPrimitives[idx] = primitive
+	}
+
+	// Prepare a renderable component from our bsp primitives
+	renderableComponent := components.NewRenderableComponent()
+	renderableComponent.AddRenderableResource(renderable.NewGPUResource(bspPrimitives))
+
+	// Add component to an entity
+	renderableEnt := factory.NewEntity(&base.Entity{})
+	factory.NewComponent(renderableComponent, renderableEnt)
+
+	// Run the engine
+	Application.Run()
+}
+
+func LoadMaterials(vpkHandle *vpk2.VPK, materialList []string) {
+	FileManager := filesystem.GetFileManager()
+
 	for _,materialPath := range materialList {
 		// Load file from vpk into memory
 		vpkFile := vpkHandle.Entry("materials/" + materialPath + ".vtf")
@@ -81,32 +120,4 @@ func main() {
 		// Finally generate the gpu buffer for the material
 		FileManager.GetFile(materialPath).(*material.Material).GenerateGPUBuffer()
 	}
-
-	// construct renderable component from bsp primitives
-	bspPrimitives := make([]renderable.IPrimitive, len(faceIndices))
-	for idx,f := range faceIndices {
-		// This is basically creating a primitive for each face, with material
-		target,_ := stringTable.GetString(int(texInfos[idx].TexData))
-		primitive := renderable.NewPrimitive(faceVertices[idx], f, faceNormals[idx])
-		// @TODO Ensure a default material is set when not found
-		if FileManager.GetFile(target) != nil {
-			mat := FileManager.GetFile(target).(*material.Material)
-			primitive.AddMaterial(mat)
-			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], mat.GetWidth(), mat.GetHeight()))
-		} else {
-			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], 1, 1))
-		}
-		bspPrimitives[idx] = primitive
-	}
-
-	// Prepare a renderable component from our bsp primitives
-	renderableComponent := components.NewRenderableComponent()
-	renderableComponent.AddRenderableResource(renderable.NewGPUResource(bspPrimitives))
-
-	// Add component to an entity
-	renderableEnt := factory.NewEntity(&base.Entity{})
-	factory.NewComponent(renderableComponent, renderableEnt)
-
-	// Run the engine
-	Application.Run()
 }

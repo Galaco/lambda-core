@@ -11,8 +11,7 @@ import (
 	"github.com/galaco/bsp/primitives/plane"
 )
 
-func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []texinfo.TexInfo, [][]float32) {
-	var verts []float32
+func GenerateFacesFromBSP(file *bsp.Bsp) ([][]float32, [][]uint16, []texinfo.TexInfo, [][]float32) {
 	var expVerts [][]float32
 	var expIndices [][]uint16
 	var expTexInfos []texinfo.TexInfo
@@ -37,11 +36,6 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []
 	texInfos := ti.(lumps.TexInfo).GetData().(*[]texinfo.TexInfo)
 
 	tree.BuildTree(file)
-
-
-	for _,v := range *vertexes {
-		verts = append(verts, v.X(), v.Y(), v.Z())
-	}
 
 	// NOTE: We are converting from face to triangles here.
 	for _,f := range *faces {
@@ -86,13 +80,13 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []
 		expNormals = append(expNormals, expN)
 	}
 
-	return verts, expVerts, expIndices, expTexInfos, expNormals
+	return expVerts, expIndices, expTexInfos, expNormals
 }
 
 func TexCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) []float32{
-	uvs := make([]float32, (len(vertexes) / 3) * 2)
+	uvs := []float32{}
 
-	for idx := 0; idx < len(vertexes); idx += 3 {
+	for idx := 0; idx < len(vertexes) - 2; idx += 3 {
 		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
 		u := ((tx.TextureVecsTexelsPerWorldUnits[0][0] * vertexes[idx]) +
 			(tx.TextureVecsTexelsPerWorldUnits[0][1] * vertexes[idx+1]) +

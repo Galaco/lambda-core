@@ -41,28 +41,28 @@ func (material *Material) GenerateGPUBuffer() {
 
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 
-	if isTextureCompressed(material.vtf.GetHeader().HighResImageFormat) {
+	if isTextureCompressed(material.vtf.GetHeader().LowResImageFormat) {
 		gl.CompressedTexImage2D(
 			gl.TEXTURE_2D,
 			0,
-			getGLTextureFormat(material.vtf.GetHeader().HighResImageFormat),
-			int32(material.vtf.GetHeader().Width),
-			int32(material.vtf.GetHeader().Height),
+			getGLTextureFormat(material.vtf.GetHeader().LowResImageFormat),
+			int32(material.vtf.GetHeader().LowResImageWidth),
+			int32(material.vtf.GetHeader().LowResImageHeight),
 			0,
-			int32(len(material.vtf.GetHighestResolutionImageForFrame(0))),
-			gl.Ptr(material.vtf.GetHighestResolutionImageForFrame(0)))
+			int32(len(material.vtf.GetLowResImageData())),
+			gl.Ptr(material.vtf.GetLowResImageData()))
 	} else {
 		gl.TexImage2D(
 			gl.TEXTURE_2D,
 			0,
-			gl.RGB,
+			gl.BGRA,
 			int32(material.vtf.GetHeader().Width),
 			int32(material.vtf.GetHeader().Height),
 			0,
-			getGLTextureFormat(material.vtf.GetHeader().LowResImageFormat),
+			getGLTextureFormat(material.vtf.GetHeader().HighResImageFormat),
 			gl.UNSIGNED_BYTE,
 			gl.Ptr(material.vtf.GetHighestResolutionImageForFrame(0)))
 	}
@@ -101,7 +101,7 @@ func getGLTextureFormat(vtfFormat uint32) uint32 {
 	case 12:
 		return gl.BGRA
 	case 13:
-		return gl.COMPRESSED_RGBA_S3TC_DXT1_EXT
+		return gl.COMPRESSED_RGB_S3TC_DXT1_EXT
 	case 14:
 		return gl.COMPRESSED_RGBA_S3TC_DXT3_EXT
 	case 15:
