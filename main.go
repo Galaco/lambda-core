@@ -63,17 +63,19 @@ func main() {
 		if err != nil {
 			continue
 		}
+
 		// Attempt to parse the vtf into color data we can use,
 		// if this fails (it shouldn't) we can treat it like it was missing
 		texture,err := vtf.ReadFromStream(file)
 		if err != nil {
+			log.Println(err)
 			continue
 		}
 		// Store file containing raw data in memory
 		FileManager.AddFile(
 			material.NewMaterial(
 				materialPath,
-				texture.GetHighestResolutionImageForFrame(0),
+				texture,
 				int(texture.GetHeader().Width),
 				int(texture.GetHeader().Height)))
 		// Finally generate the gpu buffer for the material

@@ -8,7 +8,6 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
-	"log"
 	"github.com/galaco/bsp/primitives/plane"
 )
 
@@ -37,8 +36,7 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([]float32, [][]float32, [][]uint16, []
 	ti := *file.GetLump(bsp.LUMP_TEXINFO).GetContents()
 	texInfos := ti.(lumps.TexInfo).GetData().(*[]texinfo.TexInfo)
 
-	roots := tree.BuildTree(file)
-	log.Println(roots)
+	tree.BuildTree(file)
 
 
 	for _,v := range *vertexes {
