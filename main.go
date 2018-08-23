@@ -76,8 +76,8 @@ func main() {
 	renderableComponent.AddRenderableResource(renderable.NewGPUResource(bspPrimitives))
 
 	// Add component to an entity
-	renderableEnt := factory.NewEntity(&base.Entity{})
-	factory.NewComponent(renderableComponent, renderableEnt)
+	worldSpawn := factory.NewEntity(&base.Entity{})
+	factory.NewComponent(renderableComponent, worldSpawn)
 
 	// Run the engine
 	Application.Run()

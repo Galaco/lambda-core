@@ -44,16 +44,16 @@ func (material *Material) GenerateGPUBuffer() {
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
 
-	if isTextureCompressed(material.vtf.GetHeader().LowResImageFormat) {
+	if isTextureCompressed(material.vtf.GetHeader().HighResImageFormat) {
 		gl.CompressedTexImage2D(
 			gl.TEXTURE_2D,
 			0,
-			getGLTextureFormat(material.vtf.GetHeader().LowResImageFormat),
-			int32(material.vtf.GetHeader().LowResImageWidth),
-			int32(material.vtf.GetHeader().LowResImageHeight),
+			getGLTextureFormat(material.vtf.GetHeader().HighResImageFormat),
+			int32(material.vtf.GetHeader().Width),
+			int32(material.vtf.GetHeader().Height),
 			0,
-			int32(len(material.vtf.GetLowResImageData())),
-			gl.Ptr(material.vtf.GetLowResImageData()))
+			int32(len(material.vtf.GetHighestResolutionImageForFrame(0))),
+			gl.Ptr(material.vtf.GetHighestResolutionImageForFrame(0)))
 	} else {
 		gl.TexImage2D(
 			gl.TEXTURE_2D,
