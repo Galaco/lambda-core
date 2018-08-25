@@ -80,10 +80,8 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([][]float32, [][]uint16, []texinfo.Tex
 	return expVerts, expIndices, expTexInfos, expNormals
 }
 
-func TexCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) []float32{
-	uvs := []float32{}
-
-	for idx := 0; idx < len(vertexes) - 2; idx += 3 {
+func TexCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
+	for idx := 0; idx < len(vertexes); idx += 3 {
 		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
 		u := ((tx.TextureVecsTexelsPerWorldUnits[0][0] * vertexes[idx]) +
 			(tx.TextureVecsTexelsPerWorldUnits[0][1] * vertexes[idx+1]) +

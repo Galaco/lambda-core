@@ -5,6 +5,7 @@ import (
 )
 
 type Leaf struct {
+	Id int32
 	FaceIndexList []uint16
 	FaceList []interfaces.IPrimitive
 }

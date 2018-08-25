@@ -19,6 +19,7 @@ import (
 	vpk2 "github.com/galaco/vpk2"
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func main() {
@@ -91,6 +92,7 @@ func LoadMap(filename string) {
 	bspTree := tree.BuildTree(bspData)
 	tree.PopulateBspTreeFromFaces(bspTree, bspPrimitives)
 	bspComponent := components.NewBspComponent(bspTree)
+	bspComponent.UpdateVisibilityList(mgl32.Vec3{0, 0, 0})
 
 	worldSpawn := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(bspComponent, worldSpawn)

@@ -7,6 +7,7 @@ type INode interface {
 }
 
 type Node struct {
+	Id int32
 	Children [2]INode
 	Min mgl32.Vec3
 	Max mgl32.Vec3

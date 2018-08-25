@@ -2,7 +2,7 @@ package renderable
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/galaco/go-me-engine/components/renderable/material"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 )
 
 type Primitive struct {
@@ -16,7 +16,7 @@ type Primitive struct {
 	indicesBuffer uint32
 	uvBuffer uint32
 	faceMode uint32
-	material IMaterial
+	material interfaces.IMaterial
 	isBoundToGPU bool
 }
 
@@ -67,7 +67,7 @@ func (primitive *Primitive) GetTextureCoordinates() []float32 {
 	return primitive.textureCoordinates
 }
 
-func (primitive *Primitive) GetMaterial() material.IMaterial {
+func (primitive *Primitive) GetMaterial() interfaces.IMaterial {
 	return primitive.material
 }
 
@@ -83,7 +83,7 @@ func (primitive *Primitive) AddTextureCoordinateData(textureCoordinates []float3
 	primitive.textureCoordinates = textureCoordinates
 }
 
-func (primitive *Primitive) AddMaterial(material material.IMaterial) {
+func (primitive *Primitive) AddMaterial(material interfaces.IMaterial) {
 	primitive.material = material
 }
 
@@ -106,7 +106,7 @@ func (primitive *Primitive) GenerateGPUBuffer() {
 	// gen uv data
 	gl.GenBuffers(1, &primitive.uvBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.textureCoordinates) * 2, gl.Ptr(primitive.textureCoordinates), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.textureCoordinates) * 4, gl.Ptr(primitive.textureCoordinates), gl.STATIC_DRAW)
 
 	// gen normal data
 	gl.GenBuffers(1, &primitive.normalBuffer)
