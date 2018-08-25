@@ -2,20 +2,17 @@ package components
 
 import (
 	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/components/renderable"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 )
 
 
 
 type RenderableComponent struct {
 	base.Component
-	renderables []*renderable.GPUResource
+	renderables []interfaces.IGPUMesh
 }
 
-func (component *RenderableComponent) Initialize() {
-}
-
-func (component *RenderableComponent) AddRenderableResource(resource *renderable.GPUResource) {
+func (component *RenderableComponent) AddRenderableResource(resource interfaces.IGPUMesh) {
 	// Ensure our GPU resource is ready to use
 	resource.Prepare()
 	component.renderables = append(component.renderables, resource)
@@ -23,7 +20,7 @@ func (component *RenderableComponent) AddRenderableResource(resource *renderable
 
 // Return a list of all renderable from this component
 // this can be many different collections of primitives
-func (component *RenderableComponent) GetRenderables() []*renderable.GPUResource {
+func (component *RenderableComponent) GetRenderables() []interfaces.IGPUMesh {
 	return component.renderables
 }
 

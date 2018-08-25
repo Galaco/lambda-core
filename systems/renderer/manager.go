@@ -7,6 +7,7 @@ import (
 	"github.com/galaco/go-me-engine/components"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/galaco/go-me-engine/systems/renderer/camera"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 )
 
 type Manager struct {
@@ -44,19 +45,29 @@ func (manager *Manager) Update(dt float64) {
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
 	for _,c := range factory.GetObjectManager().GetAllComponents() {
-		if c.GetType() == components.T_RenderableComponent {
-			for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
-				for _, primitive := range resource.GetPrimitives() {
-					// Missing materials will be flat coloured
-					if primitive.GetMaterial() == nil {
-						// We need the fall backmaterial
-						continue
-					}
-					primitive.Bind()
-					primitive.GetMaterial().Bind()
-					opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices())) / 3)
-				}
+		switch c.GetType() {
+		//case components.T_RenderableComponent:
+		//	for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
+		//		manager.drawMesh(resource)
+		//	}
+		case components.T_BspComponent:
+			c.(*components.BspComponent).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
+			for _,resource := range c.(*components.BspComponent).GetRenderables() {
+				manager.drawMesh(resource)
 			}
 		}
+	}
+}
+
+func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
+	for _, primitive := range resource.GetPrimitives() {
+		// Missing materials will be flat coloured
+		if primitive.GetMaterial() == nil {
+			// We need the fall backmaterial
+			continue
+		}
+		primitive.Bind()
+		primitive.GetMaterial().Bind()
+		opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices())) / 3)
 	}
 }

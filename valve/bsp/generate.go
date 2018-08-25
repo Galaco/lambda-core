@@ -7,7 +7,6 @@ import (
 	"github.com/galaco/bsp/lumps"
 	"github.com/go-gl/mathgl/mgl32"
 	"github.com/galaco/bsp/primitives/texinfo"
-	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/galaco/bsp/primitives/plane"
 )
 
@@ -34,8 +33,6 @@ func GenerateFacesFromBSP(file *bsp.Bsp) ([][]float32, [][]uint16, []texinfo.Tex
 
 	ti := *file.GetLump(bsp.LUMP_TEXINFO).GetContents()
 	texInfos := ti.(lumps.TexInfo).GetData().(*[]texinfo.TexInfo)
-
-	tree.BuildTree(file)
 
 	// NOTE: We are converting from face to triangles here.
 	for _,f := range *faces {

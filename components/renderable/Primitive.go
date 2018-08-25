@@ -5,17 +5,6 @@ import (
 	"github.com/galaco/go-me-engine/components/renderable/material"
 )
 
-type IPrimitive interface {
-	GetVertices() []float32
-	GetIndices() []uint16
-	GetNormals() []float32
-	GetTextureCoordinates() []float32
-	GetMaterial() material.IMaterial
-	GetFaceMode() uint32
-	GenerateGPUBuffer()
-	Bind()
-}
-
 type Primitive struct {
 	vertices []float32
 	indices []uint16
@@ -27,7 +16,7 @@ type Primitive struct {
 	indicesBuffer uint32
 	uvBuffer uint32
 	faceMode uint32
-	material material.IMaterial
+	material IMaterial
 	isBoundToGPU bool
 }
 

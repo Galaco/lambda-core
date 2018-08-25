@@ -1,8 +1,10 @@
 package renderable
 
+import "github.com/galaco/go-me-engine/engine/interfaces"
+
 // A collection of renderable primitives/submeshes
 type GPUResource struct {
-	primitives []IPrimitive
+	primitives []interfaces.IPrimitive
 	isBoundToGPU bool
 }
 
@@ -17,19 +19,44 @@ func (resource *GPUResource) Prepare() {
 }
 
 // Add a new primitive
-func (resource *GPUResource) AddPrimitive(primitive IPrimitive) {
+func (resource *GPUResource) AddPrimitive(primitive interfaces.IPrimitive) {
 	resource.primitives = append(resource.primitives, primitive)
 	resource.isBoundToGPU = false
 }
 
+func (resource *GPUResource) AddPrimitives(primitives []interfaces.IPrimitive) {
+	resource.primitives = append(resource.primitives, primitives...)
+	resource.isBoundToGPU = false
+}
+
 // Get all primitives/submeshes
-func (resource *GPUResource) GetPrimitives() []IPrimitive {
+func (resource *GPUResource) GetPrimitives() []interfaces.IPrimitive {
 	return resource.primitives
 }
 
-func NewGPUResource(primitives []IPrimitive) *GPUResource {
+func NewGPUResource(primitives []interfaces.IPrimitive) *GPUResource {
 	return &GPUResource{
 		primitives: primitives,
 		isBoundToGPU: false,
+	}
+}
+
+
+
+type GPUResourceDynamic struct {
+	GPUResource
+}
+
+func (resource *GPUResourceDynamic) Reset() {
+	resource.primitives = []interfaces.IPrimitive{}
+	resource.isBoundToGPU = false
+}
+
+func NewGPUResourceDynamic(primitives []interfaces.IPrimitive) *GPUResourceDynamic {
+	return &GPUResourceDynamic{
+		GPUResource: GPUResource {
+			primitives: primitives,
+			isBoundToGPU: false,
+		},
 	}
 }

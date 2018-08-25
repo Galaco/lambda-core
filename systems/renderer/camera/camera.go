@@ -12,7 +12,6 @@ import (
 )
 
 type Camera struct {
-	base.Entity
 	currentCameraComponent *components.CameraComponent
 	owner *base.Entity
 }
@@ -34,6 +33,10 @@ func (camera *Camera) SendMessage() interfaces.IMessage {
 
 func (camera *Camera) Update(dt float64) {
 	camera.currentCameraComponent.Update(dt)
+}
+
+func (camera *Camera) GetOwner() *base.Entity {
+	return camera.owner
 }
 
 func (camera *Camera) ModelMatrix() mgl32.Mat4 {

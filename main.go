@@ -11,19 +11,18 @@ import (
 	"github.com/galaco/go-me-engine/valve/bsp"
 	"log"
 	"runtime"
-	"github.com/galaco/vtf"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/filesystem"
-	"github.com/galaco/go-me-engine/valve/stringtable"
-	"github.com/galaco/go-me-engine/valve/vpk"
+	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
+	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
+	"github.com/galaco/go-me-engine/valve/libwrapper/vtf"
 	vpk2 "github.com/galaco/vpk2"
-	bsp2 "github.com/galaco/bsp"
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/valve/bsp/tree"
 )
 
 func main() {
 	runtime.LockOSThread()
-
-	FileManager := filesystem.GetFileManager()
 
 	// Build our engine setup
 	Application := engine.Engine{}
@@ -38,8 +37,23 @@ func main() {
 	cameraEnt := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
+	// Load a map!
+	LoadMap("data/maps/de_dust2.bsp")
+
+	// Run the engine
+	Application.Run()
+}
+
+func LoadMap(filename string) {
+	FileManager := filesystem.GetFileManager()
+
 	// BSP
-	bspData := LoadBSP("data/maps/de_dust2.bsp")
+	bspData := bsp.LoadBsp(filename)
+	if bspData.GetHeader().Version < 20 {
+		log.Fatal("Unsupported BSP Version. Exiting...")
+	}
+
+	// Fetch all BSP face data
 	faceVertices, faceIndices, texInfos, faceNormals := bsp.GenerateFacesFromBSP(bspData)
 
 	// Open VPK filesystem
@@ -52,10 +66,11 @@ func main() {
 	stringTable := stringtable.GetTable(bspData)
 	// Derive a unique list of all materials referenced in the map
 	materialList := stringtable.SortUnique(stringTable, texInfos)
+
 	LoadMaterials(vpkHandle, materialList)
 
 	// construct renderable component from bsp primitives
-	bspPrimitives := make([]renderable.IPrimitive, len(faceIndices))
+	bspPrimitives := make([]interfaces.IPrimitive, len(faceIndices))
 	for idx,f := range faceIndices {
 		// This is basically creating a primitive for each face, with material
 		target,_ := stringTable.GetString(int(texInfos[idx].TexData))
@@ -68,28 +83,17 @@ func main() {
 		} else {
 			primitive.AddTextureCoordinateData(bsp.TexCoordsForFaceFromTexInfo(faceVertices[idx], &texInfos[idx], 1, 1))
 		}
+		// Ensure created primitive is
+		primitive.GenerateGPUBuffer()
 		bspPrimitives[idx] = primitive
 	}
 
-	// Prepare a renderable component from our bsp primitives
-	renderableComponent := components.NewRenderableComponent()
-	renderableComponent.AddRenderableResource(renderable.NewGPUResource(bspPrimitives))
+	bspTree := tree.BuildTree(bspData)
+	tree.PopulateBspTreeFromFaces(bspTree, bspPrimitives)
+	bspComponent := components.NewBspComponent(bspTree)
 
-	// Add component to an entity
 	worldSpawn := factory.NewEntity(&base.Entity{})
-	factory.NewComponent(renderableComponent, worldSpawn)
-
-	// Run the engine
-	Application.Run()
-}
-
-func LoadBSP(filename string) *bsp2.Bsp {
-	f := bsp.LoadBsp(filename)
-	if f.GetHeader().Version < 20 {
-		log.Fatal("Unsupported BSP Version. Exiting...")
-	}
-
-	return f
+	factory.NewComponent(bspComponent, worldSpawn)
 }
 
 func LoadMaterials(vpkHandle *vpk2.VPK, materialList []string) {
