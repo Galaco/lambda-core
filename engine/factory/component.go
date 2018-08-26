@@ -5,6 +5,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/core"
 )
 
+// Attaches a component to an entity, and registers it with the engine
 func NewComponent(component interfaces.IComponent, owner *interfaces.IEntity) *interfaces.IComponent{
 	component.SetHandle(core.NewHandle())
 	GetObjectManager().AddComponent(component, *owner)

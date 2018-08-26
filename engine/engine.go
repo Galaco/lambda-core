@@ -4,11 +4,12 @@ import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/bradhe/stopwatch"
 	"github.com/galaco/go-me-engine/engine/event"
+	"runtime"
 )
 
-const FRAMERATE = 16.6666667
-
-type Engine struct {
+// Game engine
+// Only 1 can be initialised
+type engine struct {
 	EventManager event.Manager
 	Managers []interfaces.IManager
 	Running bool
@@ -18,7 +19,7 @@ type Engine struct {
 }
 
 // Initialise the engine, and attached managers
-func (engine *Engine) Initialise() {
+func (engine *engine) Initialise() {
 
 	for _, manager := range engine.Managers {
 		manager.Register()
@@ -27,7 +28,7 @@ func (engine *Engine) Initialise() {
 }
 
 // Run the engine
-func (engine *Engine) Run() {
+func (engine *engine) Run() {
 	engine.Running = true
 
 	// Begin the event manager thread in the background
@@ -61,6 +62,11 @@ func (engine *Engine) Run() {
 }
 
 // Add a new manager to the engine
-func (engine *Engine) AddManager(manager interfaces.IManager) {
+func (engine *engine) AddManager(manager interfaces.IManager) {
 	engine.Managers = append(engine.Managers, manager)
+}
+
+func NewEngine() *engine{
+	runtime.LockOSThread()
+	return &engine{}
 }

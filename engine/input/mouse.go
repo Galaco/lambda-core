@@ -7,8 +7,8 @@ import (
 	"github.com/go-gl/mathgl/mgl64"
 )
 
+// Mouse information, about change from previous poll
 type Mouse struct {
-	previousPosition mgl64.Vec2
 	change mgl64.Vec2
 }
 

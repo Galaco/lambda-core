@@ -12,3 +12,18 @@ See `main.go` for now to specify the .bsp and .vpks containing textures.
 # What will this do?
 Not sure yet. For now its just a bt of fun. Next goals are to to be able to load in .mdl meshes, and high-res vtf data,
 as well as displacements. After that, most likely pakfile data extraction & skybox, and plenty of optimisation.
+
+### Minimal run:
+```
+package main
+
+import "github.com/galaco/go-me-engine/engine"
+
+func main() {
+	Application := engine.NewEngine()
+
+	Application.Initialise()
+
+	Application.Run()
+}
+```

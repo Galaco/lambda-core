@@ -6,6 +6,10 @@ import (
 	"sync"
 )
 
+// Event manager
+// Handles sending and receiving events for immediate handling
+// Generally used for engine functionality, such as user input events, window
+// management etc.
 type Manager struct {
 	listenerMap map[core.EventId]map[core.Handle]interfaces.IEventListenable
 	mu sync.Mutex
@@ -77,6 +81,7 @@ func (manager *Manager) Dispatch(eventName core.EventId, message interfaces.IMes
 	manager.mu.Unlock()
 }
 
+// Close the event manager
 func (manager *Manager) Unregister() {
 	// Ensure async event queue is halted
 	manager.runAsync = false

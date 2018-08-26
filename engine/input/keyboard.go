@@ -7,14 +7,18 @@ import (
 	"github.com/galaco/go-me-engine/message/messages"
 )
 
+// Keyboard key wrapper
 type Keyboard struct {
 	keysDown [1024]bool
 }
 
+// Check if a specific key is pressed
 func (keyboard *Keyboard) IsKeyDown(key glfw.Key) bool {
 	return keyboard.keysDown[int(key)]
 }
 
+// Event manager message receiver.
+// Used to catch key events from the window library
 func (keyboard *Keyboard) ReceiveMessage(message interfaces.IMessage) {
 	switch message.GetType() {
 	case messagetype.KeyDown:

@@ -10,7 +10,6 @@ import (
 	"github.com/galaco/go-me-engine/components/renderable"
 	"github.com/galaco/go-me-engine/valve/bsp"
 	"log"
-	"runtime"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
@@ -23,10 +22,8 @@ import (
 )
 
 func main() {
-	runtime.LockOSThread()
-
 	// Build our engine setup
-	Application := engine.Engine{}
+	Application := engine.NewEngine()
 	Application.AddManager(&window.Manager{})
 	Application.AddManager(&renderer.Manager{})
 
