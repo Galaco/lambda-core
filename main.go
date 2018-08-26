@@ -38,7 +38,7 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap("data/maps/de_dust2.bsp")
+	LoadMap("data/maps/de_nuke.bsp")
 
 	// Run the engine
 	Application.Run()

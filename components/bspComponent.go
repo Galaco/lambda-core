@@ -43,19 +43,26 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 
 	component.cachedPosition = position
 
-	faceIndexes, current := bsp.RebuildVisibilityList(component.nodeTrees, component.cachedPosition)
-
 	component.cache[0].(*renderable.GPUResourceDynamic).Reset()
-	component.currentLeaf = current
+	component.currentLeaf = bsp.FindCurrentLeaf(component.nodeTrees, component.cachedPosition)
 	// If current == nil then we are outside the map. No visibility calculation
-	if current != nil && current.ClusterId != -1{
-		//component.visibilityLump.GetVisibleIdsForCluster(current.ClusterId))
-		prims := make([]interfaces.IPrimitive, len(faceIndexes))
-		for i,faceIdx := range faceIndexes {
-			prims[i] = component.faceList[faceIdx]
+	if component.currentLeaf != nil && component.currentLeaf.ClusterId > -1 {
+		faceList := bsp.BuildFaceListForVisibleClusters(
+			component.nodeTrees,
+			component.visibilityLump.GetVisibleIdsForCluster(component.currentLeaf.ClusterId))
+
+		prims := make([]interfaces.IPrimitive, len(faceList))
+		for idx,faceIdx := range faceList {
+			prims[idx] = component.faceList[faceIdx]
 		}
 
 		component.cache[0].AddPrimitives(prims)
+
+		// Shouldn't ever happen, but this is a catch all in a case
+		// where no faces are apparent visible
+		if len(prims) == 0 {
+			component.cache[0].AddPrimitives(component.faceList)
+		}
 	} else {
 		component.cache[0].AddPrimitives(component.faceList)
 	}
@@ -78,7 +85,6 @@ func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {
 		}
 	}
 }
-
 
 func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, visibilityLump *visibility.Vis) *BspComponent{
 	c := BspComponent{

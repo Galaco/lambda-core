@@ -7,34 +7,25 @@ import (
 
 var currentLeaf *tree.Leaf
 
-func RebuildVisibilityList(treeList []tree.Node, position mgl32.Vec3) ([]uint16, *tree.Leaf) {
-	visibleList := []uint16{}
+func FindCurrentLeaf(treeList []tree.Node, position mgl32.Vec3) (*tree.Leaf) {
+	currentLeaf = nil
 	for _, root := range treeList {
-		depth := 0
-		visibleList = append(visibleList, rebuildVisibilityListRecursive(&root, position, depth)...)
+		findCurrentLeafRecursive(&root, position)
 	}
-	return visibleList, currentLeaf
+	return currentLeaf
 }
 
-func rebuildVisibilityListRecursive(node tree.INode, position mgl32.Vec3, depth int) []uint16 {
-	ret := []uint16{}
+func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) {
 	if node.IsLeaf() == false {
 		for _,child := range node.(*tree.Node).Children {
-			ret = append(ret, rebuildVisibilityListRecursive(child, position, depth + 1)...)
+			findCurrentLeafRecursive(child, position)
 		}
-		return ret
 	} else {
-
-		if depth > 0 {
-			// Skip this node and its children if we aren't in it
-			if IsPointInLeaf(position, node.(*tree.Leaf).Min, node.(*tree.Leaf).Max) {
-				currentLeaf = node.(*tree.Leaf)
-			}
+		// Skip this node and its children if we aren't in it
+		if IsPointInLeaf(position, node.(*tree.Leaf).Min, node.(*tree.Leaf).Max) {
+			currentLeaf = node.(*tree.Leaf)
 		}
-		return node.(*tree.Leaf).FaceIndexList
 	}
-
-	return ret
 }
 
 func IsPointInLeaf(point mgl32.Vec3, min mgl32.Vec3, max mgl32.Vec3) bool {
@@ -47,4 +38,31 @@ func IsPointInLeaf(point mgl32.Vec3, min mgl32.Vec3, max mgl32.Vec3) bool {
 			return false
 	}
 	return true
+}
+
+func BuildFaceListForVisibleClusters(nodeTree []tree.Node, clusterList []int16) []uint16 {
+	faceList := []uint16{}
+	for _, root := range nodeTree {
+		faceList = append(faceList,  recursiveBuildFaceIndexList(&root, faceList, clusterList)...)
+	}
+
+	return faceList
+}
+
+func recursiveBuildFaceIndexList(node tree.INode, faceList []uint16, clusterList []int16) []uint16 {
+	if node.IsLeaf() {
+		clusterId := node.(*tree.Leaf).ClusterId
+		for _, v := range clusterList {
+			if v == clusterId {
+				return node.(*tree.Leaf).FaceIndexList
+			}
+		}
+		return []uint16{}
+	} else {
+		for _,child := range node.(*tree.Node).Children {
+			faceList = recursiveBuildFaceIndexList(child, faceList, clusterList)
+		}
+	}
+
+	return faceList
 }
