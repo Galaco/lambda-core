@@ -1,19 +1,15 @@
 package tree
 
-import (
-	"github.com/galaco/go-me-engine/engine/interfaces"
-)
+import "github.com/go-gl/mathgl/mgl32"
 
 type Leaf struct {
 	Id int32
 	FaceIndexList []uint16
-	FaceList []interfaces.IPrimitive
+	ClusterId int16
+	Min mgl32.Vec3
+	Max mgl32.Vec3
 }
 
 func (leaf *Leaf) IsLeaf() bool {
 	return true
-}
-
-func (leaf *Leaf) AddFace(face interfaces.IPrimitive) {
-	leaf.FaceList = append(leaf.FaceList, face)
 }

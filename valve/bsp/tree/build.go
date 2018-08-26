@@ -6,7 +6,6 @@ import (
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/node"
 	"github.com/galaco/bsp/primitives/leaf"
-	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -49,6 +48,17 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 			node.AddChild(childNum, &Leaf{
 				Id: -childIdx,
 				FaceIndexList: faceList,
+				ClusterId: l.Cluster,
+				Min: mgl32.Vec3{
+					float32(l.Mins[0]),
+					float32(l.Mins[1]),
+					float32(l.Mins[2]),
+				},
+				Max: mgl32.Vec3{
+					float32(l.Maxs[0]),
+					float32(l.Maxs[1]),
+					float32(l.Maxs[2]),
+				},
 			})
 		} else {
 			// Child is another node
@@ -70,28 +80,6 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 	}
 
 	return node
-}
-
-// Populate BSP tree leafs from loaded face data
-func PopulateBspTreeFromFaces(rootNodes []Node, faces []interfaces.IPrimitive) []Node {
-	for _,root := range rootNodes {
-		populateFaceRecursive(&root, faces)
-	}
-
-	return rootNodes
-}
-
-// Recursive population of faces in Leaf
-func populateFaceRecursive(node INode, faces []interfaces.IPrimitive) {
-	if !node.IsLeaf() {
-		for idx := range node.(*Node).Children {
-			 populateFaceRecursive(node.(*Node).Children[idx], faces)
-		}
-	} else {
-		for _,idx := range node.(*Leaf).FaceIndexList {
-			node.(*Leaf).AddFace(faces[idx])
-		}
-	}
 }
 
 // for each model

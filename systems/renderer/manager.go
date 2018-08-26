@@ -29,7 +29,6 @@ func (manager *Manager) Register() {
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
 	opengl.Enable(opengl.DEPTH_TEST)
-	opengl.ClearColor(0.25, 0.25, 0.25, 1)
 }
 
 func (manager *Manager) Update(dt float64) {

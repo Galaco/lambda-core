@@ -19,6 +19,8 @@ import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/go-gl/mathgl/mgl32"
+	bsp2 "github.com/galaco/bsp"
+	"github.com/galaco/bsp/primitives/visibility"
 )
 
 func main() {
@@ -86,9 +88,10 @@ func LoadMap(filename string) {
 		bspPrimitives[idx] = primitive
 	}
 
+	visData := (*bspData.GetLump(bsp2.LUMP_VISIBILITY).GetContents()).GetData().(*visibility.Vis)
+
 	bspTree := tree.BuildTree(bspData)
-	tree.PopulateBspTreeFromFaces(bspTree, bspPrimitives)
-	bspComponent := components.NewBspComponent(bspTree)
+	bspComponent := components.NewBspComponent(bspTree, bspPrimitives, visData)
 	bspComponent.UpdateVisibilityList(mgl32.Vec3{0, 0, 0})
 
 	worldSpawn := factory.NewEntity(&base.Entity{})
