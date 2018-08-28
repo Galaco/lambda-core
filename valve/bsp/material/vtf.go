@@ -25,8 +25,6 @@ func LoadMaterialList(vpkHandle *vpk2.VPK, materialList []string) {
 			continue
 		}
 
-		log.Println(vmt.GetProperty("baseTexture").AsString())
-
 		if FileManager.GetFile(materialPath) == nil {
 			// Load file from vpk into memory
 			vpkFile := vpkHandle.Entry("materials/" + vmt.GetProperty("baseTexture").AsString() + ".vtf")
