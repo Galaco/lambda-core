@@ -61,7 +61,7 @@ func (manager *Manager) Update(dt float64) {
 func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
 	for _, primitive := range resource.GetPrimitives() {
 		// Missing materials will be flat coloured
-		if primitive.GetMaterial() == nil {
+		if primitive == nil || primitive.GetMaterial() == nil {
 			// We need the fall backmaterial
 			continue
 		}

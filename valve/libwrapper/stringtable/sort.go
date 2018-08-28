@@ -5,7 +5,7 @@ import (
 	"github.com/galaco/source-tools-common/texdatastringtable"
 )
 
-func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos []texinfo.TexInfo) []string {
+func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos []*texinfo.TexInfo) []string {
 	materialList := []string{}
 	for _,ti := range texInfos {
 		target,_ := stringTable.GetString(int(ti.TexData))

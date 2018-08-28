@@ -59,8 +59,9 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 		component.cache[0].AddPrimitives(prims)
 
 		// Shouldn't ever happen, but this is a catch all in a case
-		// where no faces are apparent visible
-		if len(prims) == 0 {
+		// where fewer than 4 (smallest number of faces that can create a sealed volume
+		// are apparently visible
+		if len(prims) < 4 {
 			component.cache[0].AddPrimitives(component.faceList)
 		}
 	} else {
