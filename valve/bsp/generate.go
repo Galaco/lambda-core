@@ -15,10 +15,9 @@ import (
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/filesystem"
-	vpk2 "github.com/galaco/vpk2"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
-	"github.com/galaco/go-me-engine/valve/libwrapper/vtf"
+	material2 "github.com/galaco/go-me-engine/valve/bsp/material"
 )
 
 type bspstructs struct {
@@ -28,6 +27,8 @@ type bspstructs struct {
 	surfEdges []int32
 	edges [][2]uint16
 	texInfos []texinfo.TexInfo
+	dispInfos []dispinfo.DispInfo
+	dispVerts []dispvert.DispVert
 }
 
 func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
@@ -39,6 +40,9 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		surfEdges: *(*file.GetLump(bsp.LUMP_SURFEDGES).GetContents()).(lumps.Surfedge).GetData().(*[]int32),
 		edges:     *(*file.GetLump(bsp.LUMP_EDGES).GetContents()).(lumps.Edge).GetData().(*[][2]uint16),
 		texInfos:  *(*file.GetLump(bsp.LUMP_TEXINFO).GetContents()).(lumps.TexInfo).GetData().(*[]texinfo.TexInfo),
+		dispInfos: *(*file.GetLump(bsp.LUMP_DISPINFO).GetContents()).(lumps.DispInfo).GetData().(*[]dispinfo.DispInfo),
+		dispVerts: *(*file.GetLump(bsp.LUMP_DISP_VERTS).GetContents()).(lumps.DispVert).GetData().(*[]dispvert.DispVert),
+
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
@@ -49,7 +53,7 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		materialList = append(materialList, &bspStructure.texInfos[f.TexInfo])
 
 		if f.DispInfo > -1 {
-			//meshList[idx] = genereateDisplacementFace(file, &f)
+			meshList[idx] = generateDisplacementFace(&f, &bspStructure)
 			// This face is a displacement instead!
 		} else {
 			meshList[idx] = generateBspFace(&f, &bspStructure)
@@ -63,7 +67,7 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		log.Fatal(err)
 	}
 	stringTable := stringtable.GetTable(file)
-	loadMaterials(vpkHandle, stringtable.SortUnique(stringTable, materialList))
+	material2.LoadMaterialList(vpkHandle, stringtable.SortUnique(stringTable, materialList))
 
 	// Add MATERIALS TO FACES
 	for idx,primitive := range meshList {
@@ -120,6 +124,21 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 	return base.NewPrimitive(expV, expF, expN)
 }
 
+// @TODO implement me
+func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive{
+	//numSubDivisions := int(disp.Power*disp.Power)
+	//numVerts := numSubDivisions * numSubDivisions
+	//dispVertList := (*dispVerts)[disp.DispVertStart:disp.DispVertStart + int32(numVerts)]
+	//
+	//// Construct a subdivided vertex positions
+	//for x := 0; x < numSubDivisions; x++ {
+	//	for y := 0; y < numSubDivisions; y++ {
+	//		log.Println(dispVertList[x + y].Dist)
+	//	}
+	//}
+	return generateBspFace(f, bspStructure)
+}
+
 func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
 	for idx := 0; idx < len(vertexes); idx += 3 {
 		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
@@ -138,58 +157,4 @@ func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width 
 	}
 
 	return uvs
-}
-
-func genereateDisplacementFace(file *bsp.Bsp, referenceFace *face.Face) {//(expVerts [][]float32, expIndices [][]uint16, expTexInfos []texinfo.TexInfo, expNormals [][]float32) {
-	dispInfos := (*file.GetLump(bsp.LUMP_DISPINFO).GetContents()).(lumps.DispInfo).GetData().(*[]dispinfo.DispInfo)
-	dispVerts := (*file.GetLump(bsp.LUMP_DISP_VERTS).GetContents()).(lumps.DispVert).GetData().(*[]dispvert.DispVert)
-
-	disp := (*dispInfos)[referenceFace.DispInfo]
-
-	numSubDivisions := int(disp.Power*disp.Power)
-	numVerts := numSubDivisions * numSubDivisions
-	dispVertList := (*dispVerts)[disp.DispVertStart:disp.DispVertStart + int32(numVerts)]
-
-	// Construct a subdivided vertex positions
-	for x := 0; x < numSubDivisions; x++ {
-		for y := 0; y < numSubDivisions; y++ {
-			log.Println(dispVertList[x + y].Dist)
-		}
-	}
-}
-
-func loadMaterials(vpkHandle *vpk2.VPK, materialList []string) {
-	FileManager := filesystem.GetFileManager()
-
-	for _,materialPath := range materialList {
-		// Load file from vpk into memory
-		vpkFile := vpkHandle.Entry("materials/" + materialPath + ".vtf")
-		if vpkFile == nil {
-			log.Println("Couldnt find material: materials/" + materialPath + ".vtf")
-			continue
-		}
-		file,err := vpkFile.Open()
-
-		// Its quite possible for a texture to be missing, just skip it.
-		if err != nil {
-			continue
-		}
-
-		// Attempt to parse the vtf into color data we can use,
-		// if this fails (it shouldn't) we can treat it like it was missing
-		texture,err := vtf.ReadFromStream(file)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		// Store file containing raw data in memory
-		FileManager.AddFile(
-			material.NewMaterial(
-				materialPath,
-				texture,
-				int(texture.GetHeader().Width),
-				int(texture.GetHeader().Height)))
-		// Finally generate the gpu buffer for the material
-		FileManager.GetFile(materialPath).(*material.Material).GenerateGPUBuffer()
-	}
 }

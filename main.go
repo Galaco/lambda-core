@@ -42,7 +42,7 @@ func LoadMap(filename string) {
 	if bspData.GetHeader().Version < 20 {
 		log.Fatal("Unsupported BSP Version. Exiting...")
 	}
-	
+
 	// Fetch all BSP face data
 	bspPrimitives := bsp.LoadMap(bspData)
 	for _,primitive := range bspPrimitives {
