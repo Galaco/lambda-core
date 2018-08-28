@@ -10,32 +10,44 @@ import (
 
 func LoadMaterialList(vpkHandle *vpk2.VPK, materialList []string) {
 	FileManager := filesystem.GetFileManager()
+	materialBasePath := "materials/"
+
+	var vmt *Vmt
 
 	for _,materialPath := range materialList {
-		var vmt *Vmt
-		vmtF := vpkHandle.Entry("materials/" + materialPath + ".vmt")
-		if vmtF != nil {
-			f2,err := vmtF.Open()
-			vmt,err = ParseVmt(materialPath, f2)
-			if err != nil {
-				log.Println(err)
+		// Ensure we've loaded the .vmt file
+		vmtPath := materialPath + ".vmt"
+		if FileManager.GetFile(vmtPath) == nil {
+			vmtF := vpkHandle.Entry(materialBasePath + vmtPath)
+			if vmtF != nil {
+				f2,err := vmtF.Open()
+				vmt,err = ParseVmt(materialPath, f2)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+			} else {
+				log.Println("Couldn't open vmt: " + materialPath)
+				continue
 			}
-		} else {
-			log.Println("Could not open: " + materialPath)
-			continue
+
+			FileManager.AddFile(vmt)
 		}
 
-		if FileManager.GetFile(materialPath) == nil {
+		// Load $baseTexture
+		vtfTexturePath :=  vmt.GetProperty("baseTexture").AsString() + ".vtf"
+		if FileManager.GetFile(vtfTexturePath) == nil {
 			// Load file from vpk into memory
-			vpkFile := vpkHandle.Entry("materials/" + vmt.GetProperty("baseTexture").AsString() + ".vtf")
+			vpkFile := vpkHandle.Entry(materialBasePath + vtfTexturePath)
 			if vpkFile == nil {
-				log.Println("Couldnt find material: materials/" + materialPath + ".vtf")
+				log.Println("Couldn't find vtf: " + vtfTexturePath)
 				continue
 			}
 			file,err := vpkFile.Open()
 
 			// Its quite possible for a texture to be missing, just skip it.
 			if err != nil {
+				log.Println("Couldn't open vtf: " + vtfTexturePath)
 				continue
 			}
 
@@ -49,13 +61,13 @@ func LoadMaterialList(vpkHandle *vpk2.VPK, materialList []string) {
 			// Store file containing raw data in memory
 			FileManager.AddFile(
 				material.NewMaterial(
-					materialPath,
+					vtfTexturePath,
 					texture,
 					int(texture.GetHeader().Width),
 					int(texture.GetHeader().Height)))
 		}
 
 		// Finally generate the gpu buffer for the material
-		FileManager.GetFile(materialPath).(*material.Material).GenerateGPUBuffer()
+		FileManager.GetFile(vtfTexturePath).(*material.Material).GenerateGPUBuffer()
 	}
 }

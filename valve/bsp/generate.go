@@ -74,12 +74,21 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		if primitive == nil {
 			continue
 		}
-		target,_ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		if FileManager.GetFile(target) != nil {
-			mat := FileManager.GetFile(target).(*material.Material)
+		faceVmt,_ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
+		vmtPath := faceVmt
+		baseTexturePath := "-1"
+		if FileManager.GetFile(vmtPath) != nil {
+			baseTexturePath = FileManager.GetFile(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
+		}
+		if FileManager.GetFile(baseTexturePath) != nil {
+			mat := FileManager.GetFile(baseTexturePath).(*material.Material)
 			primitive.(*base.Primitive).AddMaterial(mat)
 			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight()))
 		} else {
+			if baseTexturePath == "DE_DUST/GROUNDSAND_BLEND.vtf" {
+				log.Println(baseTexturePath)
+
+			}
 			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1))
 		}
 	}

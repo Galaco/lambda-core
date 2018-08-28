@@ -1,6 +1,9 @@
 package filesystem
 
-import "github.com/galaco/go-me-engine/engine/interfaces"
+import (
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"strings"
+)
 
 // Very generic file storage.
 // If the struct came from a file, it should be obtainable from here
@@ -10,17 +13,17 @@ type manager struct {
 
 // Add a new file
 func (fm *manager) AddFile(file interfaces.IFile) {
-	fm.filelist[file.GetFilePath()] = file
+	fm.filelist[strings.ToLower(file.GetFilePath())] = file
 }
 
 // Remove an open file
 func (fm *manager) RemoveFile(filePath string) {
-	delete(fm.filelist, filePath)
+	delete(fm.filelist, strings.ToLower(filePath))
 }
 
 // Find a specific file
 func (fm *manager) GetFile(filePath string) interfaces.IFile {
-	return fm.filelist[filePath]
+	return fm.filelist[strings.ToLower(filePath)]
 }
 
 

@@ -15,9 +15,13 @@ type Vmt struct {
 	BaseTexture string
 }
 
+func (vmt *Vmt) GetFilePath() string {
+	return vmt.Filename
+}
+
 func (vmt *Vmt) GetProperty(name string) VmtProperty {
-	if _, ok := vmt.properties[name]; ok {
-		return vmt.properties[name]
+	if _, ok := vmt.properties[strings.ToLower(name)]; ok {
+		return vmt.properties[strings.ToLower(name)]
 	}
 
 	return VmtProperty {
@@ -51,7 +55,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 	vmt := &Vmt{
 		Filename: filename,
 		properties: map[string]VmtProperty{
-			"baseTexture": {value: ""},
+			"basetexture": {value: ""},
 		},
 	}
 
@@ -59,7 +63,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 	if err != nil {
 		return nil, err
 	}
-	vmt.ShaderName = trimEscapes(shaderName)
+	vmt.ShaderName = sanitise(shaderName)
 
 	depth := 1
 
@@ -71,7 +75,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 		line := string(l)
 
 		// Remove any comments
-		line = strings.Split(line, "//")[0]
+		line = sanitise(strings.Split(line, "//")[0])
 
 		// Are we changing scope (end of vmt/new complex property)
 		if isNewScope(line) {
@@ -84,7 +88,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 		splitSet := strings.Split(line, " ")
 		kv := [2]string{}
 		for _,s := range splitSet {
-			s := trimEscapes(s)
+			s := sanitise(s)
 			if len(s) < 1 || s == " " {
 				continue
 			}
@@ -95,7 +99,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 			}
 		}
 		if len(kv[0]) > 1 {
-			vmt.properties[kv[0]] = VmtProperty{value: kv[1]}
+			vmt.properties[strings.ToLower(kv[0])] = VmtProperty{value: kv[1]}
 		}
 	}
 
@@ -119,33 +123,37 @@ func trimPropertyName(property string) string {
 	return strings.TrimLeft(property, "$")
 }
 
-func trimEscapes(property string) string {
+func sanitise(property string) string {
+	property = strings.Replace(property, "\t", " ", -1)
+
 	// Remove tabs
-	if strings.Contains(property, "\t") {
-		set := strings.Split(property, "\t")
-		for _,s := range set {
-			if len(s) > 1 {
-				property = s
-			}
-		}
-	}
+	//if strings.Contains(property, "\t") {
+	//	set := strings.Split(property, "\t")
+	//	for _,s := range set {
+	//		if len(s) > 1 {
+	//			property = s
+	//		}
+	//	}
+	//}
 
 	if strings.Contains(property, "\r") {
-		property = strings.Split(property, "\r")[0]
+		property = strings.Replace(property, "\r", " ", -1)
 	}
 
 	if strings.Contains(property, "\n") {
-		property = strings.Split(property, "\n")[0]
+		property = strings.Replace(property, "\n", " ", -1)
 	}
 
 	// Remove " escapes
 	if strings.Contains(property, "\"") {
-		property = strings.Split(property, "\"")[1]
+		property = strings.Replace(property, "\"", " ", -1)
 	}
 	// Remove ' escapes
 	if strings.Contains(property, "'") {
-		property = strings.Split(property, "'")[1]
+		property = strings.Replace(property, "'", " ", -1)
 	}
 
-	return property
+	property = strings.Replace(property, "\\", "/", -1)
+
+	return strings.Trim(property, " ")
 }
