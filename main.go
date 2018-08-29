@@ -12,7 +12,7 @@ import (
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/go-gl/mathgl/mgl32"
 	bsp2 "github.com/galaco/bsp"
-	"github.com/galaco/bsp/primitives/visibility"
+	"github.com/galaco/bsp/lumps"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap("data/maps/de_nuke.bsp")
+	LoadMap("data/maps/de_dust2.bsp")
 
 	// Run the engine
 	Application.Run()
@@ -52,7 +52,7 @@ func LoadMap(filename string) {
 		}
 	}
 
-	visData := (*bspData.GetLump(bsp2.LUMP_VISIBILITY).GetContents()).GetData().(*visibility.Vis)
+	visData := bspData.GetLump(bsp2.LUMP_VISIBILITY).(*lumps.Visibility).GetData()
 
 	bspTree := tree.BuildTree(bspData)
 	bspComponent := components.NewBspComponent(bspTree, bspPrimitives, visData)

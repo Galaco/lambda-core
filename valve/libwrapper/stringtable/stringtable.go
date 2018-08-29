@@ -8,9 +8,9 @@ import (
 
 func GetTable(bsp *bsplib.Bsp) *texdatastringtable.TexDataStringTable{
 	// Prepare texture lookup table
-	stringDataLump := *bsp.GetLump(bsplib.LUMP_TEXDATA_STRING_DATA).GetContents()
-	stringTableLump := *bsp.GetLump(bsplib.LUMP_TEXDATA_STRING_TABLE).GetContents()
+	stringData := bsp.GetLump(bsplib.LUMP_TEXDATA_STRING_DATA).(*lumps.TexdataStringData).GetData()
+	stringTable := bsp.GetLump(bsplib.LUMP_TEXDATA_STRING_TABLE).(*lumps.TexDataStringTable).GetData()
 	return texdatastringtable.NewTable(
-		*stringDataLump.GetData().(*string),
-		*stringTableLump.(lumps.TexDataStringTable).GetData().(*[]int32))
+		stringData,
+		stringTable)
 }

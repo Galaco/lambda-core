@@ -2,7 +2,6 @@ package tree
 
 import (
 	"github.com/galaco/bsp"
-	"github.com/galaco/bsp/primitives/model"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/node"
 	"github.com/galaco/bsp/primitives/leaf"
@@ -11,14 +10,14 @@ import (
 
 // Build the bsp node tree
 func BuildTree(file *bsp.Bsp) []Node {
-	models := (*file.GetLump(bsp.LUMP_MODELS).GetContents()).(lumps.Model).GetData().(*[]model.Model)
-	nodes := (*file.GetLump(bsp.LUMP_NODES).GetContents()).(lumps.Node).GetData().(*[]node.Node)
-	leafs := (*file.GetLump(bsp.LUMP_LEAFS).GetContents()).(lumps.Leaf).GetData().(*[]leaf.Leaf)
-	leafFaces := (*file.GetLump(bsp.LUMP_LEAFFACES).GetContents()).(lumps.LeafFace).GetData().(*[]uint16)
+	models := file.GetLump(bsp.LUMP_MODELS).(*lumps.Model).GetData()
+	nodes := file.GetLump(bsp.LUMP_NODES).(*lumps.Node).GetData()
+	leafs := file.GetLump(bsp.LUMP_LEAFS).(*lumps.Leaf).GetData()
+	leafFaces := file.GetLump(bsp.LUMP_LEAFFACES).(*lumps.LeafFace).GetData()
 
-	ret := make([]Node, len(*models))
-	for idx,rootModel := range *models {
-		rootNode := (*nodes)[rootModel.HeadNode]
+	ret := make([]Node, len(models))
+	for idx,rootModel := range models {
+		rootNode := nodes[rootModel.HeadNode]
 
 		root := Node{
 			Id: rootModel.HeadNode,
@@ -26,7 +25,7 @@ func BuildTree(file *bsp.Bsp) []Node {
 			Max: rootModel.Maxs,
 		}
 
-		root = *populateNodeIterable(&root, &rootNode, *nodes, *leafs, *leafFaces)
+		root = *populateNodeIterable(&root, &rootNode, nodes, leafs, leafFaces)
 
 		ret[idx] = root
 	}

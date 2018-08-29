@@ -1,24 +1,26 @@
 package bsp
 
 import (
-	"os"
 	"log"
 	"github.com/galaco/bsp"
 )
 
 func LoadBsp(filename string) *bsp.Bsp{
-	f, err := os.Open(filename)
-	if err!= nil {
-		log.Fatal(err)
-	}
-	reader := bsp.NewReader(f)
-	file,err := reader.Read()
+	file,err := bsp.ReadFromFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	//Load file
-	f.Close()
-
 	return file
+	//
+	//f, err := os.Open(filename)
+	//if err!= nil {
+	//	log.Fatal(err)
+	//}
+	//reader := bsp.NewReader(f)
+	//
+	//
+	////Load file
+	//f.Close()
+	//
+	//return file
 }

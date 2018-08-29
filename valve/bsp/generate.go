@@ -34,14 +34,14 @@ type bspstructs struct {
 func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 	FileManager := filesystem.GetFileManager()
 	bspStructure := bspstructs{
-		faces:     *(*file.GetLump(bsp.LUMP_FACES).GetContents()).(lumps.Face).GetData().(*[]face.Face),
-		planes:    (*file.GetLump(bsp.LUMP_PLANES).GetContents()).(lumps.Planes).GetData().([]plane.Plane),
-		vertexes:  *(*file.GetLump(bsp.LUMP_VERTEXES).GetContents()).(lumps.Vertex).GetData().(*[]mgl32.Vec3),
-		surfEdges: *(*file.GetLump(bsp.LUMP_SURFEDGES).GetContents()).(lumps.Surfedge).GetData().(*[]int32),
-		edges:     *(*file.GetLump(bsp.LUMP_EDGES).GetContents()).(lumps.Edge).GetData().(*[][2]uint16),
-		texInfos:  *(*file.GetLump(bsp.LUMP_TEXINFO).GetContents()).(lumps.TexInfo).GetData().(*[]texinfo.TexInfo),
-		dispInfos: *(*file.GetLump(bsp.LUMP_DISPINFO).GetContents()).(lumps.DispInfo).GetData().(*[]dispinfo.DispInfo),
-		dispVerts: *(*file.GetLump(bsp.LUMP_DISP_VERTS).GetContents()).(lumps.DispVert).GetData().(*[]dispvert.DispVert),
+		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
+		planes:    file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
+		vertexes:  file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
+		surfEdges: file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
+		edges:     file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
+		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
+		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
+		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
 
 	}
 
@@ -97,6 +97,7 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 	return meshList
 }
 
+// Create primitives from face data in the bsp
 func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive{
 	expF := make([]uint16, 0)
 	expV := make([]float32, 0)
@@ -133,6 +134,8 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 	return base.NewPrimitive(expV, expF, expN)
 }
 
+// Create Primitives from Displacement faces tied to faces
+// in the bsp
 // @TODO implement me
 func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive{
 	//numSubDivisions := int(disp.Power*disp.Power)
@@ -148,6 +151,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces
 	return generateBspFace(f, bspStructure)
 }
 
+// Generate texturecoordinates for face data
 func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
 	for idx := 0; idx < len(vertexes); idx += 3 {
 		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
