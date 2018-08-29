@@ -29,6 +29,7 @@ type bspstructs struct {
 	texInfos []texinfo.TexInfo
 	dispInfos []dispinfo.DispInfo
 	dispVerts []dispvert.DispVert
+	pakFile *lumps.Pakfile
 }
 
 func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
@@ -42,7 +43,7 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
 		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
 		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-
+		pakFile: file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
@@ -67,7 +68,7 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		log.Fatal(err)
 	}
 	stringTable := stringtable.GetTable(file)
-	material2.LoadMaterialList(vpkHandle, stringtable.SortUnique(stringTable, materialList))
+	material2.LoadMaterialList(bspStructure.pakFile, vpkHandle, stringtable.SortUnique(stringTable, materialList))
 
 	// Add MATERIALS TO FACES
 	for idx,primitive := range meshList {
@@ -85,10 +86,6 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 			primitive.(*base.Primitive).AddMaterial(mat)
 			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight()))
 		} else {
-			if baseTexturePath == "DE_DUST/GROUNDSAND_BLEND.vtf" {
-				log.Println(baseTexturePath)
-
-			}
 			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1))
 		}
 	}

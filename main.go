@@ -45,6 +45,7 @@ func LoadMap(filename string) {
 
 	// Fetch all BSP face data
 	bspPrimitives := bsp.LoadMap(bspData)
+	log.Println("Loaded map data")
 	for _,primitive := range bspPrimitives {
 		// Ensure created primitive is ready on gpu
 		if primitive != nil {
@@ -52,6 +53,7 @@ func LoadMap(filename string) {
 		}
 	}
 
+	log.Println("Building visibility cluster tree")
 	visData := bspData.GetLump(bsp2.LUMP_VISIBILITY).(*lumps.Visibility).GetData()
 
 	bspTree := tree.BuildTree(bspData)
@@ -60,4 +62,5 @@ func LoadMap(filename string) {
 
 	worldSpawn := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(bspComponent, worldSpawn)
+	log.Println("Cluster tree built.")
 }
