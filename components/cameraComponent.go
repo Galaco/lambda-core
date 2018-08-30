@@ -54,8 +54,8 @@ func (component *CameraComponent) Update(dt float64) {
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Right.Mul(float32(vel)))
 	}
 
-	component.owner.GetTransformComponent().Rotation[0] += float32(input.GetMouse().GetCoordinates()[0] * sensitivity) // * dt)
-	component.owner.GetTransformComponent().Rotation[1] += float32(input.GetMouse().GetCoordinates()[1] * sensitivity) // * dt)
+	component.owner.GetTransformComponent().Rotation[0] -= float32(input.GetMouse().GetCoordinates()[0] * sensitivity) // * dt)
+	component.owner.GetTransformComponent().Rotation[2] -= float32(input.GetMouse().GetCoordinates()[1] * sensitivity) // * dt)
 
 	component.updateVectors()
 }
@@ -63,19 +63,18 @@ func (component *CameraComponent) Update(dt float64) {
 // Update the camera directional properties with any changes
 func (component *CameraComponent) updateVectors() {
 	rot := component.owner.GetTransformComponent().Rotation
-	//rot[0] = YAW, rot[1] = PITCH
 
 	// Calculate the new Front vector
 	component.Direction = mgl32.Vec3{
-		float32(math.Cos(float64(rot[1])) * math.Sin(float64(rot[0]))),
-		float32(math.Sin(float64(rot[1]))),
-		float32(math.Cos(float64(rot[1])) * math.Cos(float64(rot[0]))),
+		float32(math.Cos(float64(rot[2])) * math.Sin(float64(rot[0]))),
+		float32(math.Cos(float64(rot[2])) * math.Cos(float64(rot[0]))),
+		float32(math.Sin(float64(rot[2]))),
 	}
 	// Also re-calculate the Right and Up vector
 	component.Right = mgl32.Vec3{
 		float32(math.Sin(float64(rot[0]) - math.Pi/2)),
-		0,
 		float32(math.Cos(float64(rot[0]) - math.Pi/2)),
+		0,
 	}
 	component.Up = component.Right.Cross(component.Direction)
 }

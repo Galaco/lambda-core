@@ -6,24 +6,32 @@ import (
 )
 
 var currentLeaf *tree.Leaf
+var currentLeafDepth int
 
 func FindCurrentLeaf(treeList []tree.Node, position mgl32.Vec3) *tree.Leaf {
 	currentLeaf = nil
+	currentLeafDepth = -1
+	treeDepth := 0
 	for _, root := range treeList {
-		findCurrentLeafRecursive(&root, position)
+		findCurrentLeafRecursive(&root, position, treeDepth + 1)
+	}
+	if currentLeaf == nil {
+
 	}
 	return currentLeaf
 }
 
-func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) {
+func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3, treeDepth int) {
 	if node.IsLeaf() == false {
 		for _, child := range node.(*tree.Node).Children {
-			findCurrentLeafRecursive(child, position)
+			findCurrentLeafRecursive(child, position, treeDepth + 1)
 		}
 	} else {
 		// Skip this node and its children if we aren't in it
-		if IsPointInLeaf(position, node.(*tree.Leaf).Min, node.(*tree.Leaf).Max) {
+		if IsPointInLeaf(position, node.(*tree.Leaf).Min, node.(*tree.Leaf).Max) &&
+			treeDepth > currentLeafDepth {
 			currentLeaf = node.(*tree.Leaf)
+			currentLeafDepth = treeDepth
 		}
 	}
 }
@@ -43,7 +51,7 @@ func IsPointInLeaf(point mgl32.Vec3, min mgl32.Vec3, max mgl32.Vec3) bool {
 func BuildFaceListForVisibleClusters(nodeTree []tree.Node, clusterList []int16) []uint16 {
 	faceList := []uint16{}
 	for _, root := range nodeTree {
-		faceList = append(faceList, recursiveBuildFaceIndexList(&root, faceList, clusterList)...)
+		faceList = append(faceList, recursiveBuildFaceIndexList(&root, []uint16{}, clusterList)...)
 	}
 
 	return faceList
@@ -54,10 +62,9 @@ func recursiveBuildFaceIndexList(node tree.INode, faceList []uint16, clusterList
 		clusterId := node.(*tree.Leaf).ClusterId
 		for _, v := range clusterList {
 			if v == clusterId {
-				return node.(*tree.Leaf).FaceIndexList
+				faceList = append(faceList, node.(*tree.Leaf).FaceIndexList...)
 			}
 		}
-		return []uint16{}
 	} else {
 		for _, child := range node.(*tree.Node).Children {
 			faceList = recursiveBuildFaceIndexList(child, faceList, clusterList)

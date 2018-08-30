@@ -7,6 +7,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/go-gl/mathgl/mgl32"
+	"log"
 )
 
 // BspComponent essentially extends a renderable component, as its large number
@@ -19,7 +20,7 @@ type BspComponent struct {
 
 	cache          []interfaces.IGPUMesh
 	cachedPosition mgl32.Vec3
-	currentLeaf    *tree.Leaf
+	currentClusterId int16
 	visibilityLump *visibility.Vis
 	faceList       []interfaces.IPrimitive
 }
@@ -34,39 +35,41 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 	if position.ApproxEqual(component.cachedPosition) {
 		return
 	}
-	// Still in the same node, visibility can only change when moving between nodes
-	if component.currentLeaf != nil {
-		if bsp.IsPointInLeaf(position, component.currentLeaf.Min, component.currentLeaf.Max) {
-			return
-		}
-	}
-
 	component.cachedPosition = position
 
-	component.cache[0].(*renderable.GPUResourceDynamic).Reset()
-	component.currentLeaf = bsp.FindCurrentLeaf(component.nodeTrees, component.cachedPosition)
-	// If current == nil then we are outside the map. No visibility calculation
-	if component.currentLeaf != nil && component.currentLeaf.ClusterId > -1 {
+	//// Still in the same node, visibility can only change when moving between nodes
+	//if component.currentLeaf != nil {
+	//	//if bsp.IsPointInLeaf(position, component.currentLeaf.Min, component.currentLeaf.Max) {
+	//	//	return
+	//	//}
+	//}
+
+	currentLeaf := bsp.FindCurrentLeaf(component.nodeTrees, component.cachedPosition)
+	if currentLeaf != nil {
+		component.currentClusterId = currentLeaf.ClusterId
+	} else {
+		component.currentClusterId = -1
+	}
+
+	// If current == nil then we are outside the map. No visibilitsy calculation
+	if component.currentClusterId > -1 {
 		faceList := bsp.BuildFaceListForVisibleClusters(
 			component.nodeTrees,
-			component.visibilityLump.GetVisibleIdsForCluster(component.currentLeaf.ClusterId))
+			component.visibilityLump.GetVisibleIdsForCluster(component.currentClusterId))
 
 		prims := make([]interfaces.IPrimitive, len(faceList))
 		for idx, faceIdx := range faceList {
 			prims[idx] = component.faceList[faceIdx]
 		}
 
+		component.cache[0].(*renderable.GPUResourceDynamic).Reset()
 		component.cache[0].AddPrimitives(prims)
-
-		// Shouldn't ever happen, but this is a catch all in a case
-		// where fewer than 4 (smallest number of faces that can create a sealed volume
-		// are apparently visible
-		if len(prims) < 4 {
-			component.cache[0].AddPrimitives(component.faceList)
-		}
 	} else {
+		component.cache[0].(*renderable.GPUResourceDynamic).Reset()
 		component.cache[0].AddPrimitives(component.faceList)
 	}
+
+	log.Println(component.currentClusterId)
 }
 
 func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {
