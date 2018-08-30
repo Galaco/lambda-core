@@ -7,6 +7,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/go-gl/mathgl/mgl32"
+	"log"
 )
 
 // BspComponent essentially extends a renderable component, as its large number
@@ -36,16 +37,14 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 	}
 	component.cachedPosition = position
 
-	//// Still in the same node, visibility can only change when moving between nodes
-	//if component.currentLeaf != nil {
-	//	//if bsp.IsPointInLeaf(position, component.currentLeaf.Min, component.currentLeaf.Max) {
-	//	//	return
-	//	//}
-	//}
-
 	currentLeaf := bsp.FindCurrentLeaf(component.nodeTrees, component.cachedPosition)
 	if currentLeaf != nil {
+		// No need to recalculate face list
+		if component.currentClusterId == currentLeaf.ClusterId {
+			return
+		}
 		component.currentClusterId = currentLeaf.ClusterId
+		log.Printf("Current Cluster id: %d\n", component.currentClusterId)
 	} else {
 		component.currentClusterId = -1
 	}

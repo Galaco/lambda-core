@@ -1,6 +1,9 @@
 package tree
 
-import "github.com/go-gl/mathgl/mgl32"
+import (
+	"github.com/galaco/bsp/primitives/plane"
+	"github.com/go-gl/mathgl/mgl32"
+)
 
 type INode interface {
 	IsLeaf() bool
@@ -11,6 +14,7 @@ type Node struct {
 	Children [2]INode
 	Min      mgl32.Vec3
 	Max      mgl32.Vec3
+	Plane	 *plane.Plane
 }
 
 func (node *Node) IsLeaf() bool {

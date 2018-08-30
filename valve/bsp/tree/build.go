@@ -5,6 +5,7 @@ import (
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/galaco/bsp/primitives/node"
+	"github.com/galaco/bsp/primitives/plane"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -14,6 +15,7 @@ func BuildTree(file *bsp.Bsp) []Node {
 	nodes := file.GetLump(bsp.LUMP_NODES).(*lumps.Node).GetData()
 	leafs := file.GetLump(bsp.LUMP_LEAFS).(*lumps.Leaf).GetData()
 	leafFaces := file.GetLump(bsp.LUMP_LEAFFACES).(*lumps.LeafFace).GetData()
+	planes := file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData()
 
 	ret := make([]Node, len(models))
 	for idx, rootModel := range models {
@@ -23,9 +25,10 @@ func BuildTree(file *bsp.Bsp) []Node {
 			Id:  rootModel.HeadNode,
 			Min: rootModel.Mins,
 			Max: rootModel.Maxs,
+			Plane: &planes[rootNode.PlaneNum],
 		}
 
-		root = *populateNodeIterable(&root, &rootNode, nodes, leafs, leafFaces)
+		root = *populateNodeIterable(&root, &rootNode, nodes, leafs, leafFaces, planes)
 
 		ret[idx] = root
 	}
@@ -34,7 +37,7 @@ func BuildTree(file *bsp.Bsp) []Node {
 }
 
 // Recursive load for bsp node/leafs
-func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, leafs []leaf.Leaf, leafFaces []uint16) *Node {
+func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, leafs []leaf.Leaf, leafFaces []uint16, planes []plane.Plane) *Node {
 	for childNum, childIdx := range bspNode.Children {
 		// leaf
 		if childIdx < 0 {
@@ -73,8 +76,9 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 					float32(bspNodes[childIdx].Maxs[1]),
 					float32(bspNodes[childIdx].Maxs[2]),
 				},
+				Plane: &(planes[bspNodes[childIdx].PlaneNum]),
 			}
-			populateNodeIterable(node.Children[childNum].(*Node), &bspNodes[childIdx], bspNodes, leafs, leafFaces)
+			populateNodeIterable(node.Children[childNum].(*Node), &bspNodes[childIdx], bspNodes, leafs, leafFaces, planes)
 		}
 	}
 
