@@ -16,6 +16,9 @@ import (
 const cameraSpeed = float64(100)
 const sensitivity = float64(0.05)
 
+var minVerticalRotation = mgl32.DegToRad(90)
+var maxVerticalRotation = mgl32.DegToRad(270)
+
 type CameraComponent struct {
 	base.Component
 	Up        mgl32.Vec3
@@ -56,6 +59,14 @@ func (component *CameraComponent) Update(dt float64) {
 
 	component.owner.GetTransformComponent().Rotation[0] -= float32(input.GetMouse().GetCoordinates()[0] * sensitivity) // * dt)
 	component.owner.GetTransformComponent().Rotation[2] -= float32(input.GetMouse().GetCoordinates()[1] * sensitivity) // * dt)
+
+	// Lock vertical rotation
+	if component.owner.GetTransformComponent().Rotation[2] > maxVerticalRotation {
+		component.owner.GetTransformComponent().Rotation[2] = maxVerticalRotation
+	}
+	if component.owner.GetTransformComponent().Rotation[2] < minVerticalRotation {
+		component.owner.GetTransformComponent().Rotation[2] = minVerticalRotation
+	}
 
 	component.updateVectors()
 }

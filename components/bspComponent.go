@@ -7,7 +7,6 @@ import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/go-gl/mathgl/mgl32"
-	"log"
 )
 
 // BspComponent essentially extends a renderable component, as its large number
@@ -68,8 +67,6 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 		component.cache[0].(*renderable.GPUResourceDynamic).Reset()
 		component.cache[0].AddPrimitives(component.faceList)
 	}
-
-	log.Println(component.currentClusterId)
 }
 
 func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {

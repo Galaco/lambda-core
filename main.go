@@ -30,7 +30,7 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap("data/maps/de_nuke.bsp")
+	LoadMap("data/maps/de_dust2.bsp")
 
 	// Run the engine
 	Application.Run()
@@ -39,7 +39,7 @@ func main() {
 func LoadMap(filename string) {
 	// BSP
 	bspData := bsp.LoadBsp(filename)
-	if bspData.GetHeader().Version < 20 {
+	if bspData.GetHeader().Version < 19 {
 		log.Fatal("Unsupported BSP Version. Exiting...")
 	}
 
