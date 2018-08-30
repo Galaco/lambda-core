@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/bradhe/stopwatch"
 	"github.com/galaco/go-me-engine/engine/event"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 	"runtime"
 )
 
@@ -11,10 +11,10 @@ import (
 // Only 1 can be initialised
 type engine struct {
 	EventManager event.Manager
-	Managers []interfaces.IManager
-	Running bool
+	Managers     []interfaces.IManager
+	Running      bool
 
-	entities []interfaces.IEntity
+	entities   []interfaces.IEntity
 	components []interfaces.IComponent
 }
 
@@ -54,7 +54,6 @@ func (engine *engine) Run() {
 			manager.Update(dt)
 		}
 
-
 		for _, manager := range engine.Managers {
 			manager.PostUpdate()
 		}
@@ -66,7 +65,7 @@ func (engine *engine) AddManager(manager interfaces.IManager) {
 	engine.Managers = append(engine.Managers, manager)
 }
 
-func NewEngine() *engine{
+func NewEngine() *engine {
 	runtime.LockOSThread()
 	return &engine{}
 }

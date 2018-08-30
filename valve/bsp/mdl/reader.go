@@ -1,25 +1,24 @@
 package mdl
 
 import (
-	"io"
-	"unsafe"
 	"bytes"
 	"encoding/binary"
+	"io"
+	"unsafe"
 )
 
 type Reader struct {
 	stream io.Reader
-	buf []byte
+	buf    []byte
 }
 
-
-func (reader *Reader) Read() (*Mdl,error) {
+func (reader *Reader) Read() (*Mdl, error) {
 	err := reader.getByteBuffer()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-	header,err := reader.readHeader()
+	header, err := reader.readHeader()
 	if err != nil {
 		return nil, err
 	}
@@ -35,19 +34,19 @@ func (reader *Reader) Read() (*Mdl,error) {
 }
 
 // Reads studiohdr header information
-func (reader *Reader) readHeader() (*studiohdr,error) {
+func (reader *Reader) readHeader() (*studiohdr, error) {
 	header := studiohdr{}
 	headerSize := unsafe.Sizeof(header)
 
 	err := binary.Read(bytes.NewBuffer(reader.buf[:headerSize]), binary.LittleEndian, &header)
 
-	return &header,err
+	return &header, err
 }
 
 // Read stream to []byte buffer
 func (reader *Reader) getByteBuffer() error {
 	buf := bytes.Buffer{}
-	_,err := buf.ReadFrom(reader.stream)
+	_, err := buf.ReadFrom(reader.stream)
 	if err == nil {
 		reader.buf = buf.Bytes()
 	}

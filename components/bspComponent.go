@@ -1,12 +1,12 @@
 package components
 
 import (
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/go-gl/mathgl/mgl32"
-	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	"github.com/galaco/bsp/primitives/visibility"
 	"github.com/galaco/go-me-engine/components/bsp"
 	"github.com/galaco/go-me-engine/components/renderable"
-	"github.com/galaco/bsp/primitives/visibility"
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 // BspComponent essentially extends a renderable component, as its large number
@@ -14,14 +14,14 @@ import (
 // this component itself
 type BspComponent struct {
 	RenderableComponent
-	nodeTrees []tree.Node
+	nodeTrees    []tree.Node
 	leafClusters map[int16][]*tree.Leaf
 
-	cache []interfaces.IGPUMesh
+	cache          []interfaces.IGPUMesh
 	cachedPosition mgl32.Vec3
-	currentLeaf *tree.Leaf
+	currentLeaf    *tree.Leaf
 	visibilityLump *visibility.Vis
-	faceList []interfaces.IPrimitive
+	faceList       []interfaces.IPrimitive
 }
 
 // BspCompo
@@ -52,7 +52,7 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 			component.visibilityLump.GetVisibleIdsForCluster(component.currentLeaf.ClusterId))
 
 		prims := make([]interfaces.IPrimitive, len(faceList))
-		for idx,faceIdx := range faceList {
+		for idx, faceIdx := range faceList {
 			prims[idx] = component.faceList[faceIdx]
 		}
 
@@ -81,16 +81,16 @@ func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {
 				node.(*tree.Leaf))
 		}
 	} else {
-		for _,child := range node.(*tree.Node).Children {
+		for _, child := range node.(*tree.Node).Children {
 			component.recursiveBuildClusterList(child)
 		}
 	}
 }
 
-func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, visibilityLump *visibility.Vis) *BspComponent{
+func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, visibilityLump *visibility.Vis) *BspComponent {
 	c := BspComponent{
-		nodeTrees: bspTrees,
-		leafClusters: map[int16][]*tree.Leaf{},
+		nodeTrees:      bspTrees,
+		leafClusters:   map[int16][]*tree.Leaf{},
 		visibilityLump: visibilityLump,
 		cache: []interfaces.IGPUMesh{
 			renderable.NewGPUResourceDynamic([]interfaces.IPrimitive{}),

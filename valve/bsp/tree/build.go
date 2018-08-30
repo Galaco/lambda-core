@@ -3,8 +3,8 @@ package tree
 import (
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
-	"github.com/galaco/bsp/primitives/node"
 	"github.com/galaco/bsp/primitives/leaf"
+	"github.com/galaco/bsp/primitives/node"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -16,11 +16,11 @@ func BuildTree(file *bsp.Bsp) []Node {
 	leafFaces := file.GetLump(bsp.LUMP_LEAFFACES).(*lumps.LeafFace).GetData()
 
 	ret := make([]Node, len(models))
-	for idx,rootModel := range models {
+	for idx, rootModel := range models {
 		rootNode := nodes[rootModel.HeadNode]
 
 		root := Node{
-			Id: rootModel.HeadNode,
+			Id:  rootModel.HeadNode,
 			Min: rootModel.Mins,
 			Max: rootModel.Maxs,
 		}
@@ -35,19 +35,19 @@ func BuildTree(file *bsp.Bsp) []Node {
 
 // Recursive load for bsp node/leafs
 func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, leafs []leaf.Leaf, leafFaces []uint16) *Node {
-	for childNum,childIdx := range bspNode.Children {
+	for childNum, childIdx := range bspNode.Children {
 		// leaf
 		if childIdx < 0 {
 			// Child is a leaf
-			l := leafs[(-1  -childIdx)]
+			l := leafs[(-1 - childIdx)]
 			faceList := make([]uint16, l.NumLeafFaces)
 			for i := uint16(0); i < l.NumLeafFaces; i++ {
-				faceList[i] = leafFaces[l.FirstLeafFace + i]
+				faceList[i] = leafFaces[l.FirstLeafFace+i]
 			}
 			node.AddChild(childNum, &Leaf{
-				Id: -childIdx,
+				Id:            -childIdx,
 				FaceIndexList: faceList,
-				ClusterId: l.Cluster,
+				ClusterId:     l.Cluster,
 				Min: mgl32.Vec3{
 					float32(l.Mins[0]),
 					float32(l.Mins[1]),

@@ -12,16 +12,16 @@ import (
 // management etc.
 type Manager struct {
 	listenerMap map[core.EventId]map[core.Handle]interfaces.IEventListenable
-	mu sync.Mutex
-	eventQueue []*QueueItem
-	runAsync bool
+	mu          sync.Mutex
+	eventQueue  []*QueueItem
+	runAsync    bool
 }
 
 //Register a new component to listen to an event
-func (manager *Manager) Listen(eventName core.EventId, component interfaces.IEventListenable) core.Handle{
+func (manager *Manager) Listen(eventName core.EventId, component interfaces.IEventListenable) core.Handle {
 	handle := core.NewHandle()
 	manager.mu.Lock()
-	if _,ok := manager.listenerMap[eventName]; !ok {
+	if _, ok := manager.listenerMap[eventName]; !ok {
 		manager.listenerMap[eventName] = make(map[core.Handle]interfaces.IEventListenable)
 	}
 	manager.listenerMap[eventName][handle] = component
@@ -52,7 +52,7 @@ func (manager *Manager) RunConcurrent() {
 				// Fire event
 				listeners := manager.listenerMap[item.EventName]
 				manager.mu.Unlock()
-				for _,component := range listeners {
+				for _, component := range listeners {
 					component.ReceiveMessage(item.Message)
 				}
 			}
@@ -74,7 +74,7 @@ func (manager *Manager) Dispatch(eventName core.EventId, message interfaces.IMes
 	message.SetType(eventName)
 	queueItem := &QueueItem{
 		EventName: eventName,
-		Message: message,
+		Message:   message,
 	}
 	manager.mu.Lock()
 	manager.eventQueue = append(manager.eventQueue, queueItem)
@@ -86,12 +86,6 @@ func (manager *Manager) Unregister() {
 	// Ensure async event queue is halted
 	manager.runAsync = false
 }
-
-
-
-
-
-
 
 var eventManager Manager
 

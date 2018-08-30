@@ -4,7 +4,7 @@ import "github.com/galaco/go-me-engine/engine/interfaces"
 
 // A collection of renderable primitives/submeshes
 type GPUResource struct {
-	primitives []interfaces.IPrimitive
+	primitives   []interfaces.IPrimitive
 	isBoundToGPU bool
 }
 
@@ -13,7 +13,7 @@ func (resource *GPUResource) Prepare() {
 	if resource.isBoundToGPU == true {
 		return
 	}
-	for _,p := range resource.primitives {
+	for _, p := range resource.primitives {
 		p.GenerateGPUBuffer()
 	}
 }
@@ -36,12 +36,10 @@ func (resource *GPUResource) GetPrimitives() []interfaces.IPrimitive {
 
 func NewGPUResource(primitives []interfaces.IPrimitive) *GPUResource {
 	return &GPUResource{
-		primitives: primitives,
+		primitives:   primitives,
 		isBoundToGPU: false,
 	}
 }
-
-
 
 type GPUResourceDynamic struct {
 	GPUResource
@@ -54,8 +52,8 @@ func (resource *GPUResourceDynamic) Reset() {
 
 func NewGPUResourceDynamic(primitives []interfaces.IPrimitive) *GPUResourceDynamic {
 	return &GPUResourceDynamic{
-		GPUResource: GPUResource {
-			primitives: primitives,
+		GPUResource: GPUResource{
+			primitives:   primitives,
 			isBoundToGPU: false,
 		},
 	}

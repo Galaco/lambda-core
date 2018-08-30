@@ -6,9 +6,9 @@ import (
 )
 
 // Basic wrapper around vtf library.
-func ReadFromPath(filepath string) (*vtf.Vtf, error){
+func ReadFromPath(filepath string) (*vtf.Vtf, error) {
 	return vtf.ReadFromFile(filepath)
 }
-func ReadFromStream(stream io.Reader) (*vtf.Vtf, error){
+func ReadFromStream(stream io.Reader) (*vtf.Vtf, error) {
 	return vtf.ReadFromStream(stream)
 }

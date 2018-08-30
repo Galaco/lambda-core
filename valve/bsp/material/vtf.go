@@ -1,14 +1,14 @@
 package material
 
 import (
-	"log"
+	"bytes"
+	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/filesystem"
-	vpk2 "github.com/galaco/vpk2"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vtf"
+	vpk2 "github.com/galaco/vpk2"
+	"log"
 	"path/filepath"
-	"github.com/galaco/bsp/lumps"
-	"bytes"
 )
 
 // Load all materials referenced in the map
@@ -22,7 +22,7 @@ func LoadMaterialList(pakData *lumps.Pakfile, vpkHandle *vpk2.VPK, materialList 
 
 	missing = readFromVPK(vpkHandle, missing)
 
-	for _,path := range missing {
+	for _, path := range missing {
 		log.Println("Could not find: " + path)
 	}
 }
@@ -31,10 +31,10 @@ func readFromPakfile(pakData *lumps.Pakfile, materialList []string) (missingList
 	FileManager := filesystem.GetFileManager()
 	materialBasePath := "materials/"
 
-	for _,materialPath := range materialList {
+	for _, materialPath := range materialList {
 		vtfTexturePath := ""
 		// Only load the file once
-		if FileManager.GetFile(materialBasePath + materialPath) == nil {
+		if FileManager.GetFile(materialBasePath+materialPath) == nil {
 			// Pakfiles store full filepath inc. extension
 			pakFileDir := materialBasePath + materialPath + ".vmt"
 			vmtData, err := pakData.GetFile(pakFileDir)
@@ -45,7 +45,7 @@ func readFromPakfile(pakData *lumps.Pakfile, materialList []string) (missingList
 			}
 			// Import vmt
 			vmtStream := bytes.NewReader(vmtData)
-			vmt,err := ParseVmt(materialPath, vmtStream)
+			vmt, err := ParseVmt(materialPath, vmtStream)
 			if err != nil {
 				log.Println(err)
 				continue
@@ -63,14 +63,14 @@ func readFromPakfile(pakData *lumps.Pakfile, materialList []string) (missingList
 		if vtfTexturePath != "" && FileManager.GetFile(vtfTexturePath) == nil {
 			vtfData, err := pakData.GetFile(materialBasePath + vtfTexturePath)
 			if err != nil || len(vtfData) == 0 {
-				missingList = append(missingList, materialPath + ".vtf")
+				missingList = append(missingList, materialPath+".vtf")
 				continue
 			}
 			vtfStream := bytes.NewReader(vtfData)
 
 			// Attempt to parse the vtf into color data we can use,
 			// if this fails (it shouldn't) we can treat it like it was missing
-			texture,err := vtf.ReadFromStream(vtfStream)
+			texture, err := vtf.ReadFromStream(vtfStream)
 			if err != nil {
 				log.Println(err)
 				continue
@@ -88,7 +88,6 @@ func readFromPakfile(pakData *lumps.Pakfile, materialList []string) (missingList
 		}
 	}
 
-
 	return missingList
 }
 
@@ -96,8 +95,7 @@ func readFromVPK(vpkHandle *vpk2.VPK, materialList []string) (missingList []stri
 	FileManager := filesystem.GetFileManager()
 	materialBasePath := "materials/"
 
-
-	for _,materialPath := range materialList {
+	for _, materialPath := range materialList {
 		var vmt *Vmt
 		vtfTexturePath := ""
 		// If the material is a vtf, skip over vmt reading,
@@ -107,8 +105,8 @@ func readFromVPK(vpkHandle *vpk2.VPK, materialList []string) (missingList []stri
 			if FileManager.GetFile(vmtPath) == nil {
 				vmtF := vpkHandle.Entry(materialBasePath + vmtPath)
 				if vmtF != nil {
-					f2,err := vmtF.Open()
-					vmt,err = ParseVmt(materialPath, f2)
+					f2, err := vmtF.Open()
+					vmt, err = ParseVmt(materialPath, f2)
 					if err != nil {
 						log.Println(err)
 						continue
@@ -119,7 +117,7 @@ func readFromVPK(vpkHandle *vpk2.VPK, materialList []string) (missingList []stri
 				}
 
 				FileManager.AddFile(vmt)
-				vtfTexturePath =  vmt.GetProperty("baseTexture").AsString() + ".vtf"
+				vtfTexturePath = vmt.GetProperty("baseTexture").AsString() + ".vtf"
 			}
 		} else {
 			vtfTexturePath = materialPath
@@ -134,7 +132,7 @@ func readFromVPK(vpkHandle *vpk2.VPK, materialList []string) (missingList []stri
 				missingList = append(missingList, vtfTexturePath)
 				continue
 			}
-			file,err := vpkFile.Open()
+			file, err := vpkFile.Open()
 
 			// Its quite possible for a texture to be missing, just skip it.
 			if err != nil {
@@ -144,7 +142,7 @@ func readFromVPK(vpkHandle *vpk2.VPK, materialList []string) (missingList []stri
 
 			// Attempt to parse the vtf into color data we can use,
 			// if this fails (it shouldn't) we can treat it like it was missing
-			texture,err := vtf.ReadFromStream(file)
+			texture, err := vtf.ReadFromStream(file)
 			if err != nil {
 				log.Println(err)
 				continue

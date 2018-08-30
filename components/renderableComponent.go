@@ -5,8 +5,6 @@ import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
 )
 
-
-
 type RenderableComponent struct {
 	base.Component
 	renderables []interfaces.IGPUMesh
@@ -24,8 +22,7 @@ func (component *RenderableComponent) GetRenderables() []interfaces.IGPUMesh {
 	return component.renderables
 }
 
-
-func NewRenderableComponent() *RenderableComponent{
+func NewRenderableComponent() *RenderableComponent {
 	c := RenderableComponent{}
 	c.Etype = T_RenderableComponent
 

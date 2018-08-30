@@ -1,14 +1,14 @@
 package factory
 
 import (
-	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/engine/core"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 )
 
 // Game object manager
 // Store entities and components
 type Manager struct {
-	entities map[core.Handle]interfaces.IEntity
+	entities   map[core.Handle]interfaces.IEntity
 	components map[core.Handle]interfaces.IComponent
 }
 
@@ -45,14 +45,12 @@ func (manager *Manager) AddComponent(component interfaces.IComponent, ent interf
 	component.Initialize()
 }
 
-
-
 // There can be only 1 instance.
 // I guess its a gross singleton?
 // Would rather it be properly static, but golang no likey :(
 var objectManager Manager
 
-func GetObjectManager() *Manager{
+func GetObjectManager() *Manager {
 	if objectManager.components == nil {
 		objectManager.entities = make(map[core.Handle]interfaces.IEntity)
 		objectManager.components = make(map[core.Handle]interfaces.IComponent)

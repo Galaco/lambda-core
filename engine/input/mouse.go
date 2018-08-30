@@ -2,8 +2,8 @@ package input
 
 import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/galaco/go-me-engine/message/messages"
+	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/go-gl/mathgl/mgl64"
 )
 
@@ -24,7 +24,7 @@ func (mouse *Mouse) ReceiveMessage(message interfaces.IMessage) {
 	}
 }
 
-func (mouse *Mouse) Update()  {
+func (mouse *Mouse) Update() {
 	mouse.change[0] = 0
 	mouse.change[1] = 0
 }
@@ -32,8 +32,6 @@ func (mouse *Mouse) Update()  {
 func (mouse *Mouse) SendMessage() interfaces.IMessage {
 	return nil
 }
-
-
 
 var mouse Mouse
 

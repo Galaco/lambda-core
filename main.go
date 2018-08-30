@@ -1,18 +1,18 @@
 package main
 
 import (
-	"github.com/galaco/go-me-engine/engine"
-	"github.com/galaco/go-me-engine/systems/window"
-	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/components"
-	"github.com/galaco/go-me-engine/engine/factory"
-	"github.com/galaco/go-me-engine/systems/renderer"
-	"github.com/galaco/go-me-engine/valve/bsp"
-	"log"
-	"github.com/galaco/go-me-engine/valve/bsp/tree"
-	"github.com/go-gl/mathgl/mgl32"
 	bsp2 "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
+	"github.com/galaco/go-me-engine/components"
+	"github.com/galaco/go-me-engine/engine"
+	"github.com/galaco/go-me-engine/engine/base"
+	"github.com/galaco/go-me-engine/engine/factory"
+	"github.com/galaco/go-me-engine/systems/renderer"
+	"github.com/galaco/go-me-engine/systems/window"
+	"github.com/galaco/go-me-engine/valve/bsp"
+	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	"github.com/go-gl/mathgl/mgl32"
+	"log"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap("data/maps/de_dust2.bsp")
+	LoadMap("data/maps/ze_bioshock_v6_3.bsp")
 
 	// Run the engine
 	Application.Run()
@@ -46,7 +46,7 @@ func LoadMap(filename string) {
 	// Fetch all BSP face data
 	bspPrimitives := bsp.LoadMap(bspData)
 	log.Println("Loaded map data")
-	for _,primitive := range bspPrimitives {
+	for _, primitive := range bspPrimitives {
 		// Ensure created primitive is ready on gpu
 		if primitive != nil {
 			primitive.GenerateGPUBuffer()

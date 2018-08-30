@@ -2,9 +2,9 @@ package input
 
 import (
 	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/galaco/go-me-engine/message/messages"
+	"github.com/galaco/go-me-engine/message/messagetype"
+	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 // Keyboard key wrapper

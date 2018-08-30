@@ -26,9 +26,6 @@ func (fm *manager) GetFile(filePath string) interfaces.IFile {
 	return fm.filelist[strings.ToLower(filePath)]
 }
 
-
-
-
 var filemanager manager
 
 func GetFileManager() *manager {

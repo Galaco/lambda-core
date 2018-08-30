@@ -1,16 +1,16 @@
 package window
 
 import (
+	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/systems/window/input"
 	"github.com/galaco/go-me-engine/systems/window/window"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/galaco/go-me-engine/engine/base"
 )
 
 type Manager struct {
 	base.Manager
 	window *glfw.Window
-	input input.Manager
+	input  input.Manager
 }
 
 func (manager *Manager) Register() {

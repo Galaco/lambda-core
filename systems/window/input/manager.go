@@ -1,17 +1,17 @@
 package input
 
 import (
-	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/galaco/go-me-engine/engine/event"
+	"github.com/galaco/go-me-engine/engine/input"
 	"github.com/galaco/go-me-engine/message/messages"
 	"github.com/galaco/go-me-engine/message/messagetype"
+	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl64"
-	"github.com/galaco/go-me-engine/engine/input"
 )
 
 type Manager struct {
 	MouseCoordinates mgl64.Vec2
-	window *glfw.Window
+	window           *glfw.Window
 }
 
 func (manager *Manager) Register(window *glfw.Window) {
@@ -51,7 +51,7 @@ func (manager *Manager) KeyCallback(window *glfw.Window, key glfw.Key, scancode 
 
 func (manager *Manager) MouseCallback(window *glfw.Window, xpos float64, ypos float64) {
 	manager.MouseCoordinates[0], manager.MouseCoordinates[1] = window.GetCursorPos()
-	w,h := window.GetSize()
+	w, h := window.GetSize()
 	event.GetEventManager().Dispatch(messagetype.MouseMove, &messages.MouseMove{
 		X: float64(float64(w/2) - manager.MouseCoordinates[0]),
 		Y: float64(float64(h/2) - manager.MouseCoordinates[1]),

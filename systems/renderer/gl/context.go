@@ -1,17 +1,16 @@
 package gl
 
 import (
-	opengl "github.com/go-gl/gl/v4.1-core/gl"
-	"strings"
 	"fmt"
-	"log"
 	"github.com/galaco/go-me-engine/systems/renderer/gl/shaders"
+	opengl "github.com/go-gl/gl/v4.1-core/gl"
+	"log"
+	"strings"
 )
 
 type Context struct {
 	context uint32
 }
-
 
 func (context *Context) AddShader(source string, shaderType uint32) {
 	shader, err := context.compileShader(source, shaderType)
@@ -31,7 +30,7 @@ func (context *Context) UseProgram() {
 }
 
 func (context *Context) GetUniform(name string) int32 {
-	return opengl.GetUniformLocation(context.context, opengl.Str(name + "\x00"))
+	return opengl.GetUniformLocation(context.context, opengl.Str(name+"\x00"))
 }
 
 func (context *Context) compileShader(source string, shaderType uint32) (uint32, error) {
@@ -57,7 +56,7 @@ func (context *Context) compileShader(source string, shaderType uint32) (uint32,
 	return shader, nil
 }
 
-func NewContext() Context{
+func NewContext() Context {
 	if err := opengl.Init(); err != nil {
 		panic(err)
 	}

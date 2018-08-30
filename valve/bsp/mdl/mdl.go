@@ -3,60 +3,60 @@ package mdl
 import "github.com/go-gl/mathgl/mgl32"
 
 type studiohdr struct {
-	id int32
-	version int32
-	name [64]byte // 64 char exactly, null byte padded
+	id         int32
+	version    int32
+	name       [64]byte // 64 char exactly, null byte padded
 	dataLength int32
 
-	eyeposition mgl32.Vec3
+	eyeposition   mgl32.Vec3
 	illumposition mgl32.Vec3
-	hullMin mgl32.Vec3
-	hullMax mgl32.Vec3
-	viewBBMin mgl32.Vec3
-	viewBBMax mgl32.Vec3
+	hullMin       mgl32.Vec3
+	hullMax       mgl32.Vec3
+	viewBBMin     mgl32.Vec3
+	viewBBMax     mgl32.Vec3
 
 	flags int32
 
 	//studio bone
-	boneCount int32
+	boneCount  int32
 	boneOffset int32
 	//studiobonecontroller
-	boneControllerCount int32
+	boneControllerCount  int32
 	boneControllerOffset int32
 	//mstudiohitboxset
-	hitboxCount int32
+	hitboxCount  int32
 	hitboxOffset int32
 	//mstudioanimdesc
-	localAnimationCount int32
+	localAnimationCount  int32
 	localAnimationOffset int32
 	//mstudioseqdesc
-	localSequenceCount int32
+	localSequenceCount  int32
 	localSequenceOffset int32
 
 	activityListVersion int32
-	eventsIndexed int32
+	eventsIndexed       int32
 
 	//vmt filenames - mstudiotexture
-	textureCount int32
+	textureCount  int32
 	textureOffset int32
 
-	textureDirCount int32
+	textureDirCount  int32
 	textureDirOffset int32
 
-	skinReferenceCount int32
+	skinReferenceCount       int32
 	skinReferenceFamilyCount int32
-	skinReferenceIndex int32
+	skinReferenceIndex       int32
 
 	// mstudiobodyparts
-	bodyPartCount int32
+	bodyPartCount  int32
 	bodypartOffset int32
 
 	// mstudioattachment
-	attachmentCount int32
+	attachmentCount  int32
 	attachmentOffset int32
 
-	localNodeCount int32
-	localNodeIndex int32
+	localNodeCount     int32
+	localNodeIndex     int32
 	localNodeNameIndex int32
 
 	// mstudioflexdesc
@@ -92,7 +92,7 @@ type studiohdr struct {
 	ikLockCount int32
 	ikLockIndex int32
 
-	mass float32
+	mass     float32
 	contents int32
 
 	// mstudiomodelgroup
@@ -103,8 +103,8 @@ type studiohdr struct {
 
 	// mstudianimblock
 	animblocksNameIndex int32
-	animblocksCount int32
-	animblocksIndex int32
+	animblocksCount     int32
+	animblocksIndex     int32
 
 	animblockModel int32
 
@@ -114,8 +114,8 @@ type studiohdr struct {
 	offsetBase int32
 
 	directionalDotProduct byte
-	rootLOD uint8
-	numAllowedRootLods uint8
+	rootLOD               uint8
+	numAllowedRootLods    uint8
 
 	_ byte
 	_ int32

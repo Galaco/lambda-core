@@ -7,7 +7,7 @@ import (
 
 var currentLeaf *tree.Leaf
 
-func FindCurrentLeaf(treeList []tree.Node, position mgl32.Vec3) (*tree.Leaf) {
+func FindCurrentLeaf(treeList []tree.Node, position mgl32.Vec3) *tree.Leaf {
 	currentLeaf = nil
 	for _, root := range treeList {
 		findCurrentLeafRecursive(&root, position)
@@ -17,7 +17,7 @@ func FindCurrentLeaf(treeList []tree.Node, position mgl32.Vec3) (*tree.Leaf) {
 
 func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) {
 	if node.IsLeaf() == false {
-		for _,child := range node.(*tree.Node).Children {
+		for _, child := range node.(*tree.Node).Children {
 			findCurrentLeafRecursive(child, position)
 		}
 	} else {
@@ -35,7 +35,7 @@ func IsPointInLeaf(point mgl32.Vec3, min mgl32.Vec3, max mgl32.Vec3) bool {
 		point.Y() > max.Y() ||
 		point.Z() < min.Z() ||
 		point.Z() > max.Z() {
-			return false
+		return false
 	}
 	return true
 }
@@ -43,7 +43,7 @@ func IsPointInLeaf(point mgl32.Vec3, min mgl32.Vec3, max mgl32.Vec3) bool {
 func BuildFaceListForVisibleClusters(nodeTree []tree.Node, clusterList []int16) []uint16 {
 	faceList := []uint16{}
 	for _, root := range nodeTree {
-		faceList = append(faceList,  recursiveBuildFaceIndexList(&root, faceList, clusterList)...)
+		faceList = append(faceList, recursiveBuildFaceIndexList(&root, faceList, clusterList)...)
 	}
 
 	return faceList
@@ -59,7 +59,7 @@ func recursiveBuildFaceIndexList(node tree.INode, faceList []uint16, clusterList
 		}
 		return []uint16{}
 	} else {
-		for _,child := range node.(*tree.Node).Children {
+		for _, child := range node.(*tree.Node).Children {
 			faceList = recursiveBuildFaceIndexList(child, faceList, clusterList)
 		}
 	}

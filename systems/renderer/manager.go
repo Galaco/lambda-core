@@ -1,18 +1,18 @@
 package renderer
 
 import (
-	"github.com/galaco/go-me-engine/systems/renderer/gl"
+	"github.com/galaco/go-me-engine/components"
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/factory"
-	"github.com/galaco/go-me-engine/components"
-	opengl "github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/galaco/go-me-engine/systems/renderer/camera"
 	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/systems/renderer/camera"
+	"github.com/galaco/go-me-engine/systems/renderer/gl"
+	opengl "github.com/go-gl/gl/v4.1-core/gl"
 )
 
 type Manager struct {
 	base.Manager
-	glContext gl.Context
+	glContext     gl.Context
 	currentCamera camera.Camera
 }
 
@@ -29,6 +29,9 @@ func (manager *Manager) Register() {
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
 	opengl.Enable(opengl.DEPTH_TEST)
+	//opengl.Enable(opengl.CULL_FACE)
+	//opengl.CullFace(opengl.BACK)
+	//opengl.FrontFace(opengl.CW)
 }
 
 func (manager *Manager) Update(dt float64) {
@@ -43,7 +46,7 @@ func (manager *Manager) Update(dt float64) {
 	view := manager.currentCamera.ViewMatrix()
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
-	for _,c := range factory.GetObjectManager().GetAllComponents() {
+	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.GetType() {
 		//case components.T_RenderableComponent:
 		//	for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
@@ -51,7 +54,7 @@ func (manager *Manager) Update(dt float64) {
 		//	}
 		case components.T_BspComponent:
 			c.(*components.BspComponent).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
-			for _,resource := range c.(*components.BspComponent).GetRenderables() {
+			for _, resource := range c.(*components.BspComponent).GetRenderables() {
 				manager.drawMesh(resource)
 			}
 		}
@@ -67,6 +70,6 @@ func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
 		}
 		primitive.Bind()
 		primitive.GetMaterial().Bind()
-		opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices())) / 3)
+		opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices()))/3)
 	}
 }

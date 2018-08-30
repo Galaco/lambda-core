@@ -1,23 +1,23 @@
 package base
 
 import (
-	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 type Primitive struct {
-	vertices []float32
-	indices []uint16
-	normals []float32
+	vertices           []float32
+	indices            []uint16
+	normals            []float32
 	textureCoordinates []float32
-	vbo uint32
-	vao uint32
-	normalBuffer uint32
-	indicesBuffer uint32
-	uvBuffer uint32
-	faceMode uint32
-	material interfaces.IMaterial
-	isBoundToGPU bool
+	vbo                uint32
+	vao                uint32
+	normalBuffer       uint32
+	indicesBuffer      uint32
+	uvBuffer           uint32
+	faceMode           uint32
+	material           interfaces.IMaterial
+	isBoundToGPU       bool
 }
 
 func (primitive *Primitive) Bind() {
@@ -28,23 +28,23 @@ func (primitive *Primitive) Bind() {
 	gl.EnableVertexAttribArray(1)
 	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
 	gl.VertexAttribPointer(
-		1,                // The attribute we want to configure
-		2,                 // size : U+V => 2
-		gl.FLOAT,               // type
-		false,		// normalized?
-		0,               // stride
-		nil)        		// array buffer offset
+		1,        // The attribute we want to configure
+		2,        // size : U+V => 2
+		gl.FLOAT, // type
+		false,    // normalized?
+		0,        // stride
+		nil)      // array buffer offset
 
 	// Normals's
 	gl.EnableVertexAttribArray(2)
 	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.normalBuffer)
 	gl.VertexAttribPointer(
-		2,                // The attribute we want to configure
-		3,                 // size : U+V => 2
-		gl.FLOAT,               // type
-		false,		// normalized?
-		0,               // stride
-		nil)        		// array buffer offset
+		2,        // The attribute we want to configure
+		3,        // size : U+V => 2
+		gl.FLOAT, // type
+		false,    // normalized?
+		0,        // stride
+		nil)      // array buffer offset
 }
 
 func (primitive *Primitive) GetFaceMode() uint32 {
@@ -106,12 +106,12 @@ func (primitive *Primitive) GenerateGPUBuffer() {
 	// gen uv data
 	gl.GenBuffers(1, &primitive.uvBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.uvBuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.textureCoordinates) * 4, gl.Ptr(primitive.textureCoordinates), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.textureCoordinates)*4, gl.Ptr(primitive.textureCoordinates), gl.STATIC_DRAW)
 
 	// gen normal data
 	gl.GenBuffers(1, &primitive.normalBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, primitive.normalBuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.normals) * 3, gl.Ptr(primitive.normals), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(primitive.normals)*3, gl.Ptr(primitive.normals), gl.STATIC_DRAW)
 
 	switch len(primitive.indices) {
 	case 1:
@@ -129,9 +129,9 @@ func (primitive *Primitive) GenerateGPUBuffer() {
 
 func NewPrimitive(vertices []float32, indices []uint16, normals []float32) *Primitive {
 	return &Primitive{
-		vertices: vertices,
-		indices: indices,
-		normals: normals,
+		vertices:     vertices,
+		indices:      indices,
+		normals:      normals,
 		isBoundToGPU: false,
 	}
 }

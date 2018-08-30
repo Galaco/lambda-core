@@ -1,17 +1,17 @@
 package material
 
 import (
-	"io"
 	"bufio"
-	"strings"
 	"errors"
+	"io"
 	"strconv"
+	"strings"
 )
 
 type Vmt struct {
-	Filename string
-	ShaderName string
-	properties map[string]VmtProperty
+	Filename    string
+	ShaderName  string
+	properties  map[string]VmtProperty
 	BaseTexture string
 }
 
@@ -24,7 +24,7 @@ func (vmt *Vmt) GetProperty(name string) VmtProperty {
 		return vmt.properties[strings.ToLower(name)]
 	}
 
-	return VmtProperty {
+	return VmtProperty{
 		value: "",
 	}
 }
@@ -33,15 +33,15 @@ type VmtProperty struct {
 	value string
 }
 
-func (property VmtProperty) AsInt() (int64,error) {
+func (property VmtProperty) AsInt() (int64, error) {
 	return strconv.ParseInt(property.value, 10, 32)
 }
 
-func (property VmtProperty) AsBool() (bool,error) {
+func (property VmtProperty) AsBool() (bool, error) {
 	return strconv.ParseBool(property.value)
 }
 
-func (property VmtProperty) AsFloat() (float64,error) {
+func (property VmtProperty) AsFloat() (float64, error) {
 	return strconv.ParseFloat(property.value, 32)
 }
 
@@ -49,8 +49,7 @@ func (property VmtProperty) AsString() string {
 	return property.value
 }
 
-
-func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
+func ParseVmt(filename string, stream io.Reader) (*Vmt, error) {
 	reader := bufio.NewReader(stream)
 	vmt := &Vmt{
 		Filename: filename,
@@ -59,7 +58,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 		},
 	}
 
-	shaderName,err := reader.ReadString([]byte("{")[0])
+	shaderName, err := reader.ReadString([]byte("{")[0])
 	if err != nil {
 		return nil, err
 	}
@@ -68,9 +67,9 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 	depth := 1
 
 	for depth > 0 {
-		l,err := reader.ReadString([]byte("\n")[0])
+		l, err := reader.ReadString([]byte("\n")[0])
 		if err != nil {
-			return nil,errors.New("invalid vmt file")
+			return nil, errors.New("invalid vmt file")
 		}
 		line := string(l)
 
@@ -87,7 +86,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 		// Read the key value
 		splitSet := strings.Split(line, " ")
 		kv := [2]string{}
-		for _,s := range splitSet {
+		for _, s := range splitSet {
 			s := sanitise(s)
 			if len(s) < 1 || s == " " {
 				continue
@@ -103,8 +102,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt,error) {
 		}
 	}
 
-
-	return vmt,nil
+	return vmt, nil
 }
 
 func isNewScope(line string) bool {

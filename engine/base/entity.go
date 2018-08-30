@@ -7,9 +7,9 @@ import (
 // Entity is an object in the game world.
 // By itself entity is nothing more than an identifiable object located at a point in space
 type Entity struct {
-	handle core.Handle
+	handle     core.Handle
 	components []core.Handle
-	transform TransformComponent
+	transform  TransformComponent
 }
 
 // Set this entity unique id
@@ -36,7 +36,6 @@ func (entity *Entity) AddComponent(handle core.Handle) {
 func (entity *Entity) GetTransformComponent() *TransformComponent {
 	return &entity.transform
 }
-
 
 func NewEntity() Entity {
 	ent := Entity{

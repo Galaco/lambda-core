@@ -13,8 +13,8 @@ import (
 // type. Embed this component into custom components and override methods as necessary.
 type Component struct {
 	handle core.Handle
-	owner core.Handle
-	Etype core.EType
+	owner  core.Handle
+	Etype  core.EType
 }
 
 // Sets a unique handle for the component.
@@ -36,13 +36,13 @@ func (component *Component) GetType() core.EType {
 }
 
 // Returns this objects unique handle
-func (component *Component) GetHandle() core.Handle{
+func (component *Component) GetHandle() core.Handle {
 	return component.handle
 }
 
 // Returns the handle of the entity this component is
 // attached to.
-func (component *Component) GetOwnerHandle() core.Handle{
+func (component *Component) GetOwnerHandle() core.Handle {
 	return component.owner
 }
 

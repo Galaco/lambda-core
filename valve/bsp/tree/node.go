@@ -7,10 +7,10 @@ type INode interface {
 }
 
 type Node struct {
-	Id int32
+	Id       int32
 	Children [2]INode
-	Min mgl32.Vec3
-	Max mgl32.Vec3
+	Min      mgl32.Vec3
+	Max      mgl32.Vec3
 }
 
 func (node *Node) IsLeaf() bool {

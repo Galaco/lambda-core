@@ -1,16 +1,16 @@
 package components
 
 import (
-	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/engine/base"
+	"github.com/galaco/go-me-engine/engine/event"
+	"github.com/galaco/go-me-engine/engine/factory"
+	"github.com/galaco/go-me-engine/engine/input"
+	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/message/messages"
+	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/galaco/go-me-engine/engine/factory"
 	"math"
-	"github.com/galaco/go-me-engine/engine/input"
-	"github.com/galaco/go-me-engine/engine/event"
-	"github.com/galaco/go-me-engine/message/messagetype"
-	"github.com/galaco/go-me-engine/message/messages"
 )
 
 const cameraSpeed = float64(100)
@@ -18,11 +18,11 @@ const sensitivity = float64(0.05)
 
 type CameraComponent struct {
 	base.Component
-	Up mgl32.Vec3
-	Right mgl32.Vec3
+	Up        mgl32.Vec3
+	Right     mgl32.Vec3
 	Direction mgl32.Vec3
-	worldUp mgl32.Vec3
-	owner *base.Entity
+	worldUp   mgl32.Vec3
+	owner     *base.Entity
 	frameTime float64
 }
 
@@ -40,7 +40,7 @@ func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 }
 
 func (component *CameraComponent) Update(dt float64) {
-	vel := cameraSpeed// * dt
+	vel := cameraSpeed // * dt
 	if input.GetKeyboard().IsKeyDown(glfw.KeyW) {
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Direction.Mul(float32(vel)))
 	}
@@ -54,8 +54,8 @@ func (component *CameraComponent) Update(dt float64) {
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Right.Mul(float32(vel)))
 	}
 
-	component.owner.GetTransformComponent().Rotation[0] += float32(input.GetMouse().GetCoordinates()[0] * sensitivity)// * dt)
-	component.owner.GetTransformComponent().Rotation[1] += float32(input.GetMouse().GetCoordinates()[1] * sensitivity)// * dt)
+	component.owner.GetTransformComponent().Rotation[0] += float32(input.GetMouse().GetCoordinates()[0] * sensitivity) // * dt)
+	component.owner.GetTransformComponent().Rotation[1] += float32(input.GetMouse().GetCoordinates()[1] * sensitivity) // * dt)
 
 	component.updateVectors()
 }
@@ -80,7 +80,7 @@ func (component *CameraComponent) updateVectors() {
 	component.Up = component.Right.Cross(component.Direction)
 }
 
-func NewCameraComponent() *CameraComponent{
+func NewCameraComponent() *CameraComponent {
 	c := CameraComponent{}
 	c.Etype = T_CameraComponent
 

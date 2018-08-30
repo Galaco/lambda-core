@@ -1,38 +1,38 @@
 package bsp
 
 import (
-	"math"
 	"github.com/galaco/bsp"
-	"github.com/galaco/bsp/primitives/face"
 	"github.com/galaco/bsp/lumps"
-	"github.com/go-gl/mathgl/mgl32"
-	"github.com/galaco/bsp/primitives/texinfo"
-	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/dispinfo"
 	"github.com/galaco/bsp/primitives/dispvert"
-	"log"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/engine/base"
+	"github.com/galaco/bsp/primitives/face"
+	"github.com/galaco/bsp/primitives/plane"
+	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/go-me-engine/components/renderable/material"
+	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/filesystem"
-	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
-	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
+	"github.com/galaco/go-me-engine/engine/interfaces"
 	material2 "github.com/galaco/go-me-engine/valve/bsp/material"
+	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
+	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
+	"github.com/go-gl/mathgl/mgl32"
+	"log"
+	"math"
 )
 
 type bspstructs struct {
-	faces []face.Face
-	planes []plane.Plane
-	vertexes []mgl32.Vec3
+	faces     []face.Face
+	planes    []plane.Plane
+	vertexes  []mgl32.Vec3
 	surfEdges []int32
-	edges [][2]uint16
-	texInfos []texinfo.TexInfo
+	edges     [][2]uint16
+	texInfos  []texinfo.TexInfo
 	dispInfos []dispinfo.DispInfo
 	dispVerts []dispvert.DispVert
-	pakFile *lumps.Pakfile
+	pakFile   *lumps.Pakfile
 }
 
-func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
+func LoadMap(file *bsp.Bsp) []interfaces.IPrimitive {
 	FileManager := filesystem.GetFileManager()
 	bspStructure := bspstructs{
 		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
@@ -43,14 +43,14 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
 		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
 		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-		pakFile: file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
+		pakFile:   file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
 	materialList := []*texinfo.TexInfo{}
 
 	// BSP FACES
-	for idx,f := range bspStructure.faces {
+	for idx, f := range bspStructure.faces {
 		materialList = append(materialList, &bspStructure.texInfos[f.TexInfo])
 
 		if f.DispInfo > -1 {
@@ -63,7 +63,7 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 
 	//MATERIALS
 	// Open VPK filesystem
-	vpkHandle,err := vpk.OpenVPK("data/cstrike/cstrike_pak")
+	vpkHandle, err := vpk.OpenVPK("data/cstrike/cstrike_pak")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,11 +71,11 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 	material2.LoadMaterialList(bspStructure.pakFile, vpkHandle, stringtable.SortUnique(stringTable, materialList))
 
 	// Add MATERIALS TO FACES
-	for idx,primitive := range meshList {
+	for idx, primitive := range meshList {
 		if primitive == nil {
 			continue
 		}
-		faceVmt,_ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
+		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
 		vmtPath := faceVmt
 		baseTexturePath := "-1"
 		if FileManager.GetFile(vmtPath) != nil {
@@ -90,12 +90,11 @@ func LoadMap(file *bsp.Bsp) ([]interfaces.IPrimitive) {
 		}
 	}
 
-
 	return meshList
 }
 
 // Create primitives from face data in the bsp
-func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive{
+func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive {
 	expF := make([]uint16, 0)
 	expV := make([]float32, 0)
 	expN := make([]float32, 0)
@@ -103,9 +102,9 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 	planeNormal := bspStructure.planes[f.Planenum].Normal
 	// All surfedges associated with this face
 	// surfEdges are basically indices into the edges lump
-	faceSurfEdges := bspStructure.surfEdges[f.FirstEdge:(f.FirstEdge+int32(f.NumEdges))]
+	faceSurfEdges := bspStructure.surfEdges[f.FirstEdge:(f.FirstEdge + int32(f.NumEdges))]
 	rootIndex := uint16(0)
-	for idx,surfEdge := range faceSurfEdges {
+	for idx, surfEdge := range faceSurfEdges {
 		edge := bspStructure.edges[int(math.Abs(float64(surfEdge)))]
 		e1 := 0
 		e2 := 1
@@ -134,7 +133,7 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 // Create Primitives from Displacement faces tied to faces
 // in the bsp
 // @TODO implement me
-func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive{
+func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive {
 	//numSubDivisions := int(disp.Power*disp.Power)
 	//numVerts := numSubDivisions * numSubDivisions
 	//dispVertList := (*dispVerts)[disp.DispVertStart:disp.DispVertStart + int32(numVerts)]

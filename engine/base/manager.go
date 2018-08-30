@@ -4,7 +4,6 @@ package base
 // Normally introduction of a new manager would mean introduction
 // of a new component type(s).
 type Manager struct {
-
 }
 
 // Register this manager in the engine. This is called by the engine
@@ -14,7 +13,7 @@ func (manager *Manager) Register() {
 
 // If this manager is supported to run concurrently, custom concurrency
 // function should be defined here
-func (manager *Manager)  RunConcurrent() {
+func (manager *Manager) RunConcurrent() {
 }
 
 // Called every update loop.

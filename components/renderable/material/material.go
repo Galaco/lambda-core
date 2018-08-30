@@ -1,17 +1,17 @@
 package material
 
 import (
-	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/galaco/vtf"
+	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 // Generic GPU material struct
 type Material struct {
 	filePath string
-	vtf *vtf.Vtf
-	buffer uint32
-	width int
-	height int
+	vtf      *vtf.Vtf
+	buffer   uint32
+	width    int
+	height   int
 }
 
 // Bind this material to the GPU
@@ -71,9 +71,9 @@ func (material *Material) GenerateGPUBuffer() {
 func NewMaterial(filepath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
 		filePath: filepath,
-		vtf: vtf,
-		width: width,
-		height: height,
+		vtf:      vtf,
+		width:    width,
+		height:   height,
 	}
 }
 
