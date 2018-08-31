@@ -11,7 +11,6 @@ import (
 	"github.com/galaco/go-me-engine/systems/window"
 	"github.com/galaco/go-me-engine/valve/bsp"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
-	"github.com/go-gl/mathgl/mgl32"
 	"log"
 )
 
@@ -56,11 +55,7 @@ func LoadMap(filename string) {
 	log.Println("Building visibility cluster tree")
 	visData := bspData.GetLump(bsp2.LUMP_VISIBILITY).(*lumps.Visibility).GetData()
 
-	bspTree := tree.BuildTree(bspData)
-	bspComponent := components.NewBspComponent(bspTree, bspPrimitives, visData)
-	bspComponent.UpdateVisibilityList(mgl32.Vec3{0, 0, 0})
-
 	worldSpawn := factory.NewEntity(&base.Entity{})
-	factory.NewComponent(bspComponent, worldSpawn)
+	factory.NewComponent(components.NewBspComponent(tree.BuildTree(bspData), bspPrimitives, visData), worldSpawn)
 	log.Println("Cluster tree built.")
 }

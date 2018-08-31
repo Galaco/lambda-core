@@ -17,7 +17,7 @@ func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) *tree.Leaf {
 	if node.IsLeaf() != true {
 		localNode := node.(*tree.Node)
 
-		if IsPointInFrontOfPlane(position, localNode.Plane) == true {
+		if isPointInFrontOfPlane(position, localNode.Plane) == true {
 			return findCurrentLeafRecursive(localNode.Children[0], position)
 		} else {
 			return findCurrentLeafRecursive(localNode.Children[1], position)
@@ -27,31 +27,8 @@ func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) *tree.Leaf {
 	return node.(*tree.Leaf)
 }
 
-func IsPointInFrontOfPlane(point mgl32.Vec3, nodePlane *plane.Plane) bool {
-	// vector from origin to plane || is also coordinates on place
-	planeToOrigin := nodePlane.Normal.Mul(nodePlane.Distance)
-	planeToPoint := point.Sub(planeToOrigin)
-	dot := nodePlane.Normal.Dot(planeToPoint.Normalize())
-	return dot > 0
-}
-
-func BuildFaceListForVisibleClusters(nodeTree []tree.Node, clusterList []int16) []uint16 {
-	return recursiveBuildFaceIndexList(&nodeTree[0], []uint16{}, clusterList)
-}
-
-func recursiveBuildFaceIndexList(node tree.INode, faceList []uint16, clusterList []int16) []uint16 {
-	if node.IsLeaf() {
-		for _, v := range clusterList {
-			if v == node.(*tree.Leaf).ClusterId {
-				faceList = append(faceList, node.(*tree.Leaf).FaceIndexList...)
-				break
-			}
-		}
-	} else {
-		for _, child := range node.(*tree.Node).Children {
-			faceList = recursiveBuildFaceIndexList(child, faceList, clusterList)
-		}
-	}
-
-	return faceList
+// Check if viewpoint is in front or behind the split plane
+// dot product of place to origin & plane to viewpoint
+func isPointInFrontOfPlane(point mgl32.Vec3, nodePlane *plane.Plane) bool {
+	return nodePlane.Normal.Dot(point.Sub(nodePlane.Normal.Mul(nodePlane.Distance)).Normalize()) > 0
 }

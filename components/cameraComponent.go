@@ -10,11 +10,12 @@ import (
 	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
+	"log"
 	"math"
 )
 
-const cameraSpeed = float64(100)
-const sensitivity = float64(0.05)
+const cameraSpeed = float64(320)
+const sensitivity = float64(0.03)
 
 var minVerticalRotation = mgl32.DegToRad(90)
 var maxVerticalRotation = mgl32.DegToRad(270)
@@ -43,8 +44,9 @@ func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 }
 
 func (component *CameraComponent) Update(dt float64) {
-	vel := cameraSpeed // * dt
+	vel := cameraSpeed * dt
 	if input.GetKeyboard().IsKeyDown(glfw.KeyW) {
+		log.Println(dt)
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Direction.Mul(float32(vel)))
 	}
 	if input.GetKeyboard().IsKeyDown(glfw.KeyA) {
@@ -57,8 +59,8 @@ func (component *CameraComponent) Update(dt float64) {
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Right.Mul(float32(vel)))
 	}
 
-	component.owner.GetTransformComponent().Rotation[0] -= float32(input.GetMouse().GetCoordinates()[0] * sensitivity) // * dt)
-	component.owner.GetTransformComponent().Rotation[2] -= float32(input.GetMouse().GetCoordinates()[1] * sensitivity) // * dt)
+	component.owner.GetTransformComponent().Rotation[0] -= float32(input.GetMouse().GetCoordinates()[0] * sensitivity)
+	component.owner.GetTransformComponent().Rotation[2] -= float32(input.GetMouse().GetCoordinates()[1] * sensitivity)
 
 	// Lock vertical rotation
 	if component.owner.GetTransformComponent().Rotation[2] > maxVerticalRotation {

@@ -17,6 +17,7 @@ type BspComponent struct {
 	RenderableComponent
 	nodeTrees    []tree.Node
 	leafClusters map[int16][]*tree.Leaf
+	clusterFaces map[int16][]uint16
 
 	cache          []interfaces.IGPUMesh
 	cachedPosition mgl32.Vec3
@@ -30,6 +31,8 @@ func (component *BspComponent) GetRenderables() []interfaces.IGPUMesh {
 	return component.cache
 }
 
+// Rebuild the current facelist to render, by first
+// recalculating using vvis data
 func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 	// View hasn't moved
 	if position.ApproxEqual(component.cachedPosition) {
@@ -49,12 +52,18 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 		component.currentClusterId = -1
 	}
 
-	// If current == nil then we are outside the map. No visibilitsy calculation
+	// If current == nil then we are outside the map. No visibility calculation.
+	// everything is visible
 	if component.currentClusterId > -1 {
-		faceList := bsp.BuildFaceListForVisibleClusters(
-			component.nodeTrees,
-			component.visibilityLump.GetVisibleIdsForCluster(component.currentClusterId))
+		// rebuild facelist for all visible clusters
+		faceList := []uint16{}
+		for clusterId, isVisible := range component.visibilityLump.GetPVSForCluster(component.currentClusterId) {
+			if isVisible == true {
+				faceList = append(faceList, component.clusterFaces[int16(clusterId)]...)
+			}
+		}
 
+		// create primitive list from visible faces
 		prims := make([]interfaces.IPrimitive, len(faceList))
 		for idx, faceIdx := range faceList {
 			prims[idx] = component.faceList[faceIdx]
@@ -70,15 +79,21 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 
 func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {
 	if node.IsLeaf() {
-		if component.leafClusters[node.(*tree.Leaf).ClusterId] == nil {
-			component.leafClusters[node.(*tree.Leaf).ClusterId] = []*tree.Leaf{
-				node.(*tree.Leaf),
-			}
-		} else {
-			component.leafClusters[node.(*tree.Leaf).ClusterId] = append(
-				component.leafClusters[node.(*tree.Leaf).ClusterId],
-				node.(*tree.Leaf))
+		l := node.(*tree.Leaf)
+		if component.clusterFaces[l.ClusterId] == nil {
+			component.clusterFaces[l.ClusterId] = []uint16{}
 		}
+		component.clusterFaces[l.ClusterId] = append(component.clusterFaces[l.ClusterId], l.FaceIndexList...)
+		//
+		//if component.leafClusters[l.ClusterId] == nil {
+		//	component.leafClusters[l.ClusterId] = []*tree.Leaf{
+		//		l,
+		//	}
+		//} else {
+		//	component.leafClusters[l.ClusterId] = append(
+		//		component.leafClusters[l.ClusterId],
+		//		l)
+		//}
 	} else {
 		for _, child := range node.(*tree.Node).Children {
 			component.recursiveBuildClusterList(child)
@@ -90,6 +105,7 @@ func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, vis
 	c := BspComponent{
 		nodeTrees:      bspTrees,
 		leafClusters:   map[int16][]*tree.Leaf{},
+		clusterFaces: map[int16][]uint16{},
 		visibilityLump: visibilityLump,
 		cache: []interfaces.IGPUMesh{
 			renderable.NewGPUResourceDynamic([]interfaces.IPrimitive{}),
@@ -101,6 +117,7 @@ func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, vis
 	for _, root := range c.nodeTrees {
 		c.recursiveBuildClusterList(&root)
 	}
+	c.UpdateVisibilityList(mgl32.Vec3{0, 0, 0})
 
 	return &c
 }

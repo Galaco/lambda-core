@@ -47,11 +47,11 @@ func LoadMap(file *bsp.Bsp) []interfaces.IPrimitive {
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
-	materialList := []*texinfo.TexInfo{}
+	materialList := make([]*texinfo.TexInfo, len(bspStructure.faces))
 
 	// BSP FACES
 	for idx, f := range bspStructure.faces {
-		materialList = append(materialList, &bspStructure.texInfos[f.TexInfo])
+		materialList[idx] = &bspStructure.texInfos[f.TexInfo]
 
 		if f.DispInfo > -1 {
 			meshList[idx] = generateDisplacementFace(&f, &bspStructure)

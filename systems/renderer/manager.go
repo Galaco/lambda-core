@@ -48,10 +48,6 @@ func (manager *Manager) Update(dt float64) {
 
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.GetType() {
-		//case components.T_RenderableComponent:
-		//	for _,resource := range c.(*components.RenderableComponent).GetRenderables() {
-		//		manager.drawMesh(resource)
-		//	}
 		case components.T_BspComponent:
 			c.(*components.BspComponent).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
 			for _, resource := range c.(*components.BspComponent).GetRenderables() {
@@ -64,8 +60,8 @@ func (manager *Manager) Update(dt float64) {
 func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
 	for _, primitive := range resource.GetPrimitives() {
 		// Missing materials will be flat coloured
-		if primitive == nil || primitive.GetMaterial() == nil {
-			// We need the fall backmaterial
+		if primitive.GetMaterial() == nil {
+			// We need the fallback material
 			continue
 		}
 		primitive.Bind()

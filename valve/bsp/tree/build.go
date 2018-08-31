@@ -43,13 +43,9 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 		if childIdx < 0 {
 			// Child is a leaf
 			l := leafs[(-1 - childIdx)]
-			faceList := make([]uint16, l.NumLeafFaces)
-			for i := uint16(0); i < l.NumLeafFaces; i++ {
-				faceList[i] = leafFaces[l.FirstLeafFace+i]
-			}
 			node.AddChild(childNum, &Leaf{
-				Id:            -childIdx,
-				FaceIndexList: faceList,
+				Id:            -1 - childIdx,
+				FaceIndexList: leafFaces[l.FirstLeafFace:l.FirstLeafFace + l.NumLeafFaces],
 				ClusterId:     l.Cluster,
 				Min: mgl32.Vec3{
 					float32(l.Mins[0]),
@@ -84,9 +80,3 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 
 	return node
 }
-
-// for each model
-// 	build node tree from root
-//	  get node children
-//		if either child is a node
-//			repeat get node children
