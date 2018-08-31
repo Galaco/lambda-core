@@ -9,17 +9,18 @@ import (
 
 // Game engine
 // Only 1 can be initialised
-type engine struct {
+type Engine struct {
 	EventManager event.Manager
 	Managers     []interfaces.IManager
-	Running      bool
+	running      bool
+	simulationSpeed float64
 
 	entities   []interfaces.IEntity
 	components []interfaces.IComponent
 }
 
 // Initialise the engine, and attached managers
-func (engine *engine) Initialise() {
+func (engine *Engine) Initialise() {
 
 	for _, manager := range engine.Managers {
 		manager.Register()
@@ -28,8 +29,8 @@ func (engine *engine) Initialise() {
 }
 
 // Run the engine
-func (engine *engine) Run() {
-	engine.Running = true
+func (engine *Engine) Run() {
+	engine.running = true
 
 	// Begin the event manager thread in the background
 	event.GetEventManager().RunConcurrent()
@@ -41,7 +42,7 @@ func (engine *engine) Run() {
 	dt := 0.0
 	startingTime := time.Now().UTC()
 
-	for engine.Running == true {
+	for engine.running == true {
 		for _, manager := range engine.Managers {
 			manager.Update(dt)
 		}
@@ -50,17 +51,38 @@ func (engine *engine) Run() {
 			manager.PostUpdate()
 		}
 
-		dt = float64(time.Now().UTC().Sub(startingTime).Nanoseconds() / 1000000) / 1000
+		dt = (float64(time.Now().UTC().Sub(startingTime).Nanoseconds() / 1000000) / 1000) * engine.simulationSpeed
 		startingTime = time.Now().UTC()
+	}
+
+	for _, component := range engine.components {
+		component.Destroy()
+	}
+
+	for _, manager := range engine.Managers {
+		manager.Unregister()
 	}
 }
 
 // Add a new manager to the engine
-func (engine *engine) AddManager(manager interfaces.IManager) {
+func (engine *Engine) AddManager(manager interfaces.IManager) {
 	engine.Managers = append(engine.Managers, manager)
 }
 
-func NewEngine() *engine {
+func (engine *Engine) Close() {
+	engine.running = false
+}
+
+func (engine *Engine) SetSimulationSpeed(multiplier float64) {
+	if multiplier < 0 {
+		return
+	}
+	engine.simulationSpeed = multiplier
+}
+
+func NewEngine() *Engine {
 	runtime.LockOSThread()
-	return &engine{}
+	return &Engine{
+		simulationSpeed: 1.0,
+	}
 }

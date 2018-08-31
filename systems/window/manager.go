@@ -24,6 +24,7 @@ func (manager *Manager) Update(dt float64) {
 
 func (manager *Manager) Unregister() {
 	manager.input.Unregister()
+	glfw.Terminate()
 }
 
 func (manager *Manager) PostUpdate() {

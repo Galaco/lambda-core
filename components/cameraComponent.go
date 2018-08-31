@@ -10,7 +10,6 @@ import (
 	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"log"
 	"math"
 )
 
@@ -46,7 +45,6 @@ func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
 func (component *CameraComponent) Update(dt float64) {
 	vel := cameraSpeed * dt
 	if input.GetKeyboard().IsKeyDown(glfw.KeyW) {
-		log.Println(dt)
 		component.owner.GetTransformComponent().Position = component.owner.GetTransformComponent().Position.Add(component.Direction.Mul(float32(vel)))
 	}
 	if input.GetKeyboard().IsKeyDown(glfw.KeyA) {
