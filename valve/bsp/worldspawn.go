@@ -14,7 +14,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
-	material2 "github.com/galaco/go-me-engine/valve/bsp/material"
+	material2 "github.com/galaco/go-me-engine/valve/material"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"

@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/bradhe/stopwatch"
-  packages = ["."]
-  revision = "fd55e776a960ff999fa1dc7f2a64e0a82d8b1f07"
-
-[[projects]]
   branch = "dev"
   name = "github.com/galaco/bsp"
   packages = [
@@ -47,13 +41,23 @@
     "primitives/worldlight",
     "versions"
   ]
-  revision = "57030f2322e62c91ed497233c4cb14c431398ce2"
+  revision = "1d2ee733688fc2ed8a0a5b15aa8978f02f0368b2"
 
 [[projects]]
   branch = "master"
   name = "github.com/galaco/source-tools-common"
-  packages = ["texdatastringtable"]
-  revision = "90a6db6872b82f184c6f535d8b5da056418c73c1"
+  packages = [
+    "entity",
+    "texdatastringtable",
+    "vmath/vector"
+  ]
+  revision = "801546aa80df417e2b5d3929a64155cd627003bd"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/galaco/vmf"
+  packages = ["."]
+  revision = "7a9ccb6e8abb1d03bb0c9a1938356b0557dd644f"
 
 [[projects]]
   branch = "master"
@@ -68,7 +72,7 @@
     ".",
     "colourformat"
   ]
-  revision = "c6984e927e1cd6400a8d6cfa69288c9ccfd92933"
+  revision = "2f45d3b5bc2295f791a239678f247e71284e5939"
 
 [[projects]]
   branch = "master"
@@ -103,6 +107,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8aa97221e5c73851fc9cc1f1658e06b28f314867a25d696b179028f499f52b03"
+  inputs-digest = "f53a37fa822931329351dae037fa12d5c65b6f7d87694dafeb5edd6f3c10c41e"
   solver-name = "gps-cdcl"
   solver-version = 1

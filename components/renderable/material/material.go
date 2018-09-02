@@ -1,43 +1,22 @@
 package material
 
 import (
+	"github.com/galaco/go-me-engine/engine/base/material"
 	"github.com/galaco/vtf"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 // Generic GPU material struct
 type Material struct {
-	filePath string
+	material.Material
 	vtf      *vtf.Vtf
-	buffer   uint32
-	width    int
-	height   int
-}
-
-// Bind this material to the GPU
-func (material *Material) Bind() {
-	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, material.buffer)
-}
-
-// Get the filepath this data was loaded from
-func (material *Material) GetFilePath() string {
-	return material.filePath
-}
-
-func (material *Material) GetWidth() int {
-	return material.width
-}
-
-func (material *Material) GetHeight() int {
-	return material.height
 }
 
 // Generate the GPU buffer for this material
 func (material *Material) GenerateGPUBuffer() {
-	gl.GenTextures(1, &material.buffer)
+	gl.GenTextures(1, &material.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)
-	gl.BindTexture(gl.TEXTURE_2D, material.buffer)
+	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
 
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -70,10 +49,8 @@ func (material *Material) GenerateGPUBuffer() {
 
 func NewMaterial(filepath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
-		filePath: filepath,
+		Material: *material.NewMaterial(filepath, width, height, []uint8{0,0,0}),
 		vtf:      vtf,
-		width:    width,
-		height:   height,
 	}
 }
 

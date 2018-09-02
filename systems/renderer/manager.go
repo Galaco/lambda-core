@@ -8,6 +8,7 @@ import (
 	"github.com/galaco/go-me-engine/systems/renderer/camera"
 	"github.com/galaco/go-me-engine/systems/renderer/gl"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 type Manager struct {
@@ -33,6 +34,8 @@ func (manager *Manager) Register() {
 	//opengl.Enable(opengl.CULL_FACE)
 	//opengl.CullFace(opengl.BACK)
 	//opengl.FrontFace(opengl.CW)
+
+	opengl.ClearColor(0.5, 0.5, 0.5, 1)
 }
 
 func (manager *Manager) Update(dt float64) {
@@ -41,15 +44,24 @@ func (manager *Manager) Update(dt float64) {
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 
 	modelUniform := manager.glContext.GetUniform("model")
-	model := manager.currentCamera.ModelMatrix()
-	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+	model := mgl32.Ident4()
+	//opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 	viewUniform := manager.glContext.GetUniform("view")
 	view := manager.currentCamera.ViewMatrix()
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.GetType() {
+		case components.T_RenderableComponent:
+			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*base.Entity).GetTransformComponent().GetTransformationMatrix()
+			opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
+
+			for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
+				manager.drawMesh(resource)
+			}
 		case components.T_BspComponent:
+			//modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*base.Entity).GetTransformComponent().GetTransformationMatrix()
+			opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 			c.(*components.BspComponent).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
 			for _, resource := range c.(*components.BspComponent).GetRenderables() {
 				manager.drawMesh(resource)
@@ -58,6 +70,7 @@ func (manager *Manager) Update(dt float64) {
 	}
 }
 
+// render a mesh and its submeshes/primitives
 func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
 	for _, primitive := range resource.GetPrimitives() {
 		// Missing materials will be flat coloured

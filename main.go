@@ -1,6 +1,8 @@
 package main
 
 import (
+	bsplib "github.com/galaco/bsp"
+	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/go-me-engine/components"
 	"github.com/galaco/go-me-engine/engine"
 	"github.com/galaco/go-me-engine/engine/base"
@@ -12,6 +14,7 @@ import (
 	"github.com/galaco/go-me-engine/systems/renderer"
 	"github.com/galaco/go-me-engine/systems/window"
 	"github.com/galaco/go-me-engine/valve/bsp"
+	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
 )
@@ -36,7 +39,7 @@ func main() {
 	//Implement a way of shutting down the engine
 	event.GetEventManager().Listen(messagetype.KeyDown, Closeable{Application})
 
-	Application.SetSimulationSpeed(1)
+	Application.SetSimulationSpeed(2.5)
 
 	// Run the engine
 	Application.Run()
@@ -44,24 +47,30 @@ func main() {
 
 func LoadMap(filename string) {
 	// BSP
-	bspData := bsp.LoadBsp(filename)
-	if bspData.GetHeader().Version < 19 {
+	bspData, err := bsplib.ReadFromFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if bspData.GetHeader().Version < 20 {
 		log.Fatal("Unsupported BSP Version. Exiting...")
 	}
 
-	// Fetch all BSP face data
+	// Load worldspawn
 	log.Println("Loading map data")
-	bspComponent := bsp.LoadMap(bspData)
-	log.Println("Loaded map data")
-	//for _, primitive := range bspPrimitives {
-	//	// Ensure created primitive is ready on gpu
-	//	if primitive != nil {
-	//		primitive.GenerateGPUBuffer()
-	//	}
-	//}
-
 	worldSpawn := factory.NewEntity(&base.Entity{})
-	factory.NewComponent(bspComponent, worldSpawn)
+	factory.NewComponent(bsp.LoadMap(bspData), worldSpawn)
+	log.Println("Loaded map data")
+
+	// Get entdata
+	vmfEntityTree,err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())
+	if err != nil {
+		log.Fatal(err)
+	}
+	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
+	log.Printf("Found %d entities\n", entityList.Length())
+	for i := 0; i < entityList.Length(); i++ {
+		bsp.CreateEntity(entityList.Get(i))
+	}
 }
 
 
