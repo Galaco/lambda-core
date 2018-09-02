@@ -9,7 +9,7 @@ import (
 // Generic GPU material struct
 type Material struct {
 	material.Material
-	vtf      *vtf.Vtf
+	vtf *vtf.Vtf
 }
 
 // Generate the GPU buffer for this material
@@ -49,7 +49,7 @@ func (material *Material) GenerateGPUBuffer() {
 
 func NewMaterial(filepath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
-		Material: *material.NewMaterial(filepath, width, height, []uint8{0,0,0}),
+		Material: *material.NewMaterial(filepath, width, height, []uint8{0, 0, 0}),
 		vtf:      vtf,
 	}
 }

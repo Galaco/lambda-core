@@ -10,9 +10,9 @@ import (
 // Game engine
 // Only 1 can be initialised
 type Engine struct {
-	EventManager event.Manager
-	Managers     []interfaces.IManager
-	running      bool
+	EventManager    event.Manager
+	Managers        []interfaces.IManager
+	running         bool
 	simulationSpeed float64
 
 	entities   []interfaces.IEntity
@@ -51,7 +51,7 @@ func (engine *Engine) Run() {
 			manager.PostUpdate()
 		}
 
-		dt = (float64(time.Now().UTC().Sub(startingTime).Nanoseconds() / 1000000) / 1000) * engine.simulationSpeed
+		dt = (float64(time.Now().UTC().Sub(startingTime).Nanoseconds()/1000000) / 1000) * engine.simulationSpeed
 		startingTime = time.Now().UTC()
 	}
 

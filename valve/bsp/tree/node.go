@@ -14,7 +14,7 @@ type Node struct {
 	Children [2]INode
 	Min      mgl32.Vec3
 	Max      mgl32.Vec3
-	Plane	 *plane.Plane
+	Plane    *plane.Plane
 }
 
 func (node *Node) IsLeaf() bool {

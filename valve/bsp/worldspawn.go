@@ -14,25 +14,25 @@ import (
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
-	material2 "github.com/galaco/go-me-engine/valve/material"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
+	material2 "github.com/galaco/go-me-engine/valve/material"
 	"github.com/go-gl/mathgl/mgl32"
 	"log"
 	"math"
 )
 
 type bspstructs struct {
-	faces     []face.Face
-	planes    []plane.Plane
-	vertexes  []mgl32.Vec3
-	surfEdges []int32
-	edges     [][2]uint16
-	texInfos  []texinfo.TexInfo
-	dispInfos []dispinfo.DispInfo
-	dispVerts []dispvert.DispVert
-	pakFile   *lumps.Pakfile
+	faces      []face.Face
+	planes     []plane.Plane
+	vertexes   []mgl32.Vec3
+	surfEdges  []int32
+	edges      [][2]uint16
+	texInfos   []texinfo.TexInfo
+	dispInfos  []dispinfo.DispInfo
+	dispVerts  []dispvert.DispVert
+	pakFile    *lumps.Pakfile
 	visibility *visibility.Vis
 }
 

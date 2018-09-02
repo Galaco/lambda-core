@@ -62,7 +62,7 @@ func LoadMap(filename string) {
 	log.Println("Loaded map data")
 
 	// Get entdata
-	vmfEntityTree,err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())
+	vmfEntityTree, err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,8 +72,6 @@ func LoadMap(filename string) {
 		bsp.CreateEntity(entityList.Get(i))
 	}
 }
-
-
 
 // Simple object to control engine shutdown utilising the internal event manager
 type Closeable struct {

@@ -19,11 +19,11 @@ type BspComponent struct {
 	leafClusters map[int16][]*tree.Leaf
 	clusterFaces map[int16][]uint16
 
-	cache          []interfaces.IGPUMesh
-	cachedPosition mgl32.Vec3
+	cache            []interfaces.IGPUMesh
+	cachedPosition   mgl32.Vec3
 	currentClusterId int16
-	visibilityLump *visibility.Vis
-	faceList       []interfaces.IPrimitive
+	visibilityLump   *visibility.Vis
+	faceList         []interfaces.IPrimitive
 }
 
 // BspCompo
@@ -59,8 +59,8 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 	if component.currentClusterId != -1 && skipVisibilityCulling == false {
 		// rebuild facelist for all visible clusters
 		visibleLeafFaces := make([]interfaces.IPrimitive, 0)
-		for _,clusterId := range component.visibilityLump.GetVisibleClusters(component.currentClusterId) {
-			for _,leaf := range component.leafClusters[int16(clusterId)] {
+		for _, clusterId := range component.visibilityLump.GetVisibleClusters(component.currentClusterId) {
+			for _, leaf := range component.leafClusters[int16(clusterId)] {
 				visibleLeafFaces = append(visibleLeafFaces, leaf.Faces...)
 			}
 		}
@@ -81,7 +81,6 @@ func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {
 		}
 		component.clusterFaces[l.ClusterId] = append(component.clusterFaces[l.ClusterId], l.FaceIndexList...)
 
-
 		if component.leafClusters[l.ClusterId] == nil {
 			component.leafClusters[l.ClusterId] = []*tree.Leaf{}
 		}
@@ -97,7 +96,7 @@ func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, vis
 	c := BspComponent{
 		nodeTrees:      bspTrees,
 		leafClusters:   map[int16][]*tree.Leaf{},
-		clusterFaces: map[int16][]uint16{},
+		clusterFaces:   map[int16][]uint16{},
 		visibilityLump: visibilityLump,
 		cache: []interfaces.IGPUMesh{
 			renderable.NewGPUResourceDynamic([]interfaces.IPrimitive{}),

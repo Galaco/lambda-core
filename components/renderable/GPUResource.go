@@ -27,7 +27,7 @@ func (resource *GPUResource) AddPrimitive(primitive interfaces.IPrimitive) {
 }
 
 func (resource *GPUResource) AddPrimitives(primitives []interfaces.IPrimitive) {
-	for _,p := range primitives {
+	for _, p := range primitives {
 		resource.AddPrimitive(p)
 	}
 }

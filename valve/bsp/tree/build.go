@@ -23,9 +23,9 @@ func BuildTree(file *bsp.Bsp, primitives []interfaces.IPrimitive) []Node {
 		rootNode := nodes[rootModel.HeadNode]
 
 		root := Node{
-			Id:  rootModel.HeadNode,
-			Min: rootModel.Mins,
-			Max: rootModel.Maxs,
+			Id:    rootModel.HeadNode,
+			Min:   rootModel.Mins,
+			Max:   rootModel.Maxs,
 			Plane: &planes[rootNode.PlaneNum],
 		}
 
@@ -45,13 +45,13 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 			// Child is a leaf
 			l := leafs[(-1 - childIdx)]
 			faceList := make([]interfaces.IPrimitive, l.NumLeafFaces)
-			for i,idx := range leafFaces[l.FirstLeafFace:l.FirstLeafFace + l.NumLeafFaces] {
+			for i, idx := range leafFaces[l.FirstLeafFace : l.FirstLeafFace+l.NumLeafFaces] {
 				faceList[i] = primitives[idx]
 			}
 			node.AddChild(childNum, &Leaf{
 				Id:            -1 - childIdx,
-				Faces: 		   faceList,
-				FaceIndexList: leafFaces[l.FirstLeafFace:l.FirstLeafFace + l.NumLeafFaces],
+				Faces:         faceList,
+				FaceIndexList: leafFaces[l.FirstLeafFace : l.FirstLeafFace+l.NumLeafFaces],
 				ClusterId:     l.Cluster,
 				Min: mgl32.Vec3{
 					float32(l.Mins[0]),

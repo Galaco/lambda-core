@@ -6,10 +6,10 @@ import (
 
 // Generic GPU material struct
 type Material struct {
-	filePath string
-	Buffer   uint32
-	width    int
-	height   int
+	filePath      string
+	Buffer        uint32
+	width         int
+	height        int
 	rawColourData []uint8
 }
 
@@ -57,9 +57,9 @@ func (material *Material) GenerateGPUBuffer() {
 
 func NewMaterial(filepath string, width int, height int, rgbData []uint8) *Material {
 	return &Material{
-		filePath: filepath,
+		filePath:      filepath,
 		rawColourData: rgbData,
-		width:    width,
-		height:   height,
+		width:         width,
+		height:        height,
 	}
 }

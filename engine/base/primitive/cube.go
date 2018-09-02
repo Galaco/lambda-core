@@ -45,9 +45,7 @@ var cubeVerts = []float32{
 	1.0, 1.0, 1.0,
 }
 
-var cubeIndices = []uint16{
-
-}
+var cubeIndices = []uint16{}
 
 var cubeNormals = cubeVerts
 
@@ -82,7 +80,7 @@ type Cube struct {
 	base.Primitive
 }
 
-func (cube *Cube) GetFaceMode() uint32{
+func (cube *Cube) GetFaceMode() uint32 {
 	return gl.TRIANGLES
 }
 
@@ -92,7 +90,7 @@ func NewCube() *Cube {
 	}
 
 	c.AddTextureCoordinateData(cubeUVs)
-	mat := material.NewMaterial("placeholder", 2, 2, []uint8{128,128,128,128,128,128,128,128,128,128,128,128})
+	mat := material.NewMaterial("placeholder", 2, 2, []uint8{128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128})
 	mat.GenerateGPUBuffer()
 	c.AddMaterial(mat)
 	c.GenerateGPUBuffer()

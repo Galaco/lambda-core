@@ -30,9 +30,9 @@ func findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) *tree.Leaf {
 // Check if viewpoint is in front or behind the split plane
 // dot product of place to origin & plane to viewpoint
 func isPointInFrontOfPlane(point mgl32.Vec3, nodePlane *plane.Plane) bool {
-	dist := (nodePlane.Normal.X() * point.X() +
-		nodePlane.Normal.Y() * point.Y() +
-		nodePlane.Normal.Z() * point.Z()) - nodePlane.Distance
+	dist := (nodePlane.Normal.X()*point.X() +
+		nodePlane.Normal.Y()*point.Y() +
+		nodePlane.Normal.Z()*point.Z()) - nodePlane.Distance
 
 	return dist >= 0
 	//
