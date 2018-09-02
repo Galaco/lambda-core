@@ -8,11 +8,14 @@ import (
 	"github.com/galaco/bsp/primitives/face"
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/texinfo"
+	"github.com/galaco/bsp/primitives/visibility"
+	"github.com/galaco/go-me-engine/components"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	material2 "github.com/galaco/go-me-engine/valve/bsp/material"
+	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
 	"github.com/go-gl/mathgl/mgl32"
@@ -30,20 +33,22 @@ type bspstructs struct {
 	dispInfos []dispinfo.DispInfo
 	dispVerts []dispvert.DispVert
 	pakFile   *lumps.Pakfile
+	visibility *visibility.Vis
 }
 
-func LoadMap(file *bsp.Bsp) []interfaces.IPrimitive {
+func LoadMap(file *bsp.Bsp) *components.BspComponent {
 	FileManager := filesystem.GetFileManager()
 	bspStructure := bspstructs{
-		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
-		planes:    file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
-		vertexes:  file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
-		surfEdges: file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
-		edges:     file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
-		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
-		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
-		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-		pakFile:   file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
+		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
+		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
+		vertexes:   file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
+		surfEdges:  file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
+		edges:      file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
+		texInfos:   file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
+		dispInfos:  file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
+		dispVerts:  file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
+		pakFile:    file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
+		visibility: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
@@ -61,6 +66,9 @@ func LoadMap(file *bsp.Bsp) []interfaces.IPrimitive {
 		}
 	}
 
+	// Build bsp kd tree
+	visibilityTree := tree.BuildTree(file, meshList)
+
 	//MATERIALS
 	// Open VPK filesystem
 	vpkHandle, err := vpk.OpenVPK("data/cstrike/cstrike_pak")
@@ -72,9 +80,6 @@ func LoadMap(file *bsp.Bsp) []interfaces.IPrimitive {
 
 	// Add MATERIALS TO FACES
 	for idx, primitive := range meshList {
-		if primitive == nil {
-			continue
-		}
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
 		vmtPath := faceVmt
 		baseTexturePath := "-1"
@@ -88,9 +93,11 @@ func LoadMap(file *bsp.Bsp) []interfaces.IPrimitive {
 		} else {
 			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1))
 		}
+
+		primitive.GenerateGPUBuffer()
 	}
 
-	return meshList
+	return components.NewBspComponent(visibilityTree, meshList, bspStructure.visibility)
 }
 
 // Create primitives from face data in the bsp

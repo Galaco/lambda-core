@@ -11,16 +11,4 @@ func LoadBsp(filename string) *bsp.Bsp {
 		log.Fatal(err)
 	}
 	return file
-	//
-	//f, err := os.Open(filename)
-	//if err!= nil {
-	//	log.Fatal(err)
-	//}
-	//reader := bsp.NewReader(f)
-	//
-	//
-	////Load file
-	//f.Close()
-	//
-	//return file
 }

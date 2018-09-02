@@ -20,13 +20,16 @@ func (resource *GPUResource) Prepare() {
 
 // Add a new primitive
 func (resource *GPUResource) AddPrimitive(primitive interfaces.IPrimitive) {
+	if resource.isBoundToGPU == true {
+		primitive.GenerateGPUBuffer()
+	}
 	resource.primitives = append(resource.primitives, primitive)
-	resource.isBoundToGPU = false
 }
 
 func (resource *GPUResource) AddPrimitives(primitives []interfaces.IPrimitive) {
-	resource.primitives = append(resource.primitives, primitives...)
-	resource.isBoundToGPU = false
+	for _,p := range primitives {
+		resource.AddPrimitive(p)
+	}
 }
 
 // Get all primitives/submeshes

@@ -51,26 +51,22 @@ func (component *BspComponent) UpdateVisibilityList(position mgl32.Vec3) {
 	} else {
 		component.currentClusterId = -1
 	}
+	// skip visibility calculation results
+	skipVisibilityCulling := true
 
 	// If current == nil then we are outside the map. No visibility calculation.
 	// everything is visible
-	if component.currentClusterId > -1 {
+	if component.currentClusterId != -1 && skipVisibilityCulling == false {
 		// rebuild facelist for all visible clusters
-		faceList := []uint16{}
-		for clusterId, isVisible := range component.visibilityLump.GetPVSForCluster(component.currentClusterId) {
-			if isVisible == true {
-				faceList = append(faceList, component.clusterFaces[int16(clusterId)]...)
+		visibleLeafFaces := make([]interfaces.IPrimitive, 0)
+		for _,clusterId := range component.visibilityLump.GetVisibleClusters(component.currentClusterId) {
+			for _,leaf := range component.leafClusters[int16(clusterId)] {
+				visibleLeafFaces = append(visibleLeafFaces, leaf.Faces...)
 			}
 		}
 
-		// create primitive list from visible faces
-		prims := make([]interfaces.IPrimitive, len(faceList))
-		for idx, faceIdx := range faceList {
-			prims[idx] = component.faceList[faceIdx]
-		}
-
 		component.cache[0].(*renderable.GPUResourceDynamic).Reset()
-		component.cache[0].AddPrimitives(prims)
+		component.cache[0].AddPrimitives(visibleLeafFaces)
 	} else {
 		component.cache[0].(*renderable.GPUResourceDynamic).Reset()
 		component.cache[0].AddPrimitives(component.faceList)
@@ -84,16 +80,12 @@ func (component *BspComponent) recursiveBuildClusterList(node tree.INode) {
 			component.clusterFaces[l.ClusterId] = []uint16{}
 		}
 		component.clusterFaces[l.ClusterId] = append(component.clusterFaces[l.ClusterId], l.FaceIndexList...)
-		//
-		//if component.leafClusters[l.ClusterId] == nil {
-		//	component.leafClusters[l.ClusterId] = []*tree.Leaf{
-		//		l,
-		//	}
-		//} else {
-		//	component.leafClusters[l.ClusterId] = append(
-		//		component.leafClusters[l.ClusterId],
-		//		l)
-		//}
+
+
+		if component.leafClusters[l.ClusterId] == nil {
+			component.leafClusters[l.ClusterId] = []*tree.Leaf{}
+		}
+		component.leafClusters[l.ClusterId] = append(component.leafClusters[l.ClusterId], l)
 	} else {
 		for _, child := range node.(*tree.Node).Children {
 			component.recursiveBuildClusterList(child)

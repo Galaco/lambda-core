@@ -29,6 +29,7 @@ func (manager *Manager) Register() {
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
 	opengl.Enable(opengl.DEPTH_TEST)
+	opengl.LineWidth(32)
 	//opengl.Enable(opengl.CULL_FACE)
 	//opengl.CullFace(opengl.BACK)
 	//opengl.FrontFace(opengl.CW)
