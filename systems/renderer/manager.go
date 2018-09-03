@@ -60,7 +60,6 @@ func (manager *Manager) Update(dt float64) {
 				manager.drawMesh(resource)
 			}
 		case components.T_BspComponent:
-			//modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*base.Entity).GetTransformComponent().GetTransformationMatrix()
 			opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 			c.(*components.BspComponent).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
 			for _, resource := range c.(*components.BspComponent).GetRenderables() {

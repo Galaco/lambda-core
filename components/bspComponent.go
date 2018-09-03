@@ -102,6 +102,7 @@ func NewBspComponent(bspTrees []tree.Node, faceList []interfaces.IPrimitive, vis
 			renderable.NewGPUResourceDynamic([]interfaces.IPrimitive{}),
 		},
 		faceList: faceList,
+		cachedPosition: mgl32.Vec3{65536, 65536, 65536},
 	}
 	c.Etype = T_BspComponent
 

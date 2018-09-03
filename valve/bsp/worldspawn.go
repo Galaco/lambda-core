@@ -15,6 +15,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	file2 "github.com/galaco/go-me-engine/valve/file"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
 	material2 "github.com/galaco/go-me-engine/valve/material"
@@ -34,6 +35,7 @@ type bspstructs struct {
 	dispVerts  []dispvert.DispVert
 	pakFile    *lumps.Pakfile
 	visibility *visibility.Vis
+	game *lumps.Game
 }
 
 func LoadMap(file *bsp.Bsp) *components.BspComponent {
@@ -49,6 +51,7 @@ func LoadMap(file *bsp.Bsp) *components.BspComponent {
 		dispVerts:  file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
 		pakFile:    file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
 		visibility: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
+		game: 		file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
@@ -75,6 +78,8 @@ func LoadMap(file *bsp.Bsp) *components.BspComponent {
 	if err != nil {
 		log.Fatal(err)
 	}
+	file2.SetGameVPK(vpkHandle)
+	file2.SetPakfile(bspStructure.pakFile)
 	stringTable := stringtable.GetTable(file)
 	material2.LoadMaterialList(bspStructure.pakFile, vpkHandle, stringtable.SortUnique(stringTable, materialList))
 
@@ -96,6 +101,9 @@ func LoadMap(file *bsp.Bsp) *components.BspComponent {
 
 		primitive.GenerateGPUBuffer()
 	}
+
+	// Load static props
+	LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	return components.NewBspComponent(visibilityTree, meshList, bspStructure.visibility)
 }

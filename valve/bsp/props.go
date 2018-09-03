@@ -1,0 +1,71 @@
+package bsp
+
+import (
+	"github.com/galaco/bsp/primitives/game"
+	"github.com/galaco/go-me-engine/valve/file"
+	"github.com/galaco/go-me-engine/valve/studiomodel"
+	"github.com/galaco/go-me-engine/valve/studiomodel/vvd"
+	"io"
+	"log"
+	"strings"
+)
+
+var mdlExtensions = []string {
+	".mdl",
+	".vvd",
+	".vtx",
+}
+
+func LoadStaticProps(propLump *game.StaticPropLump) {
+	log.Println("Loading static props")
+	propPaths := []string{}
+	for _,propEntry := range propLump.PropLumps {
+		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.PropType])
+	}
+
+	propPaths = buildUniquePropList(propPaths)
+	for _,path := range propPaths {
+		loadProp(strings.Split(path, ".mdl")[0])
+	}
+}
+
+// Build a list of all different prop files.
+// Removes duplications
+func buildUniquePropList(propList []string) []string {
+	retList := []string{}
+	for _,entry := range propList {
+		found := false
+		for _,unique := range retList {
+			if entry == unique {
+				found = true
+				break
+			}
+		}
+		if !found {
+			retList = append(retList, entry)
+		}
+	}
+
+	return retList
+}
+
+func loadProp(filePath string) *studiomodel.StudioModel {
+	f,err := file.Load(filePath + ".vvd")
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	vvdFile,err := loadVvd(f)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+
+	return &studiomodel.StudioModel{
+		Vvd: vvdFile,
+	}
+}
+
+func loadVvd(stream io.Reader) (*vvd.Vvd,error) {
+	return vvd.ReadFromStream(stream)
+}
