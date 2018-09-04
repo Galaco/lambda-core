@@ -4,10 +4,12 @@ import (
 	"github.com/galaco/go-me-engine/components"
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/factory"
+	"github.com/galaco/go-me-engine/engine/input"
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/systems/renderer/camera"
 	"github.com/galaco/go-me-engine/systems/renderer/gl"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -15,6 +17,8 @@ type Manager struct {
 	base.Manager
 	glContext     gl.Context
 	currentCamera camera.Camera
+
+	renderAsWireframe bool
 }
 
 func (manager *Manager) Register() {
@@ -39,6 +43,7 @@ func (manager *Manager) Register() {
 }
 
 func (manager *Manager) Update(dt float64) {
+	manager.updateRendererProperties()
 	manager.currentCamera.Update(dt)
 
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
@@ -79,6 +84,14 @@ func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
 		}
 		primitive.Bind()
 		primitive.GetMaterial().Bind()
-		opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices()))/3)
+		if manager.renderAsWireframe == true {
+			opengl.DrawArrays(opengl.LINES, 0, int32(len(primitive.GetVertices()))/3)
+		} else {
+			opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices()))/3)
+		}
 	}
+}
+
+func (manager *Manager) updateRendererProperties() {
+	manager.renderAsWireframe = input.GetKeyboard().IsKeyDown(glfw.KeyX)
 }

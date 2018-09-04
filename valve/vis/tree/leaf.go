@@ -12,6 +12,7 @@ type Leaf struct {
 	Min           mgl32.Vec3
 	Max           mgl32.Vec3
 	Faces         []interfaces.IPrimitive
+	SkyVisible    bool
 }
 
 func (leaf *Leaf) IsLeaf() bool {

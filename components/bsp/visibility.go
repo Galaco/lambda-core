@@ -2,7 +2,7 @@ package bsp
 
 import (
 	"github.com/galaco/bsp/primitives/plane"
-	"github.com/galaco/go-me-engine/valve/bsp/tree"
+	"github.com/galaco/go-me-engine/valve/vis/tree"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

@@ -14,11 +14,11 @@ import (
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/valve/bsp/tree"
 	file2 "github.com/galaco/go-me-engine/valve/file"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
 	material2 "github.com/galaco/go-me-engine/valve/material"
+	"github.com/galaco/go-me-engine/valve/vis"
 	"github.com/go-gl/mathgl/mgl32"
 	"log"
 	"math"
@@ -69,9 +69,6 @@ func LoadMap(file *bsp.Bsp) *components.BspComponent {
 		}
 	}
 
-	// Build bsp kd tree
-	visibilityTree := tree.BuildTree(file, meshList)
-
 	//MATERIALS
 	// Open VPK filesystem
 	vpkHandle, err := vpk.OpenVPK("data/cstrike/cstrike_pak")
@@ -105,7 +102,9 @@ func LoadMap(file *bsp.Bsp) *components.BspComponent {
 	// Load static props
 	LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
-	return components.NewBspComponent(visibilityTree, meshList, bspStructure.visibility)
+	visData := vis.NewVisFromBSP(file)
+
+	return components.NewBspComponent(meshList, visData)
 }
 
 // Create primitives from face data in the bsp

@@ -5,7 +5,6 @@ import (
 	"github.com/galaco/go-me-engine/valve/file"
 	"github.com/galaco/go-me-engine/valve/studiomodel"
 	"github.com/galaco/go-me-engine/valve/studiomodel/vvd"
-	"io"
 	"log"
 	"strings"
 )
@@ -50,22 +49,32 @@ func buildUniquePropList(propList []string) []string {
 }
 
 func loadProp(filePath string) *studiomodel.StudioModel {
+	// VVD
 	f,err := file.Load(filePath + ".vvd")
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	vvdFile,err := loadVvd(f)
+	vvdFile,err := vvd.ReadFromStream(f)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
 
+	// VTX
+	//f,err = file.Load(filePath + ".sw.vtx")
+	//if err != nil {
+	//	log.Println(err)
+	//	return nil
+	//}
+	//vtxFile,err := vtx.ReadFromStream(f)
+	//if err != nil {
+	//	log.Println(err)
+	//	return nil
+	//}
+
 	return &studiomodel.StudioModel{
 		Vvd: vvdFile,
+//		Vtx: vtxFile,
 	}
-}
-
-func loadVvd(stream io.Reader) (*vvd.Vvd,error) {
-	return vvd.ReadFromStream(stream)
 }

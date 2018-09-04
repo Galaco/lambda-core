@@ -45,8 +45,14 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 			// Child is a leaf
 			l := leafs[(-1 - childIdx)]
 			faceList := make([]interfaces.IPrimitive, l.NumLeafFaces)
-			for i, idx := range leafFaces[l.FirstLeafFace : l.FirstLeafFace+l.NumLeafFaces] {
-				faceList[i] = primitives[idx]
+			if len(primitives) > 0 {
+				for i, idx := range leafFaces[l.FirstLeafFace : l.FirstLeafFace+l.NumLeafFaces] {
+					faceList[i] = primitives[idx]
+				}
+			}
+			skyVisible := false
+			if l.Flags() & (leaf.LEAF_FLAGS_SKY | leaf.LEAF_FLAGS_SKY2D) != 0 {
+				skyVisible = true
 			}
 			node.AddChild(childNum, &Leaf{
 				Id:            -1 - childIdx,
@@ -63,6 +69,7 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 					float32(l.Maxs[1]),
 					float32(l.Maxs[2]),
 				},
+				SkyVisible: skyVisible,
 			})
 		} else {
 			// Child is another node

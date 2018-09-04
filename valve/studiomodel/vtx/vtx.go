@@ -1,6 +1,16 @@
-package sw
-type Sw struct {
+package vtx
 
+type Vtx struct {
+	Header header
+	BodyParts []bodyPartHeader
+	Models []modelHeader
+	ModelLODs []modelLODHeader
+	Meshes []meshHeader
+	StripGroups []stripGroupHeader
+	Indices []uint16
+	Vertices []float32
+	Strips []stripHeader
+	VertexList []vertex
 }
 
 
@@ -22,26 +32,24 @@ type header struct {
 }
 
 
-type bodypartheader struct {
-	NumModels int
-	ModelOffset int
+type bodyPartHeader struct {
+	NumModels int32
+	ModelOffset int32
 }
 
-type modelheader struct {
+type modelHeader struct {
 	NumLODs int32
 	LODOffset int32
 }
 
-type modelLODheader struct {
+type modelLODHeader struct {
 	NumMeshes int32
 	MeshOffset int32
-
 	SwitchPoint float32
-
 }
 
 
-type meshheader struct {
+type meshHeader struct {
 	NumStripGroups int32
 	StripGroupHeaderOffset int32
 
@@ -53,7 +61,7 @@ const StripGroupIsHWSkinned = 0x02
 const StripGroupIsDeltaFlexed = 0x04
 const StripGroupSuppressHWMorph = 0x08
 
-type stripgroupheader struct {
+type stripGroupHeader struct {
 	NumVerts int32
 	VertOffset int32
 
@@ -67,7 +75,7 @@ type stripgroupheader struct {
 }
 
 
-type stripheader struct {
+type stripHeader struct {
 	NumIndices int32
 	IndexOffset int32
 
