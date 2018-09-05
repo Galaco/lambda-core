@@ -9,15 +9,15 @@ import (
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/bsp/primitives/visibility"
-	"github.com/galaco/go-me-engine/components"
 	"github.com/galaco/go-me-engine/components/renderable/material"
 	"github.com/galaco/go-me-engine/engine/base"
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/entity"
 	file2 "github.com/galaco/go-me-engine/valve/file"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
 	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
-	material2 "github.com/galaco/go-me-engine/valve/material"
+	material2 "github.com/galaco/go-me-engine/valve/loaders/material"
 	"github.com/galaco/go-me-engine/valve/vis"
 	"github.com/go-gl/mathgl/mgl32"
 	"log"
@@ -38,7 +38,7 @@ type bspstructs struct {
 	game *lumps.Game
 }
 
-func LoadMap(file *bsp.Bsp) *components.BspComponent {
+func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	FileManager := filesystem.GetFileManager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
@@ -104,7 +104,7 @@ func LoadMap(file *bsp.Bsp) *components.BspComponent {
 
 	visData := vis.NewVisFromBSP(file)
 
-	return components.NewBspComponent(meshList, visData)
+	return entity.NewWorld(meshList, visData)
 }
 
 // Create primitives from face data in the bsp

@@ -24,7 +24,6 @@ func (component *RenderableComponent) GetRenderables() []interfaces.IGPUMesh {
 
 func NewRenderableComponent() *RenderableComponent {
 	c := RenderableComponent{}
-	c.Etype = T_RenderableComponent
 
 	return &c
 }

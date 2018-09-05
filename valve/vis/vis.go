@@ -5,7 +5,6 @@ import (
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/visibility"
-	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/valve/vis/tree"
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -14,6 +13,9 @@ type Vis struct {
 	ClusterCache []Cache
 	BspTree []tree.Node
 	VisibilityLump *visibility.Vis
+
+	viewPosition mgl32.Vec3
+	viewCurrentLeaf *tree.Leaf
 }
 
 func (vis *Vis) GetCacheLeavesForCluster(clusterId int16) *Cache {
@@ -58,20 +60,22 @@ func (vis *Vis) recursiveGetLeavesForPVS(node tree.INode, clusterList []int16) [
 }
 
 func (vis *Vis) FindCurrentLeaf(position mgl32.Vec3) *tree.Leaf {
-	// offset [0] is always worldspawn
-	// see: https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Model
-	return vis.findCurrentLeafRecursive(&vis.BspTree[0], position)
+	if vis.viewPosition.ApproxEqualThreshold(position, 0.000000001) == false {
+		vis.viewPosition = position
+		// offset [0] is always worldspawn
+		// see: https://developer.valvesoftware.com/wiki/Source_BSP_File_Format#Model
+		vis.viewCurrentLeaf =  vis.findCurrentLeafRecursive(&vis.BspTree[0], vis.viewPosition)
+	}
+	return vis.viewCurrentLeaf
 }
 
 func (vis *Vis) findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) *tree.Leaf {
 	// treat as a npde
 	if node.IsLeaf() != true {
-		localNode := node.(*tree.Node)
-
-		if isPointInFrontOfPlane(position, localNode.Plane) == true {
-			return vis.findCurrentLeafRecursive(localNode.Children[0], position)
+		if isPointInFrontOfPlane(position, node.(*tree.Node).Plane) == true {
+			return vis.findCurrentLeafRecursive(node.(*tree.Node).Children[0], position)
 		} else {
-			return vis.findCurrentLeafRecursive(localNode.Children[1], position)
+			return vis.findCurrentLeafRecursive(node.(*tree.Node).Children[1], position)
 		}
 	}
 
@@ -81,16 +85,7 @@ func (vis *Vis) findCurrentLeafRecursive(node tree.INode, position mgl32.Vec3) *
 // Check if viewpoint is in front or behind the split plane
 // dot product of place to origin & plane to viewpoint
 func isPointInFrontOfPlane(point mgl32.Vec3, nodePlane *plane.Plane) bool {
-	dist := (nodePlane.Normal.X()*point.X() +
-		nodePlane.Normal.Y()*point.Y() +
-		nodePlane.Normal.Z()*point.Z()) - nodePlane.Distance
-
-	return dist >= 0
-	//
-	//planeToOrigin := nodePlane.Normal.Mul(nodePlane.Distance)
-	//planeToPoint := point.Sub(planeToOrigin)
-	//
-	//return nodePlane.Normal.Dot(planeToPoint.Normalize()) > 0
+	return point.Dot(nodePlane.Normal) > nodePlane.Distance
 }
 
 
@@ -100,6 +95,7 @@ func isPointInFrontOfPlane(point mgl32.Vec3, nodePlane *plane.Plane) bool {
 func NewVisFromBSP(file *bsp.Bsp) *Vis {
 	return &Vis{
 		VisibilityLump: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
-		BspTree: tree.BuildTree(file, make([]interfaces.IPrimitive, 0)),
+		BspTree: tree.BuildTree(file),
+		viewPosition: mgl32.Vec3{65536, 65536, 65536},
 	}
 }

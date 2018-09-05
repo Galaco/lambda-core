@@ -6,6 +6,7 @@ import (
 	"github.com/galaco/go-me-engine/engine/factory"
 	"github.com/galaco/go-me-engine/engine/input"
 	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/go-me-engine/entity"
 	"github.com/galaco/go-me-engine/systems/renderer/camera"
 	"github.com/galaco/go-me-engine/systems/renderer/gl"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
@@ -35,9 +36,6 @@ func (manager *Manager) Register() {
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
 	opengl.Enable(opengl.DEPTH_TEST)
 	opengl.LineWidth(32)
-	//opengl.Enable(opengl.CULL_FACE)
-	//opengl.CullFace(opengl.BACK)
-	//opengl.FrontFace(opengl.CW)
 
 	opengl.ClearColor(0.5, 0.5, 0.5, 1)
 }
@@ -50,24 +48,29 @@ func (manager *Manager) Update(dt float64) {
 
 	modelUniform := manager.glContext.GetUniform("model")
 	model := mgl32.Ident4()
-	//opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 	viewUniform := manager.glContext.GetUniform("view")
 	view := manager.currentCamera.ViewMatrix()
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
+
+	for _, ent := range factory.GetObjectManager().GetAllEntities() {
+		switch ent.(type) {
+		case *entity.WorldSpawn:
+			ent.(*entity.WorldSpawn).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
+			opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+			for _, resource := range ent.(*entity.WorldSpawn).GetPrimitives() {
+				manager.drawMesh(resource)
+			}
+		}
+	}
+
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
-		switch c.GetType() {
-		case components.T_RenderableComponent:
-			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*base.Entity).GetTransformComponent().GetTransformationMatrix()
+		switch c.(type) {
+		case *components.RenderableComponent:
+			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity.ValveEntity).GetTransformComponent().GetTransformationMatrix()
 			opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
 
 			for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
-				manager.drawMesh(resource)
-			}
-		case components.T_BspComponent:
-			opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-			c.(*components.BspComponent).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
-			for _, resource := range c.(*components.BspComponent).GetRenderables() {
 				manager.drawMesh(resource)
 			}
 		}

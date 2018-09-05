@@ -14,7 +14,6 @@ import (
 type Component struct {
 	handle core.Handle
 	owner  core.Handle
-	Etype  core.EType
 }
 
 // Sets a unique handle for the component.
@@ -26,13 +25,6 @@ func (component *Component) SetHandle(handle core.Handle) {
 // Runs and setup required by this component
 func (component *Component) Initialize() {
 
-}
-
-// Get this component type.
-// We don't use reflection here, but a set of usee defined types,
-// because reflection is great, but slow.
-func (component *Component) GetType() core.EType {
-	return component.Etype
 }
 
 // Returns this objects unique handle

@@ -3,23 +3,17 @@ package bsp
 import (
 	"github.com/galaco/bsp/primitives/game"
 	"github.com/galaco/go-me-engine/valve/file"
-	"github.com/galaco/go-me-engine/valve/studiomodel"
-	"github.com/galaco/go-me-engine/valve/studiomodel/vvd"
+	"github.com/galaco/go-me-engine/valve/loaders/studiomodel"
+	"github.com/galaco/go-me-engine/valve/loaders/studiomodel/vvd"
 	"log"
 	"strings"
 )
-
-var mdlExtensions = []string {
-	".mdl",
-	".vvd",
-	".vtx",
-}
 
 func LoadStaticProps(propLump *game.StaticPropLump) {
 	log.Println("Loading static props")
 	propPaths := []string{}
 	for _,propEntry := range propLump.PropLumps {
-		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.PropType])
+		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])
 	}
 
 	propPaths = buildUniquePropList(propPaths)

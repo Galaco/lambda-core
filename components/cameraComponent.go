@@ -92,7 +92,6 @@ func (component *CameraComponent) updateVectors() {
 
 func NewCameraComponent() *CameraComponent {
 	c := CameraComponent{}
-	c.Etype = T_CameraComponent
 
 	return &c
 }

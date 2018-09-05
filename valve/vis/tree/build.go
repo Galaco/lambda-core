@@ -6,12 +6,11 @@ import (
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/galaco/bsp/primitives/node"
 	"github.com/galaco/bsp/primitives/plane"
-	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
 // Build the bsp node tree
-func BuildTree(file *bsp.Bsp, primitives []interfaces.IPrimitive) []Node {
+func BuildTree(file *bsp.Bsp) []Node {
 	models := file.GetLump(bsp.LUMP_MODELS).(*lumps.Model).GetData()
 	nodes := file.GetLump(bsp.LUMP_NODES).(*lumps.Node).GetData()
 	leafs := file.GetLump(bsp.LUMP_LEAFS).(*lumps.Leaf).GetData()
@@ -29,7 +28,7 @@ func BuildTree(file *bsp.Bsp, primitives []interfaces.IPrimitive) []Node {
 			Plane: &planes[rootNode.PlaneNum],
 		}
 
-		root = *populateNodeIterable(&root, &rootNode, nodes, leafs, leafFaces, planes, primitives)
+		root = *populateNodeIterable(&root, &rootNode, nodes, leafs, leafFaces, planes)
 
 		ret[idx] = root
 	}
@@ -38,26 +37,24 @@ func BuildTree(file *bsp.Bsp, primitives []interfaces.IPrimitive) []Node {
 }
 
 // Recursive load for bsp node/leafs
-func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, leafs []leaf.Leaf, leafFaces []uint16, planes []plane.Plane, primitives []interfaces.IPrimitive) *Node {
+func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, leafs []leaf.Leaf, leafFaces []uint16, planes []plane.Plane) *Node {
 	for childNum, childIdx := range bspNode.Children {
 		// leaf
 		if childIdx < 0 {
 			// Child is a leaf
 			l := leafs[(-1 - childIdx)]
-			faceList := make([]interfaces.IPrimitive, l.NumLeafFaces)
-			if len(primitives) > 0 {
-				for i, idx := range leafFaces[l.FirstLeafFace : l.FirstLeafFace+l.NumLeafFaces] {
-					faceList[i] = primitives[idx]
-				}
-			}
 			skyVisible := false
 			if l.Flags() & (leaf.LEAF_FLAGS_SKY | leaf.LEAF_FLAGS_SKY2D) != 0 {
 				skyVisible = true
 			}
+			faceIndexList := make([]uint16, l.NumLeafFaces)
+			for i := uint16(0); i < l.NumLeafFaces; i++ {
+				faceIndexList[i] = leafFaces[l.FirstLeafFace + i]
+			}
+
 			node.AddChild(childNum, &Leaf{
 				Id:            -1 - childIdx,
-				Faces:         faceList,
-				FaceIndexList: leafFaces[l.FirstLeafFace : l.FirstLeafFace+l.NumLeafFaces],
+				FaceIndexList: faceIndexList,
 				ClusterId:     l.Cluster,
 				Min: mgl32.Vec3{
 					float32(l.Mins[0]),
@@ -87,7 +84,7 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 				},
 				Plane: &(planes[bspNodes[childIdx].PlaneNum]),
 			}
-			populateNodeIterable(node.Children[childNum].(*Node), &bspNodes[childIdx], bspNodes, leafs, leafFaces, planes, primitives)
+			populateNodeIterable(node.Children[childNum].(*Node), &bspNodes[childIdx], bspNodes, leafs, leafFaces, planes)
 		}
 	}
 

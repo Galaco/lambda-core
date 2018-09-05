@@ -13,7 +13,7 @@ import (
 	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/galaco/go-me-engine/systems/renderer"
 	"github.com/galaco/go-me-engine/systems/window"
-	"github.com/galaco/go-me-engine/valve/bsp"
+	"github.com/galaco/go-me-engine/valve/loaders/bsp"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
@@ -57,8 +57,7 @@ func LoadMap(filename string) {
 
 	// Load worldspawn
 	log.Println("Loading map data")
-	worldSpawn := factory.NewEntity(&base.Entity{})
-	factory.NewComponent(bsp.LoadMap(bspData), worldSpawn)
+	factory.NewEntity(bsp.LoadMap(bspData))
 	log.Println("Loaded map data")
 
 	// Get entdata
