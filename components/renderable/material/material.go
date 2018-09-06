@@ -37,7 +37,7 @@ func (material *Material) GenerateGPUBuffer() {
 		gl.TexImage2D(
 			gl.TEXTURE_2D,
 			0,
-			gl.BGRA,
+			gl.RGB,
 			int32(material.vtf.GetHeader().Width),
 			int32(material.vtf.GetHeader().Height),
 			0,
@@ -47,9 +47,9 @@ func (material *Material) GenerateGPUBuffer() {
 	}
 }
 
-func NewMaterial(filepath string, vtf *vtf.Vtf, width int, height int) *Material {
+func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
-		Material: *material.NewMaterial(filepath, width, height, []uint8{0, 0, 0}),
+		Material: *material.NewMaterial(filePath, width, height, []uint8{0, 0, 0}),
 		vtf:      vtf,
 	}
 }

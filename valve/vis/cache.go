@@ -5,4 +5,5 @@ import "github.com/galaco/go-me-engine/valve/vis/tree"
 type Cache struct {
 	Leaves []*tree.Leaf
 	ClusterId int16
+	SkyVisible bool
 }

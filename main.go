@@ -9,10 +9,13 @@ import (
 	"github.com/galaco/go-me-engine/engine/event"
 	"github.com/galaco/go-me-engine/engine/factory"
 	"github.com/galaco/go-me-engine/engine/interfaces"
+	entity2 "github.com/galaco/go-me-engine/entity"
 	"github.com/galaco/go-me-engine/message/messages"
 	"github.com/galaco/go-me-engine/message/messagetype"
 	"github.com/galaco/go-me-engine/systems/renderer"
 	"github.com/galaco/go-me-engine/systems/window"
+	"github.com/galaco/go-me-engine/valve/file"
+	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
 	"github.com/galaco/go-me-engine/valve/loaders/bsp"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -55,10 +58,17 @@ func LoadMap(filename string) {
 		log.Fatal("Unsupported BSP Version. Exiting...")
 	}
 
+	// Setup all possible resource loading locations
+	vpkHandle, err := vpk.OpenVPK("data/cstrike/cstrike_pak")
+	if err != nil {
+		log.Fatal(err)
+	}
+	file.SetGameVPK(vpkHandle)
+	file.SetPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
+
 	// Load worldspawn
-	log.Println("Loading map data")
-	factory.NewEntity(bsp.LoadMap(bspData))
-	log.Println("Loaded map data")
+	worldSpawn := factory.NewEntity(bsp.LoadMap(bspData)).(*entity2.WorldSpawn)
+
 
 	// Get entdata
 	vmfEntityTree, err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())
@@ -70,6 +80,9 @@ func LoadMap(filename string) {
 	for i := 0; i < entityList.Length(); i++ {
 		bsp.CreateEntity(entityList.Get(i))
 	}
+
+	worldSpawn.Definition = entityList.FindByKeyValue("classname", "worldspawn")
+	factory.NewComponent(bsp.LoadSky(worldSpawn.Definition.ValueForKey("skyname")), worldSpawn)
 }
 
 // Simple object to control engine shutdown utilising the internal event manager

@@ -37,6 +37,12 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 		ClusterId: clusterId,
 		Leaves: vis.recursiveGetLeavesForPVS(&vis.BspTree[0], clusterList),
 	}
+	for _,l := range cache.Leaves {
+		if l.SkyVisible == true {
+			cache.SkyVisible = true
+			break
+		}
+	}
 	vis.ClusterCache = append(vis.ClusterCache, cache)
 
 	return &cache

@@ -2,7 +2,6 @@ package gl
 
 import (
 	"fmt"
-	"github.com/galaco/go-me-engine/systems/renderer/gl/shaders"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"log"
 	"strings"
@@ -67,9 +66,6 @@ func NewContext() Context {
 	context := Context{
 		context: opengl.CreateProgram(),
 	}
-	context.AddShader(shaders.Vertex, opengl.VERTEX_SHADER)
-	context.AddShader(shaders.Fragment, opengl.FRAGMENT_SHADER)
-	context.Finalize()
 
 	return context
 }

@@ -14,13 +14,10 @@ import (
 	"github.com/galaco/go-me-engine/engine/filesystem"
 	"github.com/galaco/go-me-engine/engine/interfaces"
 	"github.com/galaco/go-me-engine/entity"
-	file2 "github.com/galaco/go-me-engine/valve/file"
 	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
-	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
 	material2 "github.com/galaco/go-me-engine/valve/loaders/material"
 	"github.com/galaco/go-me-engine/valve/vis"
 	"github.com/go-gl/mathgl/mgl32"
-	"log"
 	"math"
 )
 
@@ -70,15 +67,8 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	}
 
 	//MATERIALS
-	// Open VPK filesystem
-	vpkHandle, err := vpk.OpenVPK("data/cstrike/cstrike_pak")
-	if err != nil {
-		log.Fatal(err)
-	}
-	file2.SetGameVPK(vpkHandle)
-	file2.SetPakfile(bspStructure.pakFile)
 	stringTable := stringtable.GetTable(file)
-	material2.LoadMaterialList(bspStructure.pakFile, vpkHandle, stringtable.SortUnique(stringTable, materialList))
+	material2.LoadMaterialList(stringtable.SortUnique(stringTable, materialList))
 
 	// Add MATERIALS TO FACES
 	for idx, primitive := range meshList {
