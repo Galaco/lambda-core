@@ -26,14 +26,13 @@ func (manager *Manager) Register(window *glfw.Window) {
 }
 
 func (manager *Manager) Update(dt float64) {
-	if input.GetKeyboard().IsKeyDown(glfw.KeyZ) {
-		manager.lockMouse = !manager.lockMouse
-		if manager.lockMouse == true {
-			manager.window.SetCursorPos(320, 240)
-			manager.window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
-		} else {
-			manager.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
-		}
+	if input.GetKeyboard().IsKeyDown(glfw.KeyE) {
+		manager.lockMouse = true
+		manager.window.SetCursorPos(320, 240)
+		manager.window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
+	} else {
+		manager.lockMouse = false
+		manager.window.SetInputMode(glfw.CursorMode, glfw.CursorNormal)
 	}
 
 	input.GetMouse().Update()

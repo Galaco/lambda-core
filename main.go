@@ -82,7 +82,10 @@ func LoadMap(filename string) {
 	}
 
 	worldSpawn.Definition = entityList.FindByKeyValue("classname", "worldspawn")
-	factory.NewComponent(bsp.LoadSky(worldSpawn.Definition.ValueForKey("skyname")), worldSpawn)
+	sky, err := bsp.LoadSky(worldSpawn.Definition.ValueForKey("skyname"))
+	if err == nil {
+		factory.NewComponent(sky, worldSpawn)
+	}
 }
 
 // Simple object to control engine shutdown utilising the internal event manager

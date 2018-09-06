@@ -95,9 +95,6 @@ func isPointInFrontOfPlane(point mgl32.Vec3, nodePlane *plane.Plane) bool {
 }
 
 
-
-
-
 func NewVisFromBSP(file *bsp.Bsp) *Vis {
 	return &Vis{
 		VisibilityLump: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
