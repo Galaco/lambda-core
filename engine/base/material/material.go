@@ -46,7 +46,7 @@ func (material *Material) GenerateGPUBuffer() {
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
 		0,
-		gl.BGRA,
+		gl.RGB,
 		int32(material.width),
 		int32(material.height),
 		0,

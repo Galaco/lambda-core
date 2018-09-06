@@ -90,7 +90,7 @@ func NewCube() *Cube {
 	}
 
 	c.AddTextureCoordinateData(cubeUVs)
-	mat := material.NewMaterial("placeholder", 2, 2, []uint8{128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128})
+	mat := material.NewMaterial("placeholder", 1, 1, []uint8{255, 255, 255})
 	mat.GenerateGPUBuffer()
 	c.AddMaterial(mat)
 	c.GenerateGPUBuffer()
