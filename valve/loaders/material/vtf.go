@@ -15,11 +15,7 @@ import (
 // 3. Game VPK
 // 4. Other game shared VPK
 func LoadMaterialList(materialList []string) {
-	missing := read(materialList)
-
-	for _, path := range missing {
-		log.Println("Could not find: " + path)
-	}
+	read(materialList)
 }
 
 func read(materialList []string) (missingList []string) {
@@ -31,6 +27,7 @@ func read(materialList []string) (missingList []string) {
 		// Only load the file once
 		if FileManager.GetFile(materialBasePath+materialPath) == nil {
 			if !readVmt(materialBasePath, materialPath) {
+				log.Println("Could not find: " + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
@@ -40,11 +37,12 @@ func read(materialList []string) (missingList []string) {
 			if vmt.GetProperty("baseTexture").AsString() != "" {
 				vtfTexturePath = vmt.GetProperty("baseTexture").AsString() + ".vtf"
 			}
-		}
 
-		if vtfTexturePath != "" && FileManager.GetFile(vtfTexturePath) == nil {
-			if !readVtf(materialBasePath, vtfTexturePath) {
-				missingList = append(missingList, vtfTexturePath)
+			if vtfTexturePath != "" && FileManager.GetFile(vtfTexturePath) == nil {
+				if !readVtf(materialBasePath, vtfTexturePath) {
+					log.Println("Could not find: " + materialPath)
+					missingList = append(missingList, vtfTexturePath)
+				}
 			}
 		}
 	}

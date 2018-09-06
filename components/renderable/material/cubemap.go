@@ -53,7 +53,7 @@ func (material *Cubemap) GenerateGPUBuffer() {
 			gl.TexImage2D(
 				cubeMapImageType[i],
 				0,
-				gl.RGB,
+				gl.RGBA,
 				int32(cubeFace.vtf.GetHeader().Width),
 				int32(cubeFace.vtf.GetHeader().Height),
 				0,
