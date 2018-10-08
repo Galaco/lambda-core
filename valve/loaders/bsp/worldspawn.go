@@ -90,7 +90,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	}
 
 	// Load static props
-	LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	//LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := vis.NewVisFromBSP(file)
 

@@ -2,6 +2,18 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/galaco/StudioModel"
+  packages = [
+    ".",
+    "mdl",
+    "phy",
+    "vtx",
+    "vvd"
+  ]
+  revision = "2b2b28ed45495c225f8c4935077846c6caece207"
+
+[[projects]]
   branch = "dev"
   name = "github.com/galaco/bsp"
   packages = [
@@ -107,6 +119,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8c80f4ca478f1943e36f5e8d2938a629e08d33a48f1333bebacca7c04791b898"
+  inputs-digest = "35c6a9b40d99519e1ba11765d2eec6a07b01b4c89d42668aec36aa4afb6e7fd9"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -3,7 +3,6 @@ package gl
 import (
 	"fmt"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
-	"log"
 	"strings"
 )
 
@@ -59,9 +58,6 @@ func NewContext() Context {
 	if err := opengl.Init(); err != nil {
 		panic(err)
 	}
-
-	version := opengl.GoStr(opengl.GetString(opengl.VERSION))
-	log.Println("OpenGL version", version)
 
 	context := Context{
 		context: opengl.CreateProgram(),

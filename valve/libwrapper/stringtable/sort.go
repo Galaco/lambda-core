@@ -6,7 +6,7 @@ import (
 )
 
 func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos []*texinfo.TexInfo) []string {
-	materialList := []string{}
+	materialList := make([]string, 0)
 	for _, ti := range texInfos {
 		target, _ := stringTable.GetString(int(ti.TexData))
 		found := false

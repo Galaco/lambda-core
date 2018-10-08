@@ -1,17 +1,20 @@
 package bsp
 
 import (
+	"github.com/galaco/StudioModel"
+	"github.com/galaco/StudioModel/mdl"
+	"github.com/galaco/StudioModel/phy"
+	"github.com/galaco/StudioModel/vtx"
+	"github.com/galaco/StudioModel/vvd"
 	"github.com/galaco/bsp/primitives/game"
 	"github.com/galaco/go-me-engine/valve/file"
-	"github.com/galaco/go-me-engine/valve/loaders/studiomodel"
-	"github.com/galaco/go-me-engine/valve/loaders/studiomodel/vvd"
 	"log"
 	"strings"
 )
 
 func LoadStaticProps(propLump *game.StaticPropLump) {
 	log.Println("Loading static props")
-	propPaths := []string{}
+	propPaths := make([]string, 0)
 	for _,propEntry := range propLump.PropLumps {
 		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])
 	}
@@ -25,7 +28,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) {
 // Build a list of all different prop files.
 // Removes duplications
 func buildUniquePropList(propList []string) []string {
-	retList := []string{}
+	retList := make([]string, 0)
 	for _,entry := range propList {
 		found := false
 		for _,unique := range retList {
@@ -43,8 +46,24 @@ func buildUniquePropList(propList []string) []string {
 }
 
 func loadProp(filePath string) *studiomodel.StudioModel {
+	prop := studiomodel.NewStudioModel(filePath)
+
+	// MDL
+	f,err := file.Load(filePath + ".mdl")
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	mdlFile,err := mdl.ReadFromStream(f)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	prop.AddMdl(mdlFile)
+
+
 	// VVD
-	f,err := file.Load(filePath + ".vvd")
+	f,err = file.Load(filePath + ".vvd")
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -54,21 +73,32 @@ func loadProp(filePath string) *studiomodel.StudioModel {
 		log.Println(err)
 		return nil
 	}
+	prop.AddVvd(vvdFile)
 
 	// VTX
-	//f,err = file.Load(filePath + ".sw.vtx")
-	//if err != nil {
-	//	log.Println(err)
-	//	return nil
-	//}
-	//vtxFile,err := vtx.ReadFromStream(f)
-	//if err != nil {
-	//	log.Println(err)
-	//	return nil
-	//}
-
-	return &studiomodel.StudioModel{
-		Vvd: vvdFile,
-//		Vtx: vtxFile,
+	f,err = file.Load(filePath + ".sw.vtx")
+	if err != nil {
+		log.Println(err)
+		return nil
 	}
+	vtxFile,err := vtx.ReadFromStream(f)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	prop.AddVtx(vtxFile)
+
+	// PHY
+	f,err = file.Load(filePath + ".phy")
+	if err != nil {
+		log.Println(err)
+	} else {
+		phyFile,err := phy.ReadFromStream(f)
+		if err != nil {
+			log.Println(err)
+		}
+		prop.AddPhy(phyFile)
+	}
+
+	return prop
 }
