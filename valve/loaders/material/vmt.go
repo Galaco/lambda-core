@@ -75,7 +75,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt, error) {
 				line := string(l)
 				// Remove any comments
 				line = sanitise(strings.Split(line, "//")[0])
-				if isEndOfScope(line) || len(line) == 0{
+				if isEndOfScope(line) || len(line) == 0 {
 					depth = 0
 					break
 				}

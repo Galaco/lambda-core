@@ -44,12 +44,12 @@ func populateNodeIterable(node *Node, bspNode *node.Node, bspNodes []node.Node, 
 			// Child is a leaf
 			l := leafs[(-1 - childIdx)]
 			skyVisible := false
-			if l.Flags() & (leaf.LEAF_FLAGS_SKY | leaf.LEAF_FLAGS_SKY2D) != 0 {
+			if l.Flags()&(leaf.LEAF_FLAGS_SKY|leaf.LEAF_FLAGS_SKY2D) != 0 {
 				skyVisible = true
 			}
 			faceIndexList := make([]uint16, l.NumLeafFaces)
 			for i := uint16(0); i < l.NumLeafFaces; i++ {
-				faceIndexList[i] = leafFaces[l.FirstLeafFace + i]
+				faceIndexList[i] = leafFaces[l.FirstLeafFace+i]
 			}
 
 			node.AddChild(childNum, &Leaf{

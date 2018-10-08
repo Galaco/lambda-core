@@ -4,7 +4,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
-var cubeMapImageType = [6]uint32 {
+var cubeMapImageType = [6]uint32{
 	gl.TEXTURE_CUBE_MAP_POSITIVE_X,
 	gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
 	gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
@@ -12,7 +12,6 @@ var cubeMapImageType = [6]uint32 {
 	gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
 	gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
 }
-
 
 type Cubemap struct {
 	Material

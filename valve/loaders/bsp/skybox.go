@@ -2,13 +2,13 @@ package bsp
 
 import (
 	"errors"
-	"github.com/galaco/go-me-engine/components"
-	"github.com/galaco/go-me-engine/components/renderable"
-	"github.com/galaco/go-me-engine/components/renderable/material"
-	"github.com/galaco/go-me-engine/engine/base/primitive"
-	"github.com/galaco/go-me-engine/engine/filesystem"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	material2 "github.com/galaco/go-me-engine/valve/loaders/material"
+	"github.com/galaco/Gource/components"
+	"github.com/galaco/Gource/components/renderable"
+	"github.com/galaco/Gource/components/renderable/material"
+	"github.com/galaco/Gource/engine/base/primitive"
+	"github.com/galaco/Gource/engine/filesystem"
+	"github.com/galaco/Gource/engine/interfaces"
+	material2 "github.com/galaco/Gource/valve/loaders/material"
 )
 
 var skySuffixes = [6]string{
@@ -32,7 +32,7 @@ func LoadSky(skyName string) (*components.Skybox, error) {
 		filesystem.GetFileManager().GetFile(skyName + skySuffixes[5] + ".vtf"),
 	}
 
-	for _,mat := range mats {
+	for _, mat := range mats {
 		if mat == nil {
 			return nil, errors.New("failed to load cubemap: " + skyName)
 		}
@@ -56,5 +56,5 @@ func LoadSky(skyName string) (*components.Skybox, error) {
 	resource.Prepare()
 	sky.AddRenderableResource(resource)
 
-	return sky,nil
+	return sky, nil
 }

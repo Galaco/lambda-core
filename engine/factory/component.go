@@ -1,8 +1,8 @@
 package factory
 
 import (
-	"github.com/galaco/go-me-engine/engine/core"
-	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/Gource/engine/core"
+	"github.com/galaco/Gource/engine/interfaces"
 )
 
 // Attaches a component to an entity, and registers it with the engine

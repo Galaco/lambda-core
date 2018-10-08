@@ -27,19 +27,17 @@ func (reader *Reader) Read() (*Vvd, error) {
 	}
 
 	// Read fixups
-	fixups,offset := reader.readFixups(int(header.FixupTableStart), int(header.NumFixups))
+	fixups, offset := reader.readFixups(int(header.FixupTableStart), int(header.NumFixups))
 
 	//Read vertices
-	vertices,offset := reader.readVertices(int(header.VertexDataStart), &header)
+	vertices, offset := reader.readVertices(int(header.VertexDataStart), &header)
 
 	//Read tangents
-	tangents,offset := reader.readTangents(int(header.TangentDataStart), &header)
-
-
+	tangents, offset := reader.readTangents(int(header.TangentDataStart), &header)
 
 	return &Vvd{
-		Header: header,
-		Fixups: fixups,
+		Header:   header,
+		Fixups:   fixups,
 		Vertices: vertices,
 		Tangents: tangents,
 	}, nil
@@ -59,7 +57,7 @@ func (reader *Reader) readFixups(offset int, numFixups int) ([]fixup, int) {
 	fixupSize := int(unsafe.Sizeof(fixup{}))
 	fixups := make([]fixup, numFixups)
 	if numFixups > 0 {
-		binary.Read(bytes.NewBuffer(reader.buf[offset:offset + (fixupSize * numFixups)]), binary.LittleEndian, &fixups)
+		binary.Read(bytes.NewBuffer(reader.buf[offset:offset+(fixupSize*numFixups)]), binary.LittleEndian, &fixups)
 	}
 
 	return fixups, offset + (fixupSize * numFixups)
@@ -75,7 +73,7 @@ func (reader *Reader) readVertices(offset int, header *header) ([]vertex, int) {
 	}
 	numVertices = int(header.NumLODVertexes[0])
 	vertexes := make([]vertex, numVertices)
-	binary.Read(bytes.NewBuffer(reader.buf[offset:offset + (vertexSize * numVertices)]), binary.LittleEndian, &vertexes)
+	binary.Read(bytes.NewBuffer(reader.buf[offset:offset+(vertexSize*numVertices)]), binary.LittleEndian, &vertexes)
 
 	return vertexes, offset + (vertexSize * numVertices)
 }
@@ -91,7 +89,7 @@ func (reader *Reader) readTangents(offset int, header *header) ([]mgl32.Vec4, in
 	}
 	numTangents = int(header.NumLODVertexes[0])
 	tangents := make([]mgl32.Vec4, tangentSize)
-	binary.Read(bytes.NewBuffer(reader.buf[offset:offset + (tangentSize * numTangents)]), binary.LittleEndian, &tangents)
+	binary.Read(bytes.NewBuffer(reader.buf[offset:offset+(tangentSize*numTangents)]), binary.LittleEndian, &tangents)
 
 	return tangents, offset + (tangentSize * numTangents)
 }

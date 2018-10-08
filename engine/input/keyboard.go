@@ -1,9 +1,9 @@
 package input
 
 import (
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/message/messages"
-	"github.com/galaco/go-me-engine/message/messagetype"
+	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource/message/messages"
+	"github.com/galaco/Gource/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 

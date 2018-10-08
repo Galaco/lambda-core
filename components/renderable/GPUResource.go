@@ -1,6 +1,6 @@
 package renderable
 
-import "github.com/galaco/go-me-engine/engine/interfaces"
+import "github.com/galaco/Gource/engine/interfaces"
 
 // A collection of renderable primitives/submeshes
 type GPUResource struct {

@@ -1,10 +1,10 @@
 package bsp
 
 import (
+	"github.com/galaco/Gource/valve/file"
+	"github.com/galaco/Gource/valve/loaders/studiomodel"
+	"github.com/galaco/Gource/valve/loaders/studiomodel/vvd"
 	"github.com/galaco/bsp/primitives/game"
-	"github.com/galaco/go-me-engine/valve/file"
-	"github.com/galaco/go-me-engine/valve/loaders/studiomodel"
-	"github.com/galaco/go-me-engine/valve/loaders/studiomodel/vvd"
 	"log"
 	"strings"
 )
@@ -12,12 +12,12 @@ import (
 func LoadStaticProps(propLump *game.StaticPropLump) {
 	log.Println("Loading static props")
 	propPaths := []string{}
-	for _,propEntry := range propLump.PropLumps {
+	for _, propEntry := range propLump.PropLumps {
 		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])
 	}
 
 	propPaths = buildUniquePropList(propPaths)
-	for _,path := range propPaths {
+	for _, path := range propPaths {
 		loadProp(strings.Split(path, ".mdl")[0])
 	}
 }
@@ -26,9 +26,9 @@ func LoadStaticProps(propLump *game.StaticPropLump) {
 // Removes duplications
 func buildUniquePropList(propList []string) []string {
 	retList := []string{}
-	for _,entry := range propList {
+	for _, entry := range propList {
 		found := false
-		for _,unique := range retList {
+		for _, unique := range retList {
 			if entry == unique {
 				found = true
 				break
@@ -44,12 +44,12 @@ func buildUniquePropList(propList []string) []string {
 
 func loadProp(filePath string) *studiomodel.StudioModel {
 	// VVD
-	f,err := file.Load(filePath + ".vvd")
+	f, err := file.Load(filePath + ".vvd")
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
-	vvdFile,err := vvd.ReadFromStream(f)
+	vvdFile, err := vvd.ReadFromStream(f)
 	if err != nil {
 		log.Println(err)
 		return nil
@@ -69,6 +69,6 @@ func loadProp(filePath string) *studiomodel.StudioModel {
 
 	return &studiomodel.StudioModel{
 		Vvd: vvdFile,
-//		Vtx: vtxFile,
+		//		Vtx: vtxFile,
 	}
 }

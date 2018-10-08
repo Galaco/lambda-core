@@ -19,11 +19,11 @@ func SetPakfile(pakfile *lumps.Pakfile) {
 	pakFile = pakfile
 }
 
-func Load(filename string) (io.Reader,error) {
+func Load(filename string) (io.Reader, error) {
 	// try to read from pakfile first
-	f,err := pakFile.GetFile(filename)
+	f, err := pakFile.GetFile(filename)
 	if err == nil && f != nil && len(f) != 0 {
-		return bytes.NewReader(f),nil
+		return bytes.NewReader(f), nil
 	}
 
 	// Fall back to game vpk

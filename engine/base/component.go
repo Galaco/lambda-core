@@ -1,7 +1,7 @@
 package base
 
 import (
-	"github.com/galaco/go-me-engine/engine/core"
+	"github.com/galaco/Gource/engine/core"
 )
 
 // A component represents a collection of properties and/or behaviour associated with

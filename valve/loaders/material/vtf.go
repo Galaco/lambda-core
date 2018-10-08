@@ -1,10 +1,10 @@
 package material
 
 import (
-	"github.com/galaco/go-me-engine/components/renderable/material"
-	"github.com/galaco/go-me-engine/engine/filesystem"
-	"github.com/galaco/go-me-engine/valve/file"
-	"github.com/galaco/go-me-engine/valve/libwrapper/vtf"
+	"github.com/galaco/Gource/components/renderable/material"
+	"github.com/galaco/Gource/engine/filesystem"
+	"github.com/galaco/Gource/valve/file"
+	"github.com/galaco/Gource/valve/libwrapper/vtf"
 	"log"
 )
 
@@ -106,7 +106,7 @@ func LoadSkyboxTextures(skyName string) {
 		"dn",
 	}
 
-	for _,ext := range exts {
-		readVtf("materials/skybox/", skyName + ext + ".vtf")
+	for _, ext := range exts {
+		readVtf("materials/skybox/", skyName+ext+".vtf")
 	}
 }

@@ -1,22 +1,22 @@
 package main
 
 import (
+	"github.com/galaco/Gource/components"
+	"github.com/galaco/Gource/engine"
+	"github.com/galaco/Gource/engine/base"
+	"github.com/galaco/Gource/engine/event"
+	"github.com/galaco/Gource/engine/factory"
+	"github.com/galaco/Gource/engine/interfaces"
+	entity2 "github.com/galaco/Gource/entity"
+	"github.com/galaco/Gource/message/messages"
+	"github.com/galaco/Gource/message/messagetype"
+	"github.com/galaco/Gource/systems/renderer"
+	"github.com/galaco/Gource/systems/window"
+	"github.com/galaco/Gource/valve/file"
+	"github.com/galaco/Gource/valve/libwrapper/vpk"
+	"github.com/galaco/Gource/valve/loaders/bsp"
 	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
-	"github.com/galaco/go-me-engine/components"
-	"github.com/galaco/go-me-engine/engine"
-	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/engine/event"
-	"github.com/galaco/go-me-engine/engine/factory"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	entity2 "github.com/galaco/go-me-engine/entity"
-	"github.com/galaco/go-me-engine/message/messages"
-	"github.com/galaco/go-me-engine/message/messagetype"
-	"github.com/galaco/go-me-engine/systems/renderer"
-	"github.com/galaco/go-me-engine/systems/window"
-	"github.com/galaco/go-me-engine/valve/file"
-	"github.com/galaco/go-me-engine/valve/libwrapper/vpk"
-	"github.com/galaco/go-me-engine/valve/loaders/bsp"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
@@ -68,7 +68,6 @@ func LoadMap(filename string) {
 
 	// Load worldspawn
 	worldSpawn := factory.NewEntity(bsp.LoadMap(bspData)).(*entity2.WorldSpawn)
-
 
 	// Get entdata
 	vmfEntityTree, err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())

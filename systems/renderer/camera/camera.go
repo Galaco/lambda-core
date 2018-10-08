@@ -1,13 +1,13 @@
 package camera
 
 import (
-	"github.com/galaco/go-me-engine/components"
-	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/engine/event"
-	"github.com/galaco/go-me-engine/engine/factory"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/message/messages"
-	"github.com/galaco/go-me-engine/message/messagetype"
+	"github.com/galaco/Gource/components"
+	"github.com/galaco/Gource/engine/base"
+	"github.com/galaco/Gource/engine/event"
+	"github.com/galaco/Gource/engine/factory"
+	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource/message/messages"
+	"github.com/galaco/Gource/message/messagetype"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

@@ -1,7 +1,7 @@
 package messagetype
 
 import (
-	"github.com/galaco/go-me-engine/engine/core"
+	"github.com/galaco/Gource/engine/core"
 )
 
 const KeyDown = core.EventId("KeyDown")

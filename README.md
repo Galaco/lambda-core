@@ -28,7 +28,7 @@ Not sure yet. This is just for fun, I'll have to see just how complete I want th
 ```
 package main
 
-import "github.com/galaco/go-me-engine/engine"
+import "github.com/galaco/Gource/engine"
 
 func main() {
 	Application := engine.NewEngine()

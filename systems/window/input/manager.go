@@ -1,10 +1,10 @@
 package input
 
 import (
-	"github.com/galaco/go-me-engine/engine/event"
-	"github.com/galaco/go-me-engine/engine/input"
-	"github.com/galaco/go-me-engine/message/messages"
-	"github.com/galaco/go-me-engine/message/messagetype"
+	"github.com/galaco/Gource/engine/event"
+	"github.com/galaco/Gource/engine/input"
+	"github.com/galaco/Gource/message/messages"
+	"github.com/galaco/Gource/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl64"
 )
@@ -12,7 +12,7 @@ import (
 type Manager struct {
 	MouseCoordinates mgl64.Vec2
 	window           *glfw.Window
-	lockMouse 		 bool
+	lockMouse        bool
 }
 
 func (manager *Manager) Register(window *glfw.Window) {

@@ -1,24 +1,24 @@
 package renderer
 
 import (
-	"github.com/galaco/go-me-engine/components"
-	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/engine/factory"
-	"github.com/galaco/go-me-engine/engine/input"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/entity"
-	"github.com/galaco/go-me-engine/systems/renderer/camera"
-	"github.com/galaco/go-me-engine/systems/renderer/gl"
+	"github.com/galaco/Gource/components"
+	"github.com/galaco/Gource/engine/base"
+	"github.com/galaco/Gource/engine/factory"
+	"github.com/galaco/Gource/engine/input"
+	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource/entity"
+	"github.com/galaco/Gource/systems/renderer/camera"
+	"github.com/galaco/Gource/systems/renderer/gl"
+	"github.com/galaco/Gource/systems/renderer/gl/shaders"
+	"github.com/galaco/Gource/systems/renderer/gl/shaders/sky"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/galaco/go-me-engine/systems/renderer/gl/shaders"
-	"github.com/galaco/go-me-engine/systems/renderer/gl/shaders/sky"
 )
 
 type Manager struct {
 	base.Manager
-	defaultShader     gl.Context
+	defaultShader gl.Context
 	skyShader     gl.Context
 	currentCamera camera.Camera
 
@@ -34,7 +34,6 @@ func (manager *Manager) Register() {
 	manager.skyShader.AddShader(sky.Vertex, opengl.VERTEX_SHADER)
 	manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
 	manager.skyShader.Finalize()
-
 
 	manager.currentCamera.Initialize()
 
@@ -135,7 +134,6 @@ func (manager *Manager) drawSky(skybox *components.Skybox) {
 	manager.defaultShader.UseProgram()
 	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("view"), 1, false, &view[0])
 	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("projection"), 1, false, &projection[0])
-
 
 	opengl.CullFace(uint32(oldCullFaceMode))
 	opengl.DepthFunc(uint32(oldDepthFuncMode))

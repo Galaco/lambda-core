@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"github.com/galaco/go-me-engine/engine/event"
-	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/Gource/engine/event"
+	"github.com/galaco/Gource/engine/interfaces"
 	"runtime"
 	"time"
 )

@@ -1,6 +1,6 @@
 package event
 
-import "github.com/galaco/go-me-engine/engine/core"
+import "github.com/galaco/Gource/engine/core"
 
 // A generic event message
 // Contains the type of event

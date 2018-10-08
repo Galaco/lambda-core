@@ -1,6 +1,14 @@
 package bsp
 
 import (
+	"github.com/galaco/Gource/components/renderable/material"
+	"github.com/galaco/Gource/engine/base"
+	"github.com/galaco/Gource/engine/filesystem"
+	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource/entity"
+	"github.com/galaco/Gource/valve/libwrapper/stringtable"
+	material2 "github.com/galaco/Gource/valve/loaders/material"
+	"github.com/galaco/Gource/valve/vis"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/dispinfo"
@@ -9,14 +17,6 @@ import (
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/bsp/primitives/visibility"
-	"github.com/galaco/go-me-engine/components/renderable/material"
-	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/engine/filesystem"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	"github.com/galaco/go-me-engine/entity"
-	"github.com/galaco/go-me-engine/valve/libwrapper/stringtable"
-	material2 "github.com/galaco/go-me-engine/valve/loaders/material"
-	"github.com/galaco/go-me-engine/valve/vis"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 )
@@ -32,7 +32,7 @@ type bspstructs struct {
 	dispVerts  []dispvert.DispVert
 	pakFile    *lumps.Pakfile
 	visibility *visibility.Vis
-	game *lumps.Game
+	game       *lumps.Game
 }
 
 func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
@@ -48,7 +48,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 		dispVerts:  file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
 		pakFile:    file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
 		visibility: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
-		game: 		file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
+		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
 	}
 
 	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))

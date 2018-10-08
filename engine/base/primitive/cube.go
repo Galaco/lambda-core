@@ -1,8 +1,8 @@
 package primitive
 
 import (
-	"github.com/galaco/go-me-engine/engine/base"
-	"github.com/galaco/go-me-engine/engine/base/material"
+	"github.com/galaco/Gource/engine/base"
+	"github.com/galaco/Gource/engine/base/material"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
