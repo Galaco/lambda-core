@@ -4,6 +4,7 @@ import (
 	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/engine"
 	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/event"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/interfaces"
@@ -25,8 +26,10 @@ import (
 func main() {
 	// Build our engine setup
 	Application := engine.NewEngine()
-	Application.AddManager(&window.Manager{})
-	Application.AddManager(&renderer.Manager{})
+
+	LoadConfig()
+
+	RegisterManagers(Application)
 
 	// Initialise current setup. Note this doesn't start any loop, but
 	// allows for configuration of systems by the engine
@@ -39,10 +42,7 @@ func main() {
 	// Load a map!
 	LoadMap("data/maps/de_dust2.bsp")
 
-	//Implement a way of shutting down the engine
-	event.GetEventManager().Listen(messagetype.KeyDown, Closeable{Application})
-
-	Application.SetSimulationSpeed(2.5)
+	RegisterShutdownMethod(Application)
 
 	// Run the engine
 	Application.Run()
@@ -87,6 +87,18 @@ func LoadMap(filename string) {
 	}
 }
 
+func LoadConfig() {
+	_,err := config.Load()
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func RegisterManagers(app *engine.Engine) {
+	app.AddManager(&window.Manager{})
+	app.AddManager(&renderer.Manager{})
+}
+
 // Simple object to control engine shutdown utilising the internal event manager
 type Closeable struct {
 	target *engine.Engine
@@ -100,3 +112,9 @@ func (closer Closeable) ReceiveMessage(message interfaces.IMessage) {
 		}
 	}
 }
+
+//Implement a way of shutting down the engine
+func RegisterShutdownMethod(app *engine.Engine) {
+	event.GetEventManager().Listen(messagetype.KeyDown, Closeable{app})
+}
+
