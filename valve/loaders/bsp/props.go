@@ -1,9 +1,9 @@
 package bsp
 
 import (
-	"github.com/galaco/Gource/valve/file"
-	"github.com/galaco/Gource/valve/loaders/studiomodel"
-	"github.com/galaco/Gource/valve/loaders/studiomodel/vvd"
+	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel/vvd"
 	"github.com/galaco/bsp/primitives/game"
 	"log"
 	"strings"

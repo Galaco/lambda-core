@@ -1,14 +1,14 @@
 package bsp
 
 import (
-	"github.com/galaco/Gource/components/renderable/material"
-	"github.com/galaco/Gource/engine/base"
-	"github.com/galaco/Gource/engine/filesystem"
-	"github.com/galaco/Gource/engine/interfaces"
-	"github.com/galaco/Gource/entity"
-	"github.com/galaco/Gource/valve/libwrapper/stringtable"
-	material2 "github.com/galaco/Gource/valve/loaders/material"
-	"github.com/galaco/Gource/valve/vis"
+	"github.com/galaco/Gource-Engine/components/renderable/material"
+	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/entity"
+	"github.com/galaco/Gource-Engine/valve/libwrapper/stringtable"
+	material2 "github.com/galaco/Gource-Engine/valve/loaders/material"
+	"github.com/galaco/Gource-Engine/valve/vis"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/dispinfo"

@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/galaco/Gource/components/renderable/material"
+	"github.com/galaco/Gource-Engine/components/renderable/material"
 )
 
 type Skybox struct {

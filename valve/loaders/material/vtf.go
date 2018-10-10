@@ -1,10 +1,10 @@
 package material
 
 import (
-	"github.com/galaco/Gource/components/renderable/material"
-	"github.com/galaco/Gource/engine/filesystem"
-	"github.com/galaco/Gource/valve/file"
-	"github.com/galaco/Gource/valve/libwrapper/vtf"
+	"github.com/galaco/Gource-Engine/components/renderable/material"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/valve/libwrapper/vtf"
 	"log"
 )
 

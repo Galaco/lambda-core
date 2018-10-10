@@ -1,8 +1,8 @@
 package components
 
 import (
-	"github.com/galaco/Gource/engine/base"
-	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
 )
 
 type RenderableComponent struct {

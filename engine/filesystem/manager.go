@@ -1,7 +1,7 @@
 package filesystem
 
 import (
-	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"strings"
 )
 

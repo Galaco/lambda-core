@@ -1,9 +1,9 @@
 package entity
 
 import (
-	"github.com/galaco/Gource/components/renderable"
-	"github.com/galaco/Gource/engine/interfaces"
-	"github.com/galaco/Gource/valve/vis"
+	"github.com/galaco/Gource-Engine/components/renderable"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/valve/vis"
 	"github.com/go-gl/mathgl/mgl32"
 	"log"
 )

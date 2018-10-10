@@ -1,10 +1,10 @@
 package input
 
 import (
-	"github.com/galaco/Gource/engine/event"
-	"github.com/galaco/Gource/engine/input"
-	"github.com/galaco/Gource/message/messages"
-	"github.com/galaco/Gource/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/event"
+	"github.com/galaco/Gource-Engine/engine/input"
+	"github.com/galaco/Gource-Engine/message/messages"
+	"github.com/galaco/Gource-Engine/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl64"
 )

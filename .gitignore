@@ -9,3 +9,5 @@ data/cstrike/
 data/maps/
 
 out\.png
+
+config\.json

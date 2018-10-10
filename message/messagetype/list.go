@@ -1,7 +1,7 @@
 package messagetype
 
 import (
-	"github.com/galaco/Gource/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core"
 )
 
 const KeyDown = core.EventId("KeyDown")
