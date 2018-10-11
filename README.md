@@ -28,8 +28,9 @@ load and play that map.
 
 ## Getting started
 There is a small amount of configuration required to get this project running, beyond `dep ensure`.
+* For best results, you need a source engine game installed already.
 * Copy `config.example.json` to `config.json`, and update the `gameDirectory` property to point to whatever game installation
-you are targeting (e.g. HL2 would be `<steamapps>/common/hl2`).
+you are targeting (e.g. HL2 would be `<steam_dir>/steamapps/common/hl2`).
 
 ## Contributing
 There is loads to do! Right now there are a few core issues that need fixing, and loads of fundamental features to add. Here
