@@ -2,10 +2,10 @@ package material
 
 import (
 	"github.com/galaco/Gource-Engine/components/renderable/material"
+	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/valve/file"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vtf"
-	"log"
 )
 
 // Load all materials referenced in the map
@@ -27,7 +27,7 @@ func read(materialList []string) (missingList []string) {
 		// Only load the file once
 		if FileManager.GetFile(materialBasePath+materialPath) == nil {
 			if !readVmt(materialBasePath, materialPath) {
-				log.Println("Could not find: " + materialPath)
+				debug.Log("Could not find: " + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
@@ -40,7 +40,7 @@ func read(materialList []string) (missingList []string) {
 
 			if vtfTexturePath != "" && FileManager.GetFile(vtfTexturePath) == nil {
 				if !readVtf(materialBasePath, vtfTexturePath) {
-					log.Println("Could not find: " + materialPath)
+					debug.Log("Could not find: " + materialPath)
 					missingList = append(missingList, vtfTexturePath)
 				}
 			}
@@ -61,7 +61,7 @@ func readVmt(basePath string, filePath string) bool {
 
 	vmt, err := ParseVmt(filePath, stream)
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 		return false
 	}
 	// Add file
@@ -80,7 +80,7 @@ func readVtf(basePath string, filePath string) bool {
 	// if this fails (it shouldn't) we can treat it like it was missing
 	texture, err := vtf.ReadFromStream(stream)
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 		return false
 	}
 	// Store file containing raw data in memory

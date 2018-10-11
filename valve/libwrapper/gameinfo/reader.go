@@ -1,18 +1,18 @@
 package gameinfo
 
 import (
-	"github.com/galaco/vmf"
+	"github.com/galaco/KeyValues"
 	"io"
 )
 
-var gameInfo vmf.Vmf
+var gameInfo keyvalues.KeyValue
 
-func Get() *vmf.Vmf {
+func Get() *keyvalues.KeyValue {
 	return &gameInfo
 }
 
-func Load(stream io.Reader) (*vmf.Vmf,error) {
-	kvReader := vmf.NewReader(stream)
+func Load(stream io.Reader) (*keyvalues.KeyValue,error) {
+	kvReader := keyvalues.NewReader(stream)
 
 	kv, err := kvReader.Read()
 	if err == nil {

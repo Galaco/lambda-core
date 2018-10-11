@@ -5,6 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine"
 	"github.com/galaco/Gource-Engine/engine/base"
 	"github.com/galaco/Gource-Engine/engine/config"
+	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/event"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/interfaces"
@@ -15,21 +16,21 @@ import (
 	"github.com/galaco/Gource-Engine/systems/window"
 	"github.com/galaco/Gource-Engine/valve/file"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/gameinfo"
-	"github.com/galaco/Gource-Engine/valve/libwrapper/vpk"
 	"github.com/galaco/Gource-Engine/valve/loaders/bsp"
 	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"log"
-	"os"
 )
 
 func main() {
 	// Build our engine setup
 	Application := engine.NewEngine()
 
+	// Load engine configuration
 	LoadConfig()
+	// Derive and register game resource paths
+	gameinfo.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
 
 	RegisterManagers(Application)
 
@@ -37,35 +38,30 @@ func main() {
 	// allows for configuration of systems by the engine
 	Application.Initialise()
 
-	// special camera entity
+	// special camera entity - this needs to be refactored out
 	cameraEnt := factory.NewEntity(&base.Entity{})
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap("data/maps/de_dust2.bsp")
+	LoadMap("D:/Program Files/Steamapps/steamapps/common/Counter-Strike Source/cstrike/maps/de_dust2.bsp")
 
+	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
 
 	// Run the engine
 	Application.Run()
 }
 
+// Loads a map
 func LoadMap(filename string) {
 	// BSP
 	bspData, err := bsplib.ReadFromFile(filename)
 	if err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 	if bspData.GetHeader().Version < 20 {
-		log.Fatal("Unsupported BSP Version. Exiting...")
+		debug.Fatal("Unsupported BSP Version. Exiting...")
 	}
-
-	// Setup all possible resource loading locations
-	vpkHandle, err := vpk.OpenVPK("data/cstrike/cstrike_pak")
-	if err != nil {
-		log.Fatal(err)
-	}
-	file.SetGameVPK(vpkHandle)
 	file.SetPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
 
 	// Load worldspawn
@@ -74,10 +70,10 @@ func LoadMap(filename string) {
 	// Get entdata
 	vmfEntityTree, err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())
 	if err != nil {
-		log.Fatal(err)
+		debug.Fatal(err)
 	}
 	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
-	log.Printf("Found %d entities\n", entityList.Length())
+	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
 		bsp.CreateEntity(entityList.Get(i))
 	}
@@ -93,22 +89,9 @@ func LoadMap(filename string) {
 func LoadConfig() {
 	cfg,err := config.Load()
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 	}
-	gameDirectory := cfg.GameDirectory
-
-	// Load gameinfo.txt
-	gameInfoFile,err := os.Open(gameDirectory + "/gameinfo.txt")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	giData,err := gameinfo.Load(gameInfoFile)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	log.Println(giData)
+	gameinfo.LoadConfig(cfg.GameDirectory)
 }
 
 func RegisterManagers(app *engine.Engine) {
