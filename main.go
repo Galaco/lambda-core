@@ -14,6 +14,7 @@ import (
 	"github.com/galaco/Gource-Engine/systems/renderer"
 	"github.com/galaco/Gource-Engine/systems/window"
 	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/valve/libwrapper/gameinfo"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vpk"
 	"github.com/galaco/Gource-Engine/valve/loaders/bsp"
 	bsplib "github.com/galaco/bsp"
@@ -21,6 +22,7 @@ import (
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"log"
+	"os"
 )
 
 func main() {
@@ -87,11 +89,26 @@ func LoadMap(filename string) {
 	}
 }
 
+// Load project config, then derived game information
 func LoadConfig() {
-	_,err := config.Load()
+	cfg,err := config.Load()
 	if err != nil {
 		log.Println(err)
 	}
+	gameDirectory := cfg.GameDirectory
+
+	// Load gameinfo.txt
+	gameInfoFile,err := os.Open(gameDirectory + "/gameinfo.txt")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	giData,err := gameinfo.Load(gameInfoFile)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println(giData)
 }
 
 func RegisterManagers(app *engine.Engine) {

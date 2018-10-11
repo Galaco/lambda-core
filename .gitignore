@@ -11,3 +11,5 @@ data/maps/
 out\.png
 
 config\.json
+
+example_game/
