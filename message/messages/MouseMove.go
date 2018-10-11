@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"github.com/galaco/Gource/engine/event"
+	"github.com/galaco/Gource-Engine/engine/event"
 )
 
 type MouseMove struct {

@@ -1,9 +1,9 @@
 package studiomodel
 
 import (
-	"github.com/galaco/Gource/valve/loaders/studiomodel/mdl"
-	"github.com/galaco/Gource/valve/loaders/studiomodel/vtx"
-	"github.com/galaco/Gource/valve/loaders/studiomodel/vvd"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel/mdl"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel/vtx"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel/vvd"
 )
 
 type StudioModel struct {

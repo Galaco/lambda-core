@@ -1,16 +1,16 @@
 package bsp
 
 import (
-	"github.com/galaco/Gource/valve/file"
-	"github.com/galaco/Gource/valve/loaders/studiomodel"
-	"github.com/galaco/Gource/valve/loaders/studiomodel/vvd"
+	"github.com/galaco/Gource-Engine/engine/core/debug"
+	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel"
+	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel/vvd"
 	"github.com/galaco/bsp/primitives/game"
-	"log"
 	"strings"
 )
 
 func LoadStaticProps(propLump *game.StaticPropLump) {
-	log.Println("Loading static props")
+	debug.Log("Loading static props")
 	propPaths := []string{}
 	for _, propEntry := range propLump.PropLumps {
 		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])
@@ -46,12 +46,12 @@ func loadProp(filePath string) *studiomodel.StudioModel {
 	// VVD
 	f, err := file.Load(filePath + ".vvd")
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 		return nil
 	}
 	vvdFile, err := vvd.ReadFromStream(f)
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 		return nil
 	}
 

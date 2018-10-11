@@ -1,7 +1,7 @@
 package base
 
 import (
-	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 

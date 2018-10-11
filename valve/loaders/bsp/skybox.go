@@ -2,13 +2,13 @@ package bsp
 
 import (
 	"errors"
-	"github.com/galaco/Gource/components"
-	"github.com/galaco/Gource/components/renderable"
-	"github.com/galaco/Gource/components/renderable/material"
-	"github.com/galaco/Gource/engine/base/primitive"
-	"github.com/galaco/Gource/engine/filesystem"
-	"github.com/galaco/Gource/engine/interfaces"
-	material2 "github.com/galaco/Gource/valve/loaders/material"
+	"github.com/galaco/Gource-Engine/components"
+	"github.com/galaco/Gource-Engine/components/renderable"
+	"github.com/galaco/Gource-Engine/components/renderable/material"
+	"github.com/galaco/Gource-Engine/engine/base/primitive"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
+	material2 "github.com/galaco/Gource-Engine/valve/loaders/material"
 )
 
 var skySuffixes = [6]string{

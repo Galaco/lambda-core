@@ -1,6 +1,6 @@
 package vis
 
-import "github.com/galaco/Gource/valve/vis/tree"
+import "github.com/galaco/Gource-Engine/valve/vis/tree"
 
 type Cache struct {
 	Leaves     []*tree.Leaf

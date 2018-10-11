@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"github.com/galaco/Gource/engine/event"
-	"github.com/galaco/Gource/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/event"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"runtime"
 	"time"
 )

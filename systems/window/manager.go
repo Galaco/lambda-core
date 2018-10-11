@@ -1,9 +1,9 @@
 package window
 
 import (
-	"github.com/galaco/Gource/engine/base"
-	"github.com/galaco/Gource/systems/window/input"
-	"github.com/galaco/Gource/systems/window/window"
+	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/systems/window/input"
+	"github.com/galaco/Gource-Engine/systems/window/window"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 

@@ -1,7 +1,7 @@
 package vis
 
 import (
-	"github.com/galaco/Gource/valve/vis/tree"
+	"github.com/galaco/Gource-Engine/valve/vis/tree"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/plane"

@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"github.com/galaco/Gource/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core"
 )
 
 // Entity interface

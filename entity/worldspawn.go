@@ -1,11 +1,11 @@
 package entity
 
 import (
-	"github.com/galaco/Gource/components/renderable"
-	"github.com/galaco/Gource/engine/interfaces"
-	"github.com/galaco/Gource/valve/vis"
+	"github.com/galaco/Gource-Engine/components/renderable"
+	"github.com/galaco/Gource-Engine/engine/core/debug"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/valve/vis"
 	"github.com/go-gl/mathgl/mgl32"
-	"log"
 )
 
 type WorldSpawn struct {
@@ -41,7 +41,7 @@ func (entity *WorldSpawn) UpdateVisibilityList(position mgl32.Vec3) {
 	if entity.LeafCache != nil && entity.LeafCache.ClusterId == currentLeaf.ClusterId {
 		return
 	}
-	log.Printf("Current Cluster id: %d\n", currentLeaf.ClusterId)
+	debug.Logf("Current Cluster id: %d", currentLeaf.ClusterId)
 
 	entity.LeafCache = entity.visData.GetCacheLeavesForCluster(currentLeaf.ClusterId)
 	if entity.LeafCache != nil {
