@@ -37,8 +37,11 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 				debug.Log(err)
 				continue
 			}
-			debug.Log("Registered data path: " + path)
 			file.AddVpk(vpkHandle)
+			debug.Log("Registered vpk: " + path)
+		} else {
+			file.AddSearchDirectory(path)
+			debug.Log("Registered path: " + path)
 		}
 
 	}
