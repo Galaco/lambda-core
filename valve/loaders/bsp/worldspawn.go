@@ -59,8 +59,8 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 		materialList[idx] = &bspStructure.texInfos[f.TexInfo]
 
 		if f.DispInfo > -1 {
+			// This face is a displacement
 			meshList[idx] = generateDisplacementFace(&f, &bspStructure)
-			// This face is a displacement instead!
 		} else {
 			meshList[idx] = generateBspFace(&f, &bspStructure)
 		}
@@ -72,6 +72,9 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 
 	// Add MATERIALS TO FACES
 	for idx, primitive := range meshList {
+		if primitive == nil {
+			continue
+		}
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
 		vmtPath := faceVmt
 		baseTexturePath := "-1"
@@ -90,7 +93,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	}
 
 	// Load static props
-	LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	//LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := vis.NewVisFromBSP(file)
 
@@ -134,21 +137,74 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 	return base.NewPrimitive(expV, expF, expN)
 }
 
-// Create Primitives from Displacement faces tied to faces
-// in the bsp
-// @TODO implement me
+// Create Primitive from Displacement face
+// This is based on:
+// https://github.com/Metapyziks/VBspViewer/blob/master/Assets/VBspViewer/Scripts/Importing/VBsp/VBspFile.cs
 func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive {
-	//numSubDivisions := int(disp.Power*disp.Power)
-	//numVerts := numSubDivisions * numSubDivisions
-	//dispVertList := (*dispVerts)[disp.DispVertStart:disp.DispVertStart + int32(numVerts)]
-	//
-	//// Construct a subdivided vertex positions
-	//for x := 0; x < numSubDivisions; x++ {
-	//	for y := 0; y < numSubDivisions; y++ {
-	//		log.Println(dispVertList[x + y].Dist)
-	//	}
-	//}
-	return generateBspFace(f, bspStructure)
+	corners := make([]mgl32.Vec3, 4)
+	normal := bspStructure.planes[f.Planenum].Normal
+
+	info := bspStructure.dispInfos[f.DispInfo]
+	size := int(1 << uint32(info.Power))
+	firstCorner := int32(0)
+	firstCornerDist2 := float32(math.MaxFloat32)
+
+	for surfId := f.FirstEdge; surfId < f.FirstEdge + int32(f.NumEdges); surfId++ {
+		surfEdge := bspStructure.surfEdges[surfId]
+		edgeIndex := int32(math.Abs(float64(surfEdge)))
+		edge := bspStructure.edges[edgeIndex]
+		vert := bspStructure.vertexes[edge[0]]
+		if surfEdge < 0 {
+			vert = bspStructure.vertexes[edge[1]]
+		}
+
+		corners[surfId - f.FirstEdge] = vert
+
+		dist2tmp := info.StartPosition.Sub(vert)
+		dist2 := (dist2tmp.X() * dist2tmp.Y()) + (dist2tmp.Y() * dist2tmp.Y()) + (dist2tmp.Z() * dist2tmp.Z())
+		if dist2 < firstCornerDist2 {
+			firstCorner = surfId - f.FirstEdge
+			firstCornerDist2 = dist2
+		}
+	}
+
+	verts := make([]float32, 0)
+	normals := make([]float32, 0)
+
+	for x := 0; x < size; x++ {
+		for y := 0; y < size; y++ {
+			a := generateDispVert(int(info.DispVertStart), x, y,         size, corners, firstCorner, &bspStructure.dispVerts)
+			b := generateDispVert(int(info.DispVertStart), x, y + 1,     size, corners, firstCorner, &bspStructure.dispVerts)
+			c := generateDispVert(int(info.DispVertStart), x + 1, y + 1, size, corners, firstCorner, &bspStructure.dispVerts)
+			d := generateDispVert(int(info.DispVertStart), x + 1, y,     size, corners, firstCorner, &bspStructure.dispVerts)
+
+			// Split into triangles
+			verts = append(verts, a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z(), c.X(), c.Y(), c.Z())
+			normals = append(normals, normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+			verts = append(verts, a.X(), a.Y(), a.Z(), c.X(), c.Y(), c.Z(), d.X(), d.Y(), d.Z())
+			normals = append(normals, normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+		}
+	}
+
+	return base.NewPrimitive(verts, make([]uint16,3), normals)
+}
+
+func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {
+	vert := (*dispVerts)[offset + x + y * (size + 1)]
+
+	tx := float32(x / size)
+	ty := float32(y / size)
+	sx := 1 - tx
+	sy := 1 - ty
+
+	cornerA := corners[(0 + firstCorner) & 3]
+	cornerB := corners[(1 + firstCorner) & 3]
+	cornerC := corners[(2 + firstCorner) & 3]
+	cornerD := corners[(3 + firstCorner) & 3]
+
+	origin := ((cornerB.Mul(sx).Add(cornerC.Mul(tx))).Mul(ty)).Add((cornerA.Mul(sx).Add(cornerD.Mul(tx))).Mul(sy))
+
+	return origin.Add(vert.Vec.Mul(vert.Dist))
 }
 
 // Generate texturecoordinates for face data

@@ -43,10 +43,12 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap("D:/Program Files/Steamapps/steamapps/common/Counter-Strike Source/cstrike/maps/de_dust2.bsp")
+	LoadMap(config.Get().GameDirectory + "/maps/de_dust2.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
+
+	Application.SetSimulationSpeed(2.5)
 
 	// Run the engine
 	Application.Run()
