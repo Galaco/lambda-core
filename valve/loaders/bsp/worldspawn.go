@@ -93,7 +93,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	}
 
 	// Load static props
-	LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	//LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := vis.NewVisFromBSP(file)
 
@@ -137,9 +137,7 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 	return base.NewPrimitive(expV, expF, expN)
 }
 
-// Create Primitives from Displacement faces tied to faces
-// in the bsp
-// @TODO implement me
+// Create Primitive from Displacement face
 // This is based on:
 // https://github.com/Metapyziks/VBspViewer/blob/master/Assets/VBspViewer/Scripts/Importing/VBsp/VBspFile.cs
 func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive {

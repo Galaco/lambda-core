@@ -18,8 +18,8 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 		path := (*kv.GetAllValues())[0].(string)
 
 		// Current directory
-		if strings.Contains(path, "|GameInfo_Path|") {
-			path = strings.Replace(path, "|GameInfo_Path|", "/" + basePath, 1)
+		if strings.Contains(path, "|gameinfo_path|") {
+			path = strings.Replace(path, "|gameinfo_path|", "/" + basePath, 1)
 		}
 		// Executable directory
 		if strings.Contains(path, "|all_source_engine_paths|") {
