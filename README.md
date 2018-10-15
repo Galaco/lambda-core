@@ -15,8 +15,7 @@ game, although it is tested against Counterstrike: Source official and community
 * Load high-resolution materials (both .vmt and .vtf parsing, but only baseTexture is used) from both game VPK and 
 target .bsp pakfile
 * Parse and load the entdata lump (for now draws a small primitive at their origin)
-* Builds a complete bsp tree, and visibility data. Is currently a little buggy, but will update visible cluster faces
-based on current camera position
+* Builds a complete bsp tree, and visibility data used to cull hidden faces
 
 See `main.go` for now to specify the .bsp and .vpks containing textures.
 
@@ -35,10 +34,8 @@ you are targeting (e.g. HL2 would be `<steam_dir>/steamapps/common/hl2`).
 ## Contributing
 There is loads to do! Right now there are a few core issues that need fixing, and loads of fundamental features to add. Here
 are just a few!
-* StudioModel library needs finishing
-* Visibility data sometimes culls wrong faces on certain clusters (de_dust2 exhibits this a lot)
-* No VPhysics
-* A vulkan renderer would be a huge step forward
-* Displacement support
+* StudioModel library needs finishing before props can be properly added
+* No Physics
+* A vulkan renderer would be a huge step forward, particularly this early on. Abstracting a mesh away from ogl would also help
+* Displacement support incomplete - generation is buggy, and visibility checks cull displacements always
 * Additional game support/testing in BSP library
-* Multi-VPK support
