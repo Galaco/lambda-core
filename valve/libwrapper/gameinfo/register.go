@@ -5,6 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/valve/file"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vpk"
 	"github.com/galaco/KeyValues"
+	"regexp"
 	"strings"
 )
 
@@ -18,14 +19,17 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 		path := (*kv.GetAllValues())[0].(string)
 
 		// Current directory
-		if strings.Contains(path, "|gameinfo_path|") {
-			path = strings.Replace(path, "|gameinfo_path|", "/" + basePath, 1)
+		gameInfoPathRegex := regexp.MustCompile(`(?i)\|gameinfo_path\|`)
+		if gameInfoPathRegex.MatchString(path) {
+			path = gameInfoPathRegex.ReplaceAllString(path, basePath + "/")
 		}
+
 		// Executable directory
-		if strings.Contains(path, "|all_source_engine_paths|") {
-			path = strings.Replace(path, "|all_source_engine_paths|", basePath + "/../", 1)
+		allSourceEnginePathsRegex := regexp.MustCompile(`(?i)\|all_source_engine_paths\|`)
+		if allSourceEnginePathsRegex.MatchString(path) {
+			path = allSourceEnginePathsRegex.ReplaceAllString(path, basePath + "/")
 		}
-		if strings.Contains(*kv.GetKey(), "mod") {
+		if strings.Contains(strings.ToLower(*kv.GetKey()), "mod") {
 			path = basePath + "/../" + path
 		}
 
