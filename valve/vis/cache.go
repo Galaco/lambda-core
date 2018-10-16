@@ -1,9 +1,12 @@
 package vis
 
-import "github.com/galaco/go-me-engine/valve/vis/tree"
+import (
+	"github.com/galaco/bsp/primitives/leaf"
+)
 
 type Cache struct {
-	Leaves []*tree.Leaf
-	ClusterId int16
+	Leaves     []*leaf.Leaf
+	ClusterId  int16
 	SkyVisible bool
+	Faces	   []uint16
 }

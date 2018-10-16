@@ -20,7 +20,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) {
 	}
 
 	propPaths = buildUniquePropList(propPaths)
-	for _,path := range propPaths {
+	for _, path := range propPaths {
 		loadProp(strings.Split(path, ".mdl")[0])
 	}
 }
@@ -31,7 +31,7 @@ func buildUniquePropList(propList []string) []string {
 	retList := make([]string, 0)
 	for _,entry := range propList {
 		found := false
-		for _,unique := range retList {
+		for _, unique := range retList {
 			if entry == unique {
 				found = true
 				break
@@ -65,12 +65,12 @@ func loadProp(filePath string) *studiomodel.StudioModel {
 	// VVD
 	f,err = file.Load(filePath + ".vvd")
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 		return nil
 	}
-	vvdFile,err := vvd.ReadFromStream(f)
+	vvdFile, err := vvd.ReadFromStream(f)
 	if err != nil {
-		log.Println(err)
+		debug.Log(err)
 		return nil
 	}
 	prop.AddVvd(vvdFile)

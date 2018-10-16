@@ -1,8 +1,8 @@
 package event
 
 import (
-	"github.com/galaco/go-me-engine/engine/core"
-	"github.com/galaco/go-me-engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/core"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"sync"
 )
 

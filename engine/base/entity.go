@@ -1,7 +1,7 @@
 package base
 
 import (
-	"github.com/galaco/go-me-engine/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core"
 )
 
 // Entity is an object in the game world.

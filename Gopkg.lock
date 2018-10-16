@@ -15,6 +15,7 @@
 
 [[projects]]
   branch = "dev"
+  digest = "1:919ecdeef5d6e91dc6674b978c73916c9494c982a9bed54fb3562ff8f3df890f"
   name = "github.com/galaco/bsp"
   packages = [
     ".",
@@ -51,74 +52,193 @@
     "primitives/vertnormal",
     "primitives/visibility",
     "primitives/worldlight",
-    "versions"
+    "versions",
   ]
+  pruneopts = "UT"
   revision = "8961939e0f6eb28a5572ae2eb91fc9ec966bdd4f"
 
 [[projects]]
   branch = "master"
+  digest = "1:9784f6305dd0dfb5b95918dd2ef314cc8b6bcc9ef2b0bef63aa952f11ce1bbac"
+  name = "github.com/galaco/Gource"
+  packages = [
+    "components",
+    "components/renderable",
+    "components/renderable/material",
+    "engine",
+    "engine/base",
+    "engine/base/material",
+    "engine/base/primitive",
+    "engine/core",
+    "engine/event",
+    "engine/factory",
+    "engine/filesystem",
+    "engine/input",
+    "engine/interfaces",
+    "entity",
+    "message/messages",
+    "message/messagetype",
+    "systems/renderer",
+    "systems/renderer/camera",
+    "systems/renderer/gl",
+    "systems/renderer/gl/shaders",
+    "systems/renderer/gl/shaders/sky",
+    "systems/window",
+    "systems/window/input",
+    "systems/window/window",
+    "valve/file",
+    "valve/libwrapper/stringtable",
+    "valve/libwrapper/vpk",
+    "valve/libwrapper/vtf",
+    "valve/loaders/bsp",
+    "valve/loaders/material",
+    "valve/loaders/studiomodel",
+    "valve/loaders/studiomodel/mdl",
+    "valve/loaders/studiomodel/vtx",
+    "valve/loaders/studiomodel/vvd",
+    "valve/vis",
+    "valve/vis/tree",
+  ]
+  pruneopts = "UT"
+  revision = "c9b0e338b18a9257242297c65b1bb71a6029a1bd"
+
+[[projects]]
+  branch = "master"
+  digest = "1:5c655e19769f24921a870740d63bd2e3a033f6b70ed88821866008cc49a7d4d0"
   name = "github.com/galaco/source-tools-common"
   packages = [
     "entity",
     "texdatastringtable",
-    "vmath/vector"
+    "vmath/vector",
   ]
+  pruneopts = "UT"
   revision = "801546aa80df417e2b5d3929a64155cd627003bd"
 
 [[projects]]
   branch = "master"
+  digest = "1:3b71738129040a315d8691f8e8380479045ab259faf2686cd33e7bbd1f331096"
   name = "github.com/galaco/vmf"
   packages = ["."]
+  pruneopts = "UT"
   revision = "7a9ccb6e8abb1d03bb0c9a1938356b0557dd644f"
 
 [[projects]]
   branch = "master"
+  digest = "1:41bbf963dc67a809274b2e15d7f503e471aa98ed731b3b2ba743763fd24e9574"
   name = "github.com/galaco/vpk2"
   packages = ["."]
+  pruneopts = "UT"
   revision = "3f4d88cb3925ad7bb0d14f5122396421be99a0ce"
 
 [[projects]]
   branch = "master"
+  digest = "1:b7ed08778ab5265dc2657a07ec4e82e5694b86207bc3e83237b01ba450ad368f"
   name = "github.com/galaco/vtf"
   packages = [
     ".",
-    "colourformat"
+    "colourformat",
   ]
+  pruneopts = "UT"
   revision = "3b4935244fadabd843eeaa9ab187156d5e9acbad"
 
 [[projects]]
   branch = "master"
+  digest = "1:0bd2fe5ef5c29d0a08c48772722ff70dc2fd4793f0451f8ca9bc309f1f249f60"
   name = "github.com/go-gl/gl"
   packages = ["v4.1-core/gl"]
+  pruneopts = "UT"
   revision = "68e2537930806bfcee1b92a0e14b4e9b8bb3a3e3"
 
 [[projects]]
   branch = "master"
+  digest = "1:b77931229e2797e44f3168b8ca2ed186eb872cd28a5b45589bb4262a86574ef0"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
+  pruneopts = "UT"
   revision = "2484f3e51bc432ea9f7daa182e418d5522201176"
 
 [[projects]]
   branch = "master"
+  digest = "1:0516a5268567377fe200d3fc8c7de0d5da3ee7bc50d1cad92f39bb047e93f907"
   name = "github.com/go-gl/mathgl"
   packages = [
     "mgl32",
-    "mgl64"
+    "mgl64",
   ]
+  pruneopts = "UT"
   revision = "cdf14b6b8f8a4a1bfb003dd5119205c5f711d85a"
 
 [[projects]]
   branch = "master"
+  digest = "1:7b1c6cea859aa2b3d363ccbca9af32e4eed72964d6399bbe3045acc0a80184c9"
   name = "golang.org/x/image"
   packages = [
     "math/f32",
-    "math/f64"
+    "math/f64",
   ]
+  pruneopts = "UT"
   revision = "c73c2afc3b812cdd6385de5a50616511c4a3d458"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "35c6a9b40d99519e1ba11765d2eec6a07b01b4c89d42668aec36aa4afb6e7fd9"
+  input-imports = [
+    "github.com/galaco/bsp",
+    "github.com/galaco/bsp/lumps",
+    "github.com/galaco/bsp/primitives/dispinfo",
+    "github.com/galaco/bsp/primitives/dispvert",
+    "github.com/galaco/bsp/primitives/face",
+    "github.com/galaco/bsp/primitives/game",
+    "github.com/galaco/bsp/primitives/leaf",
+    "github.com/galaco/bsp/primitives/node",
+    "github.com/galaco/bsp/primitives/plane",
+    "github.com/galaco/bsp/primitives/texinfo",
+    "github.com/galaco/bsp/primitives/visibility",
+    "github.com/galaco/Gource/components",
+    "github.com/galaco/Gource/components/renderable",
+    "github.com/galaco/Gource/components/renderable/material",
+    "github.com/galaco/Gource/engine",
+    "github.com/galaco/Gource/engine/base",
+    "github.com/galaco/Gource/engine/base/material",
+    "github.com/galaco/Gource/engine/base/primitive",
+    "github.com/galaco/Gource/engine/core",
+    "github.com/galaco/Gource/engine/event",
+    "github.com/galaco/Gource/engine/factory",
+    "github.com/galaco/Gource/engine/filesystem",
+    "github.com/galaco/Gource/engine/input",
+    "github.com/galaco/Gource/engine/interfaces",
+    "github.com/galaco/Gource/entity",
+    "github.com/galaco/Gource/message/messages",
+    "github.com/galaco/Gource/message/messagetype",
+    "github.com/galaco/Gource/systems/renderer",
+    "github.com/galaco/Gource/systems/renderer/camera",
+    "github.com/galaco/Gource/systems/renderer/gl",
+    "github.com/galaco/Gource/systems/renderer/gl/shaders",
+    "github.com/galaco/Gource/systems/renderer/gl/shaders/sky",
+    "github.com/galaco/Gource/systems/window",
+    "github.com/galaco/Gource/systems/window/input",
+    "github.com/galaco/Gource/systems/window/window",
+    "github.com/galaco/Gource/valve/file",
+    "github.com/galaco/Gource/valve/libwrapper/stringtable",
+    "github.com/galaco/Gource/valve/libwrapper/vpk",
+    "github.com/galaco/Gource/valve/libwrapper/vtf",
+    "github.com/galaco/Gource/valve/loaders/bsp",
+    "github.com/galaco/Gource/valve/loaders/material",
+    "github.com/galaco/Gource/valve/loaders/studiomodel",
+    "github.com/galaco/Gource/valve/loaders/studiomodel/mdl",
+    "github.com/galaco/Gource/valve/loaders/studiomodel/vtx",
+    "github.com/galaco/Gource/valve/loaders/studiomodel/vvd",
+    "github.com/galaco/Gource/valve/vis",
+    "github.com/galaco/Gource/valve/vis/tree",
+    "github.com/galaco/source-tools-common/entity",
+    "github.com/galaco/source-tools-common/texdatastringtable",
+    "github.com/galaco/vmf",
+    "github.com/galaco/vpk2",
+    "github.com/galaco/vtf",
+    "github.com/go-gl/gl/v4.1-core/gl",
+    "github.com/go-gl/glfw/v3.2/glfw",
+    "github.com/go-gl/mathgl/mgl32",
+    "github.com/go-gl/mathgl/mgl64",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

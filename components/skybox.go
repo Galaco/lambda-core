@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/galaco/go-me-engine/components/renderable/material"
+	"github.com/galaco/Gource-Engine/components/renderable/material"
 )
 
 type Skybox struct {
@@ -9,7 +9,7 @@ type Skybox struct {
 	cubemap *material.Cubemap
 }
 
-func (skybox *Skybox) GetCubemap() *material.Cubemap{
+func (skybox *Skybox) GetCubemap() *material.Cubemap {
 	return skybox.cubemap
 }
 

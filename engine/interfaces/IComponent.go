@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/galaco/go-me-engine/engine/core"
+import "github.com/galaco/Gource-Engine/engine/core"
 
 // Component interface
 // All components need to implement this

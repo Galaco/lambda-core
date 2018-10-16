@@ -1,13 +1,13 @@
 package bsp
 
 import (
-	"github.com/galaco/go-me-engine/components"
-	"github.com/galaco/go-me-engine/components/renderable"
-	"github.com/galaco/go-me-engine/engine/base/primitive"
-	"github.com/galaco/go-me-engine/engine/interfaces"
-	entity2 "github.com/galaco/go-me-engine/entity"
+	"github.com/galaco/Gource-Engine/components"
+	"github.com/galaco/Gource-Engine/components/renderable"
+	"github.com/galaco/Gource-Engine/engine/base/primitive"
+	"github.com/galaco/Gource-Engine/engine/factory"
+	"github.com/galaco/Gource-Engine/engine/interfaces"
+	entity2 "github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/source-tools-common/entity"
-	"github.com/galaco/go-me-engine/engine/factory"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"
 	"strings"
