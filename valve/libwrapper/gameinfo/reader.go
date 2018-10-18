@@ -11,7 +11,7 @@ func Get() *keyvalues.KeyValue {
 	return &gameInfo
 }
 
-func Load(stream io.Reader) (*keyvalues.KeyValue,error) {
+func Load(stream io.Reader) (*keyvalues.KeyValue, error) {
 	kvReader := keyvalues.NewReader(stream)
 
 	kv, err := kvReader.Read()
@@ -19,5 +19,5 @@ func Load(stream io.Reader) (*keyvalues.KeyValue,error) {
 		gameInfo = kv
 	}
 
-	return &gameInfo,err
+	return &gameInfo, err
 }

@@ -93,7 +93,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	}
 
 	// Load static props
-	//LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := vis.NewVisFromBSP(file)
 
@@ -149,7 +149,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces
 	firstCorner := int32(0)
 	firstCornerDist2 := float32(math.MaxFloat32)
 
-	for surfId := f.FirstEdge; surfId < f.FirstEdge + int32(f.NumEdges); surfId++ {
+	for surfId := f.FirstEdge; surfId < f.FirstEdge+int32(f.NumEdges); surfId++ {
 		surfEdge := bspStructure.surfEdges[surfId]
 		edgeIndex := int32(math.Abs(float64(surfEdge)))
 		edge := bspStructure.edges[edgeIndex]
@@ -158,7 +158,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces
 			vert = bspStructure.vertexes[edge[1]]
 		}
 
-		corners[surfId - f.FirstEdge] = vert
+		corners[surfId-f.FirstEdge] = vert
 
 		dist2tmp := info.StartPosition.Sub(vert)
 		dist2 := (dist2tmp.X() * dist2tmp.Y()) + (dist2tmp.Y() * dist2tmp.Y()) + (dist2tmp.Z() * dist2tmp.Z())
@@ -173,10 +173,10 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces
 
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
-			a := generateDispVert(int(info.DispVertStart), x, y,         size, corners, firstCorner, &bspStructure.dispVerts)
-			b := generateDispVert(int(info.DispVertStart), x, y + 1,     size, corners, firstCorner, &bspStructure.dispVerts)
-			c := generateDispVert(int(info.DispVertStart), x + 1, y + 1, size, corners, firstCorner, &bspStructure.dispVerts)
-			d := generateDispVert(int(info.DispVertStart), x + 1, y,     size, corners, firstCorner, &bspStructure.dispVerts)
+			a := generateDispVert(int(info.DispVertStart), x, y, size, corners, firstCorner, &bspStructure.dispVerts)
+			b := generateDispVert(int(info.DispVertStart), x, y+1, size, corners, firstCorner, &bspStructure.dispVerts)
+			c := generateDispVert(int(info.DispVertStart), x+1, y+1, size, corners, firstCorner, &bspStructure.dispVerts)
+			d := generateDispVert(int(info.DispVertStart), x+1, y, size, corners, firstCorner, &bspStructure.dispVerts)
 
 			// Split into triangles
 			verts = append(verts, a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z(), c.X(), c.Y(), c.Z())
@@ -186,21 +186,21 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces
 		}
 	}
 
-	return base.NewPrimitive(verts, make([]uint16,3), normals)
+	return base.NewPrimitive(verts, make([]uint16, 3), normals)
 }
 
 func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {
-	vert := (*dispVerts)[offset + x + y * (size + 1)]
+	vert := (*dispVerts)[offset+x+y*(size+1)]
 
 	tx := float32(x / size)
 	ty := float32(y / size)
 	sx := 1 - tx
 	sy := 1 - ty
 
-	cornerA := corners[(0 + firstCorner) & 3]
-	cornerB := corners[(1 + firstCorner) & 3]
-	cornerC := corners[(2 + firstCorner) & 3]
-	cornerD := corners[(3 + firstCorner) & 3]
+	cornerA := corners[(0+firstCorner)&3]
+	cornerB := corners[(1+firstCorner)&3]
+	cornerC := corners[(2+firstCorner)&3]
+	cornerD := corners[(3+firstCorner)&3]
 
 	origin := ((cornerB.Mul(sx).Add(cornerC.Mul(tx))).Mul(ty)).Add((cornerA.Mul(sx).Add(cornerD.Mul(tx))).Mul(sy))
 

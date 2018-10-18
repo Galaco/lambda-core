@@ -5,9 +5,9 @@ import (
 	"os"
 )
 
-func LoadConfig(gameDirectory string) (*keyvalues.KeyValue,error) {
+func LoadConfig(gameDirectory string) (*keyvalues.KeyValue, error) {
 	// Load gameinfo.txt
-	gameInfoFile,err := os.Open(gameDirectory + "/gameinfo.txt")
+	gameInfoFile, err := os.Open(gameDirectory + "/gameinfo.txt")
 	if err != nil {
 		return nil, err
 	}
