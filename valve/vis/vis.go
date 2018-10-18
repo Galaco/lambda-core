@@ -1,7 +1,6 @@
 package vis
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/valve/vis/tree"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
@@ -16,10 +15,10 @@ type Vis struct {
 	ClusterCache   []Cache
 	BspTree        []tree.Node
 	VisibilityLump *visibility.Vis
-	Leafs []leaf.Leaf
-	LeafFaces		[]uint16
-	Nodes			[]node.Node
-	Planes 			[]plane.Plane
+	Leafs          []leaf.Leaf
+	LeafFaces      []uint16
+	Nodes          []node.Node
+	Planes         []plane.Plane
 
 	viewPosition    mgl32.Vec3
 	viewCurrentLeaf *leaf.Leaf
@@ -44,20 +43,18 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 	numVisible := 0
 
 	faces := make([]uint16, 0)
-	for _,l := range vis.Leafs {
+	for _, l := range vis.Leafs {
 		//Check if cluster is in pvs
 		if !vis.clusterVisible(&clusterList, l.Cluster) {
 			continue
 		}
 		numVisible++
-		faces = append(faces, vis.LeafFaces[l.FirstLeafFace:l.FirstLeafFace + l.NumLeafFaces]...)
+		faces = append(faces, vis.LeafFaces[l.FirstLeafFace:l.FirstLeafFace+l.NumLeafFaces]...)
 	}
-
-	debug.Logf("Current cluster: %d has %d visible leafs", clusterId, numVisible)
 
 	cache := Cache{
 		ClusterId: clusterId,
-		Faces:	   faces,
+		Faces:     faces,
 	}
 
 	vis.ClusterCache = append(vis.ClusterCache, cache)
@@ -90,7 +87,7 @@ func (vis *Vis) FindCurrentLeaf(position mgl32.Vec3) *leaf.Leaf {
 // Find the index into the leaf array for the leaf the player
 // is inside of
 // Based on: https://bitbucket.org/fallahn/chuf-arc
-func(vis *Vis) findCurrentLeafIndex(position mgl32.Vec3) int32 {
+func (vis *Vis) findCurrentLeafIndex(position mgl32.Vec3) int32 {
 	i := int32(0)
 	distance := float32(0)
 
@@ -100,7 +97,7 @@ func(vis *Vis) findCurrentLeafIndex(position mgl32.Vec3) int32 {
 		plane := vis.Planes[node.PlaneNum]
 
 		//check which side of the plane the position is on so we know which direction to go
-		distance = plane.Normal.X() * position.X() + plane.Normal.Y() * position.Y() + plane.Normal.Z() * position.Z() - plane.Distance
+		distance = plane.Normal.X()*position.X() + plane.Normal.Y()*position.Y() + plane.Normal.Z()*position.Z() - plane.Distance
 		i = node.Children[0]
 		if distance < 0 {
 			i = node.Children[1]
@@ -115,9 +112,9 @@ func NewVisFromBSP(file *bsp.Bsp) *Vis {
 		VisibilityLump: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
 		BspTree:        tree.BuildTree(file),
 		viewPosition:   mgl32.Vec3{65536, 65536, 65536},
-		Leafs:			file.GetLump(bsp.LUMP_LEAFS).(*lumps.Leaf).GetData(),
-		LeafFaces:		file.GetLump(bsp.LUMP_LEAFFACES).(*lumps.LeafFace).GetData(),
-		Nodes:			file.GetLump(bsp.LUMP_NODES).(*lumps.Node).GetData(),
-		Planes:			file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
+		Leafs:          file.GetLump(bsp.LUMP_LEAFS).(*lumps.Leaf).GetData(),
+		LeafFaces:      file.GetLump(bsp.LUMP_LEAFFACES).(*lumps.LeafFace).GetData(),
+		Nodes:          file.GetLump(bsp.LUMP_NODES).(*lumps.Node).GetData(),
+		Planes:         file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
 	}
 }

@@ -34,7 +34,7 @@ func Load(filename string) (io.Reader, error) {
 	}
 
 	// Fall back to game vpk
-	for _,fs := range gameVPKs {
+	for _, fs := range gameVPKs {
 		entry := fs.Entry(filename)
 		if entry != nil {
 			return entry.Open()
@@ -42,17 +42,16 @@ func Load(filename string) (io.Reader, error) {
 	}
 
 	// Fallback to local filesystem
-	for _,dir := range fileSystemDirectories {
+	for _, dir := range fileSystemDirectories {
 		if _, err := os.Stat(dir + filename); os.IsNotExist(err) {
 			continue
 		}
-		file,err := ioutil.ReadFile(dir + filename)
+		file, err := ioutil.ReadFile(dir + filename)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 		return bytes.NewBuffer(file), nil
 	}
-
 
 	return nil, errors.New("Could not find: " + filename)
 }

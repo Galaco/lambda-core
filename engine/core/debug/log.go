@@ -7,7 +7,7 @@ func Log(msg interface{}) {
 }
 
 func Logf(msg string, v ...interface{}) {
-	log.Printf(msg + "\n", v...)
+	log.Printf(msg+"\n", v...)
 }
 
 func Fatal(msg interface{}) {

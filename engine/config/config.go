@@ -19,7 +19,7 @@ func Get() *Config {
 }
 
 func Load() (*Config, error) {
-	data,err := ioutil.ReadFile("config.json")
+	data, err := ioutil.ReadFile("config.json")
 	if err != nil {
 		return &config, err
 	}

@@ -89,7 +89,7 @@ func LoadMap(filename string) {
 
 // Load project config, then derived game information
 func LoadConfig() {
-	cfg,err := config.Load()
+	cfg, err := config.Load()
 	if err != nil {
 		debug.Log(err)
 	}
@@ -119,4 +119,3 @@ func (closer Closeable) ReceiveMessage(message interfaces.IMessage) {
 func RegisterShutdownMethod(app *engine.Engine) {
 	event.GetEventManager().Listen(messagetype.KeyDown, Closeable{app})
 }
-

@@ -14,20 +14,20 @@ import (
 func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 	searchPaths := gameInfo.FindByKey("GameInfo").FindByKey("FileSystem").FindByKey("SearchPaths")
 
-	for _,searchPath := range (*searchPaths.GetAllValues()) {
+	for _, searchPath := range *searchPaths.GetAllValues() {
 		kv := searchPath.(keyvalues.KeyValue)
 		path := (*kv.GetAllValues())[0].(string)
 
 		// Current directory
 		gameInfoPathRegex := regexp.MustCompile(`(?i)\|gameinfo_path\|`)
 		if gameInfoPathRegex.MatchString(path) {
-			path = gameInfoPathRegex.ReplaceAllString(path, basePath + "/")
+			path = gameInfoPathRegex.ReplaceAllString(path, basePath+"/")
 		}
 
 		// Executable directory
 		allSourceEnginePathsRegex := regexp.MustCompile(`(?i)\|all_source_engine_paths\|`)
 		if allSourceEnginePathsRegex.MatchString(path) {
-			path = allSourceEnginePathsRegex.ReplaceAllString(path, basePath + "/")
+			path = allSourceEnginePathsRegex.ReplaceAllString(path, basePath+"/../")
 		}
 		if strings.Contains(strings.ToLower(*kv.GetKey()), "mod") {
 			path = basePath + "/../" + path

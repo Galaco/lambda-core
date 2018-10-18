@@ -49,7 +49,7 @@ func (manager *Manager) Register() {
 	opengl.LineWidth(32)
 	opengl.DepthFunc(opengl.LEQUAL)
 
-	opengl.ClearColor(0.5, 0.5, 0.5, 1)
+	opengl.ClearColor(0, 0, 0, 1)
 }
 
 func (manager *Manager) Update(dt float64) {

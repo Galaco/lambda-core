@@ -8,5 +8,5 @@ type Cache struct {
 	Leaves     []*leaf.Leaf
 	ClusterId  int16
 	SkyVisible bool
-	Faces	   []uint16
+	Faces      []uint16
 }

@@ -3,29 +3,44 @@ package bsp
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/valve/file"
-	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel"
-	"github.com/galaco/Gource-Engine/valve/loaders/studiomodel/vvd"
+	"github.com/galaco/StudioModel"
+	"github.com/galaco/StudioModel/mdl"
+	"github.com/galaco/StudioModel/phy"
+	"github.com/galaco/StudioModel/vtx"
+	"github.com/galaco/StudioModel/vvd"
 	"github.com/galaco/bsp/primitives/game"
+	"log"
 	"strings"
 )
 
 func LoadStaticProps(propLump *game.StaticPropLump) {
-	debug.Log("Loading static props")
-	propPaths := []string{}
+	log.Println("Loading static props")
+	propPaths := make([]string, 0)
 	for _, propEntry := range propLump.PropLumps {
 		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])
 	}
 
 	propPaths = buildUniquePropList(propPaths)
+	debug.Logf("Found %d staticprops", len(propPaths))
+	numLoaded := 0
 	for _, path := range propPaths {
-		loadProp(strings.Split(path, ".mdl")[0])
+		prop, err := loadProp(strings.Split(path, ".mdl")[0])
+		if prop != nil {
+			numLoaded++
+		}
+		if err != nil {
+			debug.Log(err)
+			continue
+		}
 	}
+
+	debug.Logf("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
 }
 
 // Build a list of all different prop files.
 // Removes duplications
 func buildUniquePropList(propList []string) []string {
-	retList := []string{}
+	retList := make([]string, 0)
 	for _, entry := range propList {
 		found := false
 		for _, unique := range retList {
@@ -42,33 +57,53 @@ func buildUniquePropList(propList []string) []string {
 	return retList
 }
 
-func loadProp(filePath string) *studiomodel.StudioModel {
-	// VVD
-	f, err := file.Load(filePath + ".vvd")
+func loadProp(filePath string) (*studiomodel.StudioModel, error) {
+	prop := studiomodel.NewStudioModel(filePath)
+
+	// MDL
+	f, err := file.Load(filePath + ".mdl")
 	if err != nil {
-		debug.Log(err)
-		return nil
+		return nil, err
+	}
+	mdlFile, err := mdl.ReadFromStream(f)
+	if err != nil {
+		return nil, err
+	}
+	prop.AddMdl(mdlFile)
+
+	// VVD
+	f, err = file.Load(filePath + ".vvd")
+	if err != nil {
+		return nil, err
 	}
 	vvdFile, err := vvd.ReadFromStream(f)
 	if err != nil {
-		debug.Log(err)
-		return nil
+		return nil, err
 	}
+	prop.AddVvd(vvdFile)
 
 	// VTX
-	//f,err = file.Load(filePath + ".sw.vtx")
-	//if err != nil {
-	//	log.Println(err)
-	//	return nil
-	//}
-	//vtxFile,err := vtx.ReadFromStream(f)
-	//if err != nil {
-	//	log.Println(err)
-	//	return nil
-	//}
-
-	return &studiomodel.StudioModel{
-		Vvd: vvdFile,
-		//		Vtx: vtxFile,
+	f, err = file.Load(filePath + ".dx90.vtx")
+	if err != nil {
+		return nil, err
 	}
+	vtxFile, err := vtx.ReadFromStream(f)
+	if err != nil {
+		return nil, err
+	}
+	prop.AddVtx(vtxFile)
+
+	// PHY
+	f, err = file.Load(filePath + ".phy")
+	if err != nil {
+		return prop, err
+	}
+
+	phyFile, err := phy.ReadFromStream(f)
+	if err != nil {
+		return prop, err
+	}
+	prop.AddPhy(phyFile)
+
+	return prop, nil
 }
