@@ -3,7 +3,7 @@ package bsp
 import (
 	"github.com/galaco/Gource-Engine/components/renderable/material"
 	"github.com/galaco/Gource-Engine/engine/base"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/stringtable"
@@ -36,7 +36,7 @@ type bspstructs struct {
 }
 
 func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
-	FileManager := filesystem.GetFileManager()
+	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
 		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
@@ -78,11 +78,11 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
 		vmtPath := faceVmt
 		baseTexturePath := "-1"
-		if FileManager.GetFile(vmtPath) != nil {
-			baseTexturePath = FileManager.GetFile(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
+		if ResourceManager.Has(vmtPath) {
+			baseTexturePath = ResourceManager.Get(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
 		}
-		if FileManager.GetFile(baseTexturePath) != nil {
-			mat := FileManager.GetFile(baseTexturePath).(*material.Material)
+		if ResourceManager.Has(baseTexturePath) {
+			mat := ResourceManager.Get(baseTexturePath).(*material.Material)
 			primitive.(*base.Primitive).AddMaterial(mat)
 			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight()))
 		} else {

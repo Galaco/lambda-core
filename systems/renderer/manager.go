@@ -6,6 +6,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/systems/renderer/camera"
 	"github.com/galaco/Gource-Engine/systems/renderer/gl"
@@ -53,6 +54,7 @@ func (manager *Manager) Register() {
 }
 
 func (manager *Manager) Update(dt float64) {
+	currentScene := scene.Get()
 	manager.updateRendererProperties()
 	manager.currentCamera.Update(dt)
 
@@ -64,16 +66,13 @@ func (manager *Manager) Update(dt float64) {
 	view := manager.currentCamera.ViewMatrix()
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
-	for _, ent := range factory.GetObjectManager().GetAllEntities() {
-		switch ent.(type) {
-		case *entity.WorldSpawn:
-			ent.(*entity.WorldSpawn).UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
-			opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-			for _, resource := range ent.(*entity.WorldSpawn).GetPrimitives() {
-				manager.drawMesh(resource)
-			}
-		}
+	world := *currentScene.GetWorld()
+	world.UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
+	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+	for _, resource := range world.GetPrimitives() {
+		manager.drawMesh(resource)
 	}
+
 
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.(type) {

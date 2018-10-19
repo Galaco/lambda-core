@@ -3,7 +3,7 @@ package material
 import (
 	"github.com/galaco/Gource-Engine/components/renderable/material"
 	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/Gource-Engine/valve/file"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vtf"
 )
@@ -19,26 +19,26 @@ func LoadMaterialList(materialList []string) {
 }
 
 func read(materialList []string) (missingList []string) {
-	FileManager := filesystem.GetFileManager()
+	ResourceManager := resource.Manager()
 	materialBasePath := "materials/"
 
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
 		// Only load the file once
-		if FileManager.GetFile(materialBasePath+materialPath) == nil {
+		if ResourceManager.Get(materialBasePath+materialPath) == nil {
 			if !readVmt(materialBasePath, materialPath) {
 				debug.Log("Could not find: " + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
-			vmt := FileManager.GetFile(materialPath).(*Vmt)
+			vmt := ResourceManager.Get(materialPath).(*Vmt)
 
 			// NOTE: in patch vmts include is not supported
 			if vmt.GetProperty("baseTexture").AsString() != "" {
 				vtfTexturePath = vmt.GetProperty("baseTexture").AsString() + ".vtf"
 			}
 
-			if vtfTexturePath != "" && FileManager.GetFile(vtfTexturePath) == nil {
+			if vtfTexturePath != "" && !ResourceManager.Has(vtfTexturePath) {
 				if !readVtf(materialBasePath, vtfTexturePath) {
 					debug.Log("Could not find: " + materialPath)
 					missingList = append(missingList, vtfTexturePath)
@@ -51,7 +51,7 @@ func read(materialList []string) (missingList []string) {
 }
 
 func readVmt(basePath string, filePath string) bool {
-	FileManager := filesystem.GetFileManager()
+	ResourceManager := resource.Manager()
 	path := basePath + filePath + ".vmt"
 
 	stream, err := file.Load(path)
@@ -65,12 +65,12 @@ func readVmt(basePath string, filePath string) bool {
 		return false
 	}
 	// Add file
-	FileManager.AddFile(vmt)
+	ResourceManager.Add(vmt)
 	return true
 }
 
 func readVtf(basePath string, filePath string) bool {
-	FileManager := filesystem.GetFileManager()
+	ResourceManager := resource.Manager()
 	stream, err := file.Load(basePath + filePath)
 	if err != nil {
 		return false
@@ -84,7 +84,7 @@ func readVtf(basePath string, filePath string) bool {
 		return false
 	}
 	// Store file containing raw data in memory
-	FileManager.AddFile(
+	ResourceManager.Add(
 		material.NewMaterial(
 			filePath,
 			texture,
@@ -92,7 +92,7 @@ func readVtf(basePath string, filePath string) bool {
 			int(texture.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	FileManager.GetFile(filePath).(*material.Material).GenerateGPUBuffer()
+	ResourceManager.Get(filePath).(*material.Material).GenerateGPUBuffer()
 	return true
 }
 

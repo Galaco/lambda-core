@@ -23,7 +23,7 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 	return reader.Read()
 }
 
-func CreateEntity(ent *entity.Entity) {
+func CreateEntity(ent *entity.Entity) interfaces.IEntity{
 	localEdict := &entity2.ValveEntity{}
 	origin := ent.VectorForKey("origin")
 	localEdict.GetTransformComponent().Position = mgl32.Vec3{origin.X(), origin.Y(), origin.Z()}
@@ -33,5 +33,8 @@ func CreateEntity(ent *entity.Entity) {
 	resource := renderable.NewGPUResource([]interfaces.IPrimitive{primitive.NewCube()})
 	resource.Prepare()
 	placeholder.AddRenderableResource(resource)
-	factory.NewComponent(placeholder, factory.NewEntity(localEdict))
+	e := factory.NewEntity(localEdict)
+	factory.NewComponent(placeholder, e)
+
+	return e
 }

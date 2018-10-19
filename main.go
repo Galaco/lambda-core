@@ -9,6 +9,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/event"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/scene"
 	entity2 "github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/message/messages"
 	"github.com/galaco/Gource-Engine/message/messagetype"
@@ -77,7 +78,7 @@ func LoadMap(filename string) {
 	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
 	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
-		bsp.CreateEntity(entityList.Get(i))
+		scene.Get().AddEntity(bsp.CreateEntity(entityList.Get(i)))
 	}
 
 	worldSpawn.Definition = entityList.FindByKeyValue("classname", "worldspawn")
@@ -85,6 +86,8 @@ func LoadMap(filename string) {
 	if err == nil {
 		factory.NewComponent(sky, worldSpawn)
 	}
+
+	scene.Get().SetWorld(worldSpawn)
 }
 
 // Load project config, then derived game information

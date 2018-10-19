@@ -6,7 +6,7 @@ import (
 	"github.com/galaco/Gource-Engine/components/renderable"
 	"github.com/galaco/Gource-Engine/components/renderable/material"
 	"github.com/galaco/Gource-Engine/engine/base/primitive"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/Gource-Engine/engine/interfaces"
 	material2 "github.com/galaco/Gource-Engine/valve/loaders/material"
 )
@@ -24,12 +24,12 @@ func LoadSky(skyName string) (*components.Skybox, error) {
 	material2.LoadSkyboxTextures(skyName)
 
 	mats := []interfaces.IFile{
-		filesystem.GetFileManager().GetFile(skyName + skySuffixes[0] + ".vtf"),
-		filesystem.GetFileManager().GetFile(skyName + skySuffixes[1] + ".vtf"),
-		filesystem.GetFileManager().GetFile(skyName + skySuffixes[2] + ".vtf"),
-		filesystem.GetFileManager().GetFile(skyName + skySuffixes[3] + ".vtf"),
-		filesystem.GetFileManager().GetFile(skyName + skySuffixes[4] + ".vtf"),
-		filesystem.GetFileManager().GetFile(skyName + skySuffixes[5] + ".vtf"),
+		resource.Manager().Get(skyName + skySuffixes[0] + ".vtf"),
+		resource.Manager().Get(skyName + skySuffixes[1] + ".vtf"),
+		resource.Manager().Get(skyName + skySuffixes[2] + ".vtf"),
+		resource.Manager().Get(skyName + skySuffixes[3] + ".vtf"),
+		resource.Manager().Get(skyName + skySuffixes[4] + ".vtf"),
+		resource.Manager().Get(skyName + skySuffixes[5] + ".vtf"),
 	}
 
 	for _, mat := range mats {
