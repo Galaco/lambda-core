@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/engine/component"
 	"github.com/galaco/Gource-Engine/engine/core"
 	entity2 "github.com/galaco/source-tools-common/entity"
 )
@@ -10,9 +9,10 @@ import (
 // By itself entity is nothing more than an identifiable object located at a point in space
 type Base struct {
 	keyValues  *entity2.Entity
+	transform  Transform
+
 	handle     core.Handle
 	components []core.Handle
-	transform  component.TransformComponent
 }
 
 func (entity *Base) SetKeyValues(keyValues *entity2.Entity) {
@@ -51,7 +51,7 @@ func (entity *Base) AddComponent(handle core.Handle) {
 }
 
 // Returns this entity's transform component
-func (entity *Base) GetTransformComponent() *component.TransformComponent {
+func (entity *Base) Transform() *Transform {
 	return &entity.transform
 }
 
@@ -60,7 +60,6 @@ func NewEntity(definition *entity2.Entity) Base {
 		keyValues: definition,
 		handle:    core.NewHandle(),
 	}
-	ent.GetTransformComponent().SetOwnerHandle(core.NewHandle())
 
 	return ent
 }

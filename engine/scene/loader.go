@@ -2,13 +2,13 @@ package scene
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
+	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/scene/loader"
-	entity2 "github.com/galaco/Gource-Engine/entity"
 	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
-	"github.com/galaco/source-tools-common/entity"
+	entitylib "github.com/galaco/source-tools-common/entity"
 )
 
 func LoadFromFile(fileName string) {
@@ -27,12 +27,14 @@ func LoadFromFile(fileName string) {
 
 	loadEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData))
 
-	loadSky(currentScene.GetWorld().KeyValues().ValueForKey("skyname"))
+
+	loadSky(currentScene.FindEntitiesByKey("classname", "worldspawn")[0].KeyValues().ValueForKey("skyname"))
+
+	loadCamera()
 }
 
 func loadWorld(file *bsplib.Bsp) {
-	worldSpawn := factory.NewEntity(loader.LoadMap(file)).(*entity2.WorldSpawn)
-	currentScene.SetWorld(worldSpawn)
+	currentScene.SetWorld(loader.LoadMap(file))
 }
 
 func loadEntities(entdata *lumps.EntData) {
@@ -40,13 +42,11 @@ func loadEntities(entdata *lumps.EntData) {
 	if err != nil {
 		debug.Fatal(err)
 	}
-	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
+	entityList := entitylib.FromVmfNodeTree(vmfEntityTree.Unclassified)
 	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
-		//	currentScene.AddEntity(bsp.CreateEntity(entityList.Get(i)))
+		currentScene.AddEntity(loader.CreateEntity(entityList.Get(i)))
 	}
-
-	currentScene.GetWorld().SetKeyValues(entityList.FindByKeyValue("classname", "worldspawn"))
 }
 
 func loadSky(skyname string) {
@@ -56,5 +56,8 @@ func loadSky(skyname string) {
 	if err == nil {
 		factory.NewComponent(sky, currentScene.GetWorld())
 	}
+}
 
+func loadCamera() {
+	currentScene.AddCamera(entity.NewCamera())
 }

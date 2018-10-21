@@ -1,11 +1,7 @@
 package loader
 
 import (
-	"github.com/galaco/Gource-Engine/components"
 	entity3 "github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/factory"
-	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
-	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"
@@ -23,17 +19,10 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 }
 
 func CreateEntity(ent *entity.Entity) entity3.IEntity {
-	localEdict := &entity3.Base{}
+	localEdict := entity3.NewGenericEntity(ent)
 	origin := ent.VectorForKey("origin")
-	localEdict.GetTransformComponent().Position = mgl32.Vec3{origin.X(), origin.Y(), origin.Z()}
-	localEdict.GetTransformComponent().Scale = mgl32.Vec3{8, 8, 8}
+	localEdict.Transform().Position = mgl32.Vec3{origin.X(), origin.Y(), origin.Z()}
+	localEdict.Transform().Scale = mgl32.Vec3{8, 8, 8}
 
-	placeholder := components.NewRenderableComponent()
-	resource := model.NewModel([]primitive.IPrimitive{primitive.NewCube()})
-	resource.Prepare()
-	placeholder.AddRenderableResource(resource)
-	e := factory.NewEntity(localEdict)
-	factory.NewComponent(placeholder, e)
-
-	return e
+	return localEdict
 }

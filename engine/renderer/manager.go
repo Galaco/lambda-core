@@ -7,11 +7,10 @@ import (
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/galaco/Gource-Engine/engine/mesh"
+	"github.com/galaco/Gource-Engine/engine/renderer/gl"
 	"github.com/galaco/Gource-Engine/engine/scene"
-	"github.com/galaco/Gource-Engine/systems/renderer/camera"
-	"github.com/galaco/Gource-Engine/systems/renderer/gl"
-	"github.com/galaco/Gource-Engine/systems/renderer/gl/shaders"
-	"github.com/galaco/Gource-Engine/systems/renderer/gl/shaders/sky"
+	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders"
+	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders/sky"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
@@ -21,7 +20,6 @@ type Manager struct {
 	core.Manager
 	defaultShader gl.Context
 	skyShader     gl.Context
-	currentCamera camera.Camera
 
 	renderAsWireframe bool
 }
@@ -36,12 +34,10 @@ func (manager *Manager) Register() {
 	manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
 	manager.skyShader.Finalize()
 
-	manager.currentCamera.Initialize()
-
 	// Since we only have 1 shader for now..
 	manager.defaultShader.UseProgram()
 	projectionUniform := manager.defaultShader.GetUniform("projection")
-	projection := manager.currentCamera.ProjectionMatrix()
+	projection := scene.Get().CurrentCamera().ProjectionMatrix()
 	opengl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
 
 	opengl.Enable(opengl.BLEND)
@@ -56,18 +52,18 @@ func (manager *Manager) Register() {
 func (manager *Manager) Update(dt float64) {
 	currentScene := scene.Get()
 	manager.updateRendererProperties()
-	manager.currentCamera.Update(dt)
+	scene.Get().CurrentCamera().Update(dt)
 
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 
 	modelUniform := manager.defaultShader.GetUniform("model")
 	model := mgl32.Ident4()
 	viewUniform := manager.defaultShader.GetUniform("view")
-	view := manager.currentCamera.ViewMatrix()
+	view := scene.Get().CurrentCamera().ViewMatrix()
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
 	world := *currentScene.GetWorld()
-	world.UpdateVisibilityList(manager.currentCamera.GetOwner().GetTransformComponent().Position)
+	world.UpdateVisibilityList(scene.Get().CurrentCamera().Transform().Position)
 	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 	for _, resource := range world.GetPrimitives() {
 		manager.drawMesh(resource)
@@ -76,7 +72,7 @@ func (manager *Manager) Update(dt float64) {
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.(type) {
 		case *components.RenderableComponent:
-			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Base).GetTransformComponent().GetTransformationMatrix()
+			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Base).Transform().GetTransformationMatrix()
 			opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
 
 			for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
@@ -113,13 +109,13 @@ func (manager *Manager) drawSky(skybox *components.Skybox) {
 	opengl.GetIntegerv(opengl.DEPTH_FUNC, &oldDepthFuncMode)
 	manager.skyShader.UseProgram()
 	model := mgl32.Ident4()
-	camTransform := manager.currentCamera.GetOwner().GetTransformComponent().Position
+	camTransform := scene.Get().CurrentCamera().Transform().Position
 	model = model.Mul4(mgl32.Translate3D(camTransform.X(), camTransform.Y(), camTransform.Z()))
 	model = model.Mul4(mgl32.Scale3D(20, 20, 20))
 	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("model"), 1, false, &model[0])
-	view := manager.currentCamera.ViewMatrix()
+	view := scene.Get().CurrentCamera().ViewMatrix()
 	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("view"), 1, false, &view[0])
-	projection := manager.currentCamera.ProjectionMatrix()
+	projection := scene.Get().CurrentCamera().ProjectionMatrix()
 	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("projection"), 1, false, &projection[0])
 
 	opengl.CullFace(opengl.FRONT)

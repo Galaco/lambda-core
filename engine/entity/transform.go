@@ -1,4 +1,4 @@
-package component
+package entity
 
 import (
 	"github.com/go-gl/mathgl/mgl32"
@@ -7,8 +7,7 @@ import (
 // Represents the transformation of an entity in
 // a 3-dimensional space: position, rotation and scale.
 // Note: Rotation is measured in degrees
-type TransformComponent struct {
-	Component
+type Transform struct {
 	Position mgl32.Vec3
 	Rotation mgl32.Vec3
 	Scale    mgl32.Vec3
@@ -19,7 +18,7 @@ type TransformComponent struct {
 	matrix       mgl32.Mat4
 }
 
-func (component *TransformComponent) GetTransformationMatrix() mgl32.Mat4 {
+func (component *Transform) GetTransformationMatrix() mgl32.Mat4 {
 	if !component.Position.ApproxEqual(component.prevPosition) ||
 		!component.Rotation.ApproxEqual(component.prevRotation) ||
 		!component.Scale.ApproxEqual(component.prevScale) {

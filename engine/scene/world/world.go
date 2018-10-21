@@ -1,4 +1,4 @@
-package entity
+package world
 
 import (
 	"github.com/galaco/Gource-Engine/engine/entity"
@@ -10,9 +10,8 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-type WorldSpawn struct {
+type World struct {
 	entity.Base
-
 	cache       []mesh.IMesh
 	faceList    []primitive.IPrimitive
 	visData     *visibility.Vis
@@ -20,13 +19,13 @@ type WorldSpawn struct {
 	currentLeaf *leaf.Leaf
 }
 
-func (entity *WorldSpawn) GetPrimitives() []mesh.IMesh {
+func (entity *World) GetPrimitives() []mesh.IMesh {
 	return entity.cache
 }
 
 // Rebuild the current facelist to render, by first
 // recalculating using vvis data
-func (entity *WorldSpawn) UpdateVisibilityList(position mgl32.Vec3) {
+func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 	// View hasn't moved
 	currentLeaf := entity.visData.FindCurrentLeaf(position)
 
@@ -61,8 +60,8 @@ func (entity *WorldSpawn) UpdateVisibilityList(position mgl32.Vec3) {
 	}
 }
 
-func NewWorld(faceList []primitive.IPrimitive, visData *visibility.Vis) *WorldSpawn {
-	c := WorldSpawn{
+func NewWorld(faceList []primitive.IPrimitive, visData *visibility.Vis) *World {
+	c := World{
 		cache: []mesh.IMesh{
 			model.NewModel(make([]primitive.IPrimitive, 0)),
 		},

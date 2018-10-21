@@ -1,18 +1,16 @@
 package main
 
 import (
-	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/engine"
 	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
-	entity3 "github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/factory"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
-	"github.com/galaco/Gource-Engine/systems/renderer"
+	"github.com/galaco/Gource-Engine/engine/renderer"
 	"github.com/galaco/Gource-Engine/systems/window"
 	"github.com/galaco/Gource-Engine/lib/gameinfo"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -25,17 +23,13 @@ func main() {
 	// Load engine configuration
 	LoadConfig()
 	// Derive and register game resource paths
-	gameinfo.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
+	filesystem.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
 
 	RegisterManagers(Application)
 
 	// Initialise current setup. Note this doesn't start any loop, but
 	// allows for configuration of systems by the engine
 	Application.Initialise()
-
-	// special camera entity - this needs to be refactored out
-	cameraEnt := factory.NewEntity(&entity3.Base{})
-	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
 	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")

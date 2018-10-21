@@ -1,4 +1,4 @@
-package event
+package message
 
 // Name of an event type in this engines event/messaging
 // system

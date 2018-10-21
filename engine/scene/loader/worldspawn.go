@@ -6,7 +6,7 @@ import (
 	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
-	"github.com/galaco/Gource-Engine/entity"
+	"github.com/galaco/Gource-Engine/engine/scene/world"
 	"github.com/galaco/Gource-Engine/lib/stringtable"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
@@ -34,7 +34,7 @@ type bspstructs struct {
 	game       *lumps.Game
 }
 
-func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
+func LoadMap(file *bsp.Bsp) *world.World {
 	ResourceManager := filesystem.Manager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
@@ -96,7 +96,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 
 	visData := sceneVisibility.NewVisFromBSP(file)
 
-	return entity.NewWorld(meshList, visData)
+	return world.NewWorld(meshList, visData)
 }
 
 // Create primitives from face data in the bsp
