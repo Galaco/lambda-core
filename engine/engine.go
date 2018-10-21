@@ -1,8 +1,9 @@
 package engine
 
 import (
-	"github.com/galaco/Gource-Engine/engine/event"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/core/event"
+	"github.com/galaco/Gource-Engine/engine/core/interfaces"
+	"github.com/galaco/Gource-Engine/engine/entity"
 	"runtime"
 	"time"
 )
@@ -15,7 +16,7 @@ type Engine struct {
 	running         bool
 	simulationSpeed float64
 
-	entities   []interfaces.IEntity
+	entities   []entity.IEntity
 	components []interfaces.IComponent
 }
 

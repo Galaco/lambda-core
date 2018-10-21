@@ -1,4 +1,4 @@
-package interfaces
+package entity
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core"

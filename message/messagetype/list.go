@@ -1,11 +1,11 @@
 package messagetype
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core/event"
 )
 
-const KeyDown = core.EventId("KeyDown")
-const KeyHeld = core.EventId("KeyHeld")
-const KeyReleased = core.EventId("KeyReleased")
-const MouseMove = core.EventId("MouseMove")
-const ChangeActiveCamera = core.EventId("ChangeActiveCamera")
+const KeyDown = event.Id("KeyDown")
+const KeyHeld = event.Id("KeyHeld")
+const KeyReleased = event.Id("KeyReleased")
+const MouseMove = event.Id("MouseMove")
+const ChangeActiveCamera = event.Id("ChangeActiveCamera")

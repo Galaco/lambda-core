@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/message/messages"
 	"github.com/galaco/Gource-Engine/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -19,7 +19,7 @@ func (keyboard *Keyboard) IsKeyDown(key glfw.Key) bool {
 
 // Event manager message receiver.
 // Used to catch key events from the window library
-func (keyboard *Keyboard) ReceiveMessage(message interfaces.IMessage) {
+func (keyboard *Keyboard) ReceiveMessage(message event.IMessage) {
 	switch message.GetType() {
 	case messagetype.KeyDown:
 		keyboard.keysDown[int(message.(*messages.KeyDown).Key)] = true
@@ -28,7 +28,7 @@ func (keyboard *Keyboard) ReceiveMessage(message interfaces.IMessage) {
 	}
 }
 
-func (keyboard *Keyboard) SendMessage() interfaces.IMessage {
+func (keyboard *Keyboard) SendMessage() event.IMessage {
 	return nil
 }
 

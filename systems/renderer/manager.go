@@ -3,11 +3,11 @@ package renderer
 import (
 	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/engine/base"
+	entity2 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/scene"
-	"github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/systems/renderer/camera"
 	"github.com/galaco/Gource-Engine/systems/renderer/gl"
 	"github.com/galaco/Gource-Engine/systems/renderer/gl/shaders"
@@ -77,7 +77,7 @@ func (manager *Manager) Update(dt float64) {
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.(type) {
 		case *components.RenderableComponent:
-			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity.ValveEntity).GetTransformComponent().GetTransformationMatrix()
+			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Entity).GetTransformComponent().GetTransformationMatrix()
 			opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
 
 			for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
@@ -90,7 +90,7 @@ func (manager *Manager) Update(dt float64) {
 }
 
 // render a mesh and its submeshes/primitives
-func (manager *Manager) drawMesh(resource interfaces.IGPUMesh) {
+func (manager *Manager) drawMesh(resource mesh.IGPUMesh) {
 	for _, primitive := range resource.GetPrimitives() {
 		// Missing materials will be flat coloured
 		if primitive == nil || primitive.GetMaterial() == nil {

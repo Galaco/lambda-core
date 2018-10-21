@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/galaco/Gource-Engine/engine/event"
+	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/galaco/Gource-Engine/message/messages"
 	"github.com/galaco/Gource-Engine/message/messagetype"

@@ -1,15 +1,37 @@
 package material
 
 import (
-	"github.com/galaco/Gource-Engine/engine/base/material"
 	"github.com/galaco/vtf"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 // Generic GPU material struct
 type Material struct {
-	material.Material
+	filePath      string
+	Buffer        uint32
+	width         int
+	height        int
+	rawColourData []uint8
 	vtf *vtf.Vtf
+}
+
+// Bind this material to the GPU
+func (material *Material) Bind() {
+	gl.ActiveTexture(gl.TEXTURE0)
+	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
+}
+
+// Get the filepath this data was loaded from
+func (material *Material) GetFilePath() string {
+	return material.filePath
+}
+
+func (material *Material) GetWidth() int {
+	return material.width
+}
+
+func (material *Material) GetHeight() int {
+	return material.height
 }
 
 // Generate the GPU buffer for this material
@@ -49,10 +71,13 @@ func (material *Material) GenerateGPUBuffer() {
 
 func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
-		Material: *material.NewMaterial(filePath, width, height, []uint8{0, 0, 0}),
+		filePath:      filePath,
+		width:         width,
+		height:        height,
 		vtf:      vtf,
 	}
 }
+
 
 func isTextureCompressed(vtfFormat uint32) bool {
 	switch vtfFormat {

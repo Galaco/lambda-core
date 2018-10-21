@@ -1,7 +1,6 @@
 package material
 
 import (
-	"github.com/galaco/Gource-Engine/components/renderable/material"
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/Gource-Engine/valve/file"
@@ -85,14 +84,14 @@ func readVtf(basePath string, filePath string) bool {
 	}
 	// Store file containing raw data in memory
 	ResourceManager.Add(
-		material.NewMaterial(
+		NewMaterial(
 			filePath,
 			texture,
 			int(texture.GetHeader().Width),
 			int(texture.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	ResourceManager.Get(filePath).(*material.Material).GenerateGPUBuffer()
+	ResourceManager.Get(filePath).(*Material).GenerateGPUBuffer()
 	return true
 }
 

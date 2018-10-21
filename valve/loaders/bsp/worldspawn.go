@@ -1,13 +1,12 @@
 package bsp
 
 import (
-	"github.com/galaco/Gource-Engine/components/renderable/material"
-	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
 	"github.com/galaco/Gource-Engine/engine/resource"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/stringtable"
-	material2 "github.com/galaco/Gource-Engine/valve/loaders/material"
+	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/valve/vis"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
@@ -51,7 +50,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
 	}
 
-	meshList := make([]interfaces.IPrimitive, len(bspStructure.faces))
+	meshList := make([]primitive.IPrimitive, len(bspStructure.faces))
 	materialList := make([]*texinfo.TexInfo, len(bspStructure.faces))
 
 	// BSP FACES
@@ -71,8 +70,8 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	material2.LoadMaterialList(stringtable.SortUnique(stringTable, materialList))
 
 	// Add MATERIALS TO FACES
-	for idx, primitive := range meshList {
-		if primitive == nil {
+	for idx, mesh := range meshList {
+		if mesh == nil {
 			continue
 		}
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
@@ -83,13 +82,13 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 		}
 		if ResourceManager.Has(baseTexturePath) {
 			mat := ResourceManager.Get(baseTexturePath).(*material.Material)
-			primitive.(*base.Primitive).AddMaterial(mat)
-			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight()))
+			mesh.(*primitive.Primitive).AddMaterial(mat)
+			mesh.(*primitive.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(mesh.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight()))
 		} else {
-			primitive.(*base.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(primitive.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1))
+			mesh.(*primitive.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(mesh.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1))
 		}
 
-		primitive.GenerateGPUBuffer()
+		mesh.GenerateGPUBuffer()
 	}
 
 	// Load static props
@@ -101,7 +100,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 }
 
 // Create primitives from face data in the bsp
-func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive {
+func generateBspFace(f *face.Face, bspStructure *bspstructs) primitive.IPrimitive {
 	expF := make([]uint16, 0)
 	expV := make([]float32, 0)
 	expN := make([]float32, 0)
@@ -134,13 +133,13 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimiti
 		}
 	}
 
-	return base.NewPrimitive(expV, expF, expN)
+	return primitive.NewPrimitive(expV, expF, expN)
 }
 
 // Create Primitive from Displacement face
 // This is based on:
 // https://github.com/Metapyziks/VBspViewer/blob/master/Assets/VBspViewer/Scripts/Importing/VBsp/VBspFile.cs
-func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces.IPrimitive {
+func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) primitive.IPrimitive {
 	corners := make([]mgl32.Vec3, 4)
 	normal := bspStructure.planes[f.Planenum].Normal
 
@@ -186,7 +185,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) interfaces
 		}
 	}
 
-	return base.NewPrimitive(verts, make([]uint16, 3), normals)
+	return primitive.NewPrimitive(verts, make([]uint16, 3), normals)
 }
 
 func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {

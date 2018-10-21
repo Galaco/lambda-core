@@ -4,11 +4,10 @@ import (
 	"errors"
 	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/components/renderable"
-	"github.com/galaco/Gource-Engine/components/renderable/material"
-	"github.com/galaco/Gource-Engine/engine/base/primitive"
+	"github.com/galaco/Gource-Engine/engine/material"
+	material2 "github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
 	"github.com/galaco/Gource-Engine/engine/resource"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
-	material2 "github.com/galaco/Gource-Engine/valve/loaders/material"
 )
 
 var skySuffixes = [6]string{
@@ -23,7 +22,7 @@ var skySuffixes = [6]string{
 func LoadSky(skyName string) (*components.Skybox, error) {
 	material2.LoadSkyboxTextures(skyName)
 
-	mats := []interfaces.IFile{
+	mats := []resource.IFile{
 		resource.Manager().Get(skyName + skySuffixes[0] + ".vtf"),
 		resource.Manager().Get(skyName + skySuffixes[1] + ".vtf"),
 		resource.Manager().Get(skyName + skySuffixes[2] + ".vtf"),
@@ -52,7 +51,7 @@ func LoadSky(skyName string) (*components.Skybox, error) {
 
 	cube := primitive.NewCube()
 	cube.AddMaterial(cubeMap)
-	resource := renderable.NewGPUResource([]interfaces.IPrimitive{cube})
+	resource := renderable.NewGPUResource([]primitive.IPrimitive{cube})
 	resource.Prepare()
 	sky.AddRenderableResource(resource)
 

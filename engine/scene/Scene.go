@@ -1,20 +1,20 @@
 package scene
 
 import (
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	entity2 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/entity"
 )
 
 type Scene struct {
 	world *entity.WorldSpawn
-	entities []interfaces.IEntity
+	entities []entity2.IEntity
 }
 
-func (s *Scene) AddEntity(ent interfaces.IEntity) {
+func (s *Scene) AddEntity(ent entity2.IEntity) {
 	s.entities = append(s.entities, ent)
 }
 
-func (s *Scene) GetEntity(idx int) interfaces.IEntity {
+func (s *Scene) GetEntity(idx int) entity2.IEntity {
 	if idx > len(s.entities) {
 		return nil
 	}
@@ -25,7 +25,7 @@ func (s *Scene) NumEntities() int {
 	return len(s.entities)
 }
 
-func (s *Scene) GetAllEntities() *[]interfaces.IEntity {
+func (s *Scene) GetAllEntities() *[]entity2.IEntity {
 	return &s.entities
 }
 

@@ -3,12 +3,11 @@ package main
 import (
 	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/engine"
-	"github.com/galaco/Gource-Engine/engine/base"
 	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/engine/event"
+	"github.com/galaco/Gource-Engine/engine/core/event"
+	entity3 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"github.com/galaco/Gource-Engine/engine/scene"
 	entity2 "github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/message/messages"
@@ -40,7 +39,7 @@ func main() {
 	Application.Initialise()
 
 	// special camera entity - this needs to be refactored out
-	cameraEnt := factory.NewEntity(&base.Entity{})
+	cameraEnt := factory.NewEntity(&entity3.Entity{})
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
@@ -78,7 +77,7 @@ func LoadMap(filename string) {
 	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
 	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
-		scene.Get().AddEntity(bsp.CreateEntity(entityList.Get(i)))
+	//	scene.Get().AddEntity(bsp.CreateEntity(entityList.Get(i)))
 	}
 
 	worldSpawn.Definition = entityList.FindByKeyValue("classname", "worldspawn")
@@ -109,7 +108,7 @@ type Closeable struct {
 	target *engine.Engine
 }
 
-func (closer Closeable) ReceiveMessage(message interfaces.IMessage) {
+func (closer Closeable) ReceiveMessage(message event.IMessage) {
 	if message.GetType() == messagetype.KeyDown {
 		if message.(*messages.KeyDown).Key == glfw.KeyEscape {
 			// Will shutdown the engine at the end of the current loop

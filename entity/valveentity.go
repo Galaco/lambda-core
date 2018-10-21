@@ -1,12 +1,11 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/engine/base"
 	"github.com/galaco/source-tools-common/entity"
 )
 
 type ValveEntity struct {
-	base.Entity
+	entity.Entity
 	Definition *entity.Entity
 }
 

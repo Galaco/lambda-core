@@ -2,10 +2,10 @@ package components
 
 import (
 	"github.com/galaco/Gource-Engine/engine/base"
-	"github.com/galaco/Gource-Engine/engine/event"
+	"github.com/galaco/Gource-Engine/engine/core/event"
+	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"github.com/galaco/Gource-Engine/message/messages"
 	"github.com/galaco/Gource-Engine/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -25,12 +25,12 @@ type CameraComponent struct {
 	Right     mgl32.Vec3
 	Direction mgl32.Vec3
 	worldUp   mgl32.Vec3
-	owner     *base.Entity
+	owner     *entity.Entity
 	frameTime float64
 }
 
 func (component *CameraComponent) Initialize() {
-	component.owner = factory.GetObjectManager().GetEntityByHandle(component.GetOwnerHandle()).(*base.Entity)
+	component.owner = factory.GetObjectManager().GetEntityByHandle(component.GetOwnerHandle()).(*entity.Entity)
 	component.Up = mgl32.Vec3{0, 1, 0}
 	component.worldUp = mgl32.Vec3{0, 1, 0}
 	component.Direction = mgl32.Vec3{0, 0, -1}
@@ -38,7 +38,7 @@ func (component *CameraComponent) Initialize() {
 	event.GetEventManager().Dispatch(messagetype.ChangeActiveCamera, &messages.ChangeActiveCamera{Component: component})
 }
 
-func (component *CameraComponent) ReceiveMessage(message interfaces.IMessage) {
+func (component *CameraComponent) ReceiveMessage(message event.IMessage) {
 
 }
 

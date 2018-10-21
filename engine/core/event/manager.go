@@ -2,7 +2,6 @@ package event
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"sync"
 )
 
@@ -11,18 +10,18 @@ import (
 // Generally used for engine functionality, such as user input events, window
 // management etc.
 type Manager struct {
-	listenerMap map[core.EventId]map[core.Handle]interfaces.IEventListenable
+	listenerMap map[Id]map[core.Handle]IEventListenable
 	mu          sync.Mutex
 	eventQueue  []*QueueItem
 	runAsync    bool
 }
 
 //Register a new component to listen to an event
-func (manager *Manager) Listen(eventName core.EventId, component interfaces.IEventListenable) core.Handle {
+func (manager *Manager) Listen(eventName Id, component IEventListenable) core.Handle {
 	handle := core.NewHandle()
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName]; !ok {
-		manager.listenerMap[eventName] = make(map[core.Handle]interfaces.IEventListenable)
+		manager.listenerMap[eventName] = make(map[core.Handle]IEventListenable)
 	}
 	manager.listenerMap[eventName][handle] = component
 	manager.mu.Unlock()
@@ -61,7 +60,7 @@ func (manager *Manager) RunConcurrent() {
 }
 
 //Remove a listener from listening for an event
-func (manager *Manager) Unlisten(eventName core.EventId, handle core.Handle) {
+func (manager *Manager) Unlisten(eventName Id, handle core.Handle) {
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName][handle]; ok {
 		delete(manager.listenerMap[eventName], handle)
@@ -70,7 +69,7 @@ func (manager *Manager) Unlisten(eventName core.EventId, handle core.Handle) {
 }
 
 //Fires an event to all listening components
-func (manager *Manager) Dispatch(eventName core.EventId, message interfaces.IMessage) {
+func (manager *Manager) Dispatch(eventName Id, message IMessage) {
 	message.SetType(eventName)
 	queueItem := &QueueItem{
 		EventName: eventName,
@@ -91,7 +90,7 @@ var eventManager Manager
 
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[core.EventId]map[core.Handle]interfaces.IEventListenable)
+		eventManager.listenerMap = make(map[Id]map[core.Handle]IEventListenable)
 	}
 	return &eventManager
 }

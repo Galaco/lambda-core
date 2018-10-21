@@ -1,7 +1,7 @@
-package base
+package primitive
 
 import (
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
@@ -16,7 +16,7 @@ type Primitive struct {
 	indicesBuffer      uint32
 	uvBuffer           uint32
 	faceMode           uint32
-	material           interfaces.IMaterial
+	material           material.IMaterial
 	isBoundToGPU       bool
 }
 
@@ -67,7 +67,7 @@ func (primitive *Primitive) GetTextureCoordinates() []float32 {
 	return primitive.textureCoordinates
 }
 
-func (primitive *Primitive) GetMaterial() interfaces.IMaterial {
+func (primitive *Primitive) GetMaterial() material.IMaterial {
 	return primitive.material
 }
 
@@ -83,7 +83,7 @@ func (primitive *Primitive) AddTextureCoordinateData(textureCoordinates []float3
 	primitive.textureCoordinates = textureCoordinates
 }
 
-func (primitive *Primitive) AddMaterial(material interfaces.IMaterial) {
+func (primitive *Primitive) AddMaterial(material material.IMaterial) {
 	primitive.material = material
 }
 

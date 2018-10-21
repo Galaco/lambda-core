@@ -1,18 +1,17 @@
 package resource
 
 import (
-	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"strings"
 )
 
 // Very generic file storage.
 // If the struct came from a file, it should be obtainable from here
 type manager struct {
-	resources map[string]interfaces.IFile
+	resources map[string]IFile
 }
 
 // Add a new file
-func (m *manager) Add(file interfaces.IFile) {
+func (m *manager) Add(file IFile) {
 	m.resources[strings.ToLower(file.GetFilePath())] = file
 }
 
@@ -22,7 +21,7 @@ func (m *manager) Remove(filePath string) {
 }
 
 // Find a specific file
-func (m *manager) Get(filePath string) interfaces.IFile {
+func (m *manager) Get(filePath string) IFile {
 	return m.resources[strings.ToLower(filePath)]
 }
 
@@ -34,7 +33,7 @@ var resourceManager manager
 
 func Manager() *manager {
 	if resourceManager.resources == nil {
-		resourceManager.resources = map[string]interfaces.IFile{}
+		resourceManager.resources = map[string]IFile{}
 	}
 
 	return &resourceManager

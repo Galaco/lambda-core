@@ -1,9 +1,9 @@
-package core
+package event
 
 // Name of an event type in this engines event/messaging
 // system
-type EventId string
+type Id string
 
-func (id *EventId) String() string {
+func (id *Id) String() string {
 	return string(*id)
 }

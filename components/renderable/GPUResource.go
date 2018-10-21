@@ -1,10 +1,12 @@
 package renderable
 
-import "github.com/galaco/Gource-Engine/engine/interfaces"
+import (
+	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
+)
 
 // A collection of renderable primitives/submeshes
 type GPUResource struct {
-	primitives   []interfaces.IPrimitive
+	primitives   []primitive.IPrimitive
 	isBoundToGPU bool
 }
 
@@ -19,25 +21,25 @@ func (resource *GPUResource) Prepare() {
 }
 
 // Add a new primitive
-func (resource *GPUResource) AddPrimitive(primitive interfaces.IPrimitive) {
+func (resource *GPUResource) AddPrimitive(primitive primitive.IPrimitive) {
 	if resource.isBoundToGPU == true {
 		primitive.GenerateGPUBuffer()
 	}
 	resource.primitives = append(resource.primitives, primitive)
 }
 
-func (resource *GPUResource) AddPrimitives(primitives []interfaces.IPrimitive) {
+func (resource *GPUResource) AddPrimitives(primitives []primitive.IPrimitive) {
 	for _, p := range primitives {
 		resource.AddPrimitive(p)
 	}
 }
 
 // Get all primitives/submeshes
-func (resource *GPUResource) GetPrimitives() []interfaces.IPrimitive {
+func (resource *GPUResource) GetPrimitives() []primitive.IPrimitive {
 	return resource.primitives
 }
 
-func NewGPUResource(primitives []interfaces.IPrimitive) *GPUResource {
+func NewGPUResource(primitives []primitive.IPrimitive) *GPUResource {
 	return &GPUResource{
 		primitives:   primitives,
 		isBoundToGPU: false,
@@ -49,11 +51,11 @@ type GPUResourceDynamic struct {
 }
 
 func (resource *GPUResourceDynamic) Reset() {
-	resource.primitives = []interfaces.IPrimitive{}
+	resource.primitives = []primitive.IPrimitive{}
 	resource.isBoundToGPU = false
 }
 
-func NewGPUResourceDynamic(primitives []interfaces.IPrimitive) *GPUResourceDynamic {
+func NewGPUResourceDynamic(primitives []primitive.IPrimitive) *GPUResourceDynamic {
 	return &GPUResourceDynamic{
 		GPUResource: GPUResource{
 			primitives:   primitives,
