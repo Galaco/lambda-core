@@ -5,7 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
-	"github.com/galaco/Gource-Engine/valve/vis"
+	"github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -15,8 +15,8 @@ type WorldSpawn struct {
 
 	cache       []mesh.IGPUMesh
 	faceList    []primitive.IPrimitive
-	visData     *vis.Vis
-	LeafCache   *vis.Cache
+	visData     *visibility.Vis
+	LeafCache   *visibility.Cache
 	currentLeaf *leaf.Leaf
 }
 
@@ -61,7 +61,7 @@ func (entity *WorldSpawn) UpdateVisibilityList(position mgl32.Vec3) {
 	}
 }
 
-func NewWorld(faceList []primitive.IPrimitive, visData *vis.Vis) *WorldSpawn {
+func NewWorld(faceList []primitive.IPrimitive, visData *visibility.Vis) *WorldSpawn {
 	c := WorldSpawn{
 		cache: []mesh.IGPUMesh{
 			renderable.NewGPUResourceDynamic(make([]primitive.IPrimitive, 0)),

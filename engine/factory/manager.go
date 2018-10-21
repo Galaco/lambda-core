@@ -1,8 +1,8 @@
 package factory
 
 import (
+	"github.com/galaco/Gource-Engine/engine/component"
 	"github.com/galaco/Gource-Engine/engine/core"
-	"github.com/galaco/Gource-Engine/engine/core/interfaces"
 	"github.com/galaco/Gource-Engine/engine/entity"
 )
 
@@ -10,7 +10,7 @@ import (
 // Store entities and components
 type Manager struct {
 	entities   map[core.Handle]entity.IEntity
-	components map[core.Handle]interfaces.IComponent
+	components map[core.Handle]component.IComponent
 }
 
 // Returns all existing entities
@@ -19,7 +19,7 @@ func (manager *Manager) GetAllEntities() map[core.Handle]entity.IEntity {
 }
 
 // Returns all existing components
-func (manager *Manager) GetAllComponents() map[core.Handle]interfaces.IComponent {
+func (manager *Manager) GetAllComponents() map[core.Handle]component.IComponent {
 	return manager.components
 }
 
@@ -29,7 +29,7 @@ func (manager *Manager) GetEntityByHandle(handle core.Handle) entity.IEntity {
 }
 
 // Find a specific component by its unique name
-func (manager *Manager) GetComponentByHandle(handle core.Handle) interfaces.IComponent {
+func (manager *Manager) GetComponentByHandle(handle core.Handle) component.IComponent {
 	return manager.components[handle]
 }
 
@@ -39,7 +39,7 @@ func (manager *Manager) AddEntity(ent entity.IEntity) {
 }
 
 // Add a new component, registered against an existing entity
-func (manager *Manager) AddComponent(component interfaces.IComponent, ent entity.IEntity) {
+func (manager *Manager) AddComponent(component component.IComponent, ent entity.IEntity) {
 	component.SetOwnerHandle(ent.GetHandle())
 	manager.components[component.GetHandle()] = component
 	ent.AddComponent(component.GetHandle())
@@ -54,7 +54,7 @@ var objectManager Manager
 func GetObjectManager() *Manager {
 	if objectManager.components == nil {
 		objectManager.entities = make(map[core.Handle]entity.IEntity)
-		objectManager.components = make(map[core.Handle]interfaces.IComponent)
+		objectManager.components = make(map[core.Handle]component.IComponent)
 	}
 	return &objectManager
 }

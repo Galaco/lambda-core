@@ -8,18 +8,12 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	entity3 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/scene"
-	entity2 "github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/message/messages"
 	"github.com/galaco/Gource-Engine/message/messagetype"
 	"github.com/galaco/Gource-Engine/systems/renderer"
 	"github.com/galaco/Gource-Engine/systems/window"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/gameinfo"
-	"github.com/galaco/Gource-Engine/valve/loaders/bsp"
-	bsplib "github.com/galaco/bsp"
-	"github.com/galaco/bsp/lumps"
-	"github.com/galaco/source-tools-common/entity"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -43,7 +37,7 @@ func main() {
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
-	LoadMap(config.Get().GameDirectory + "/maps/de_dust2.bsp")
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
@@ -52,41 +46,6 @@ func main() {
 
 	// Run the engine
 	Application.Run()
-}
-
-// Loads a map
-func LoadMap(filename string) {
-	// BSP
-	bspData, err := bsplib.ReadFromFile(filename)
-	if err != nil {
-		debug.Fatal(err)
-	}
-	if bspData.GetHeader().Version < 20 {
-		debug.Fatal("Unsupported BSP Version. Exiting...")
-	}
-	filesystem.SetPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
-
-	// Load worldspawn
-	worldSpawn := factory.NewEntity(bsp.LoadMap(bspData)).(*entity2.WorldSpawn)
-
-	// Get entdata
-	vmfEntityTree, err := bsp.ParseEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData).GetData())
-	if err != nil {
-		debug.Fatal(err)
-	}
-	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
-	debug.Logf("Found %d entities\n", entityList.Length())
-	for i := 0; i < entityList.Length(); i++ {
-		//	scene.Get().AddEntity(bsp.CreateEntity(entityList.Get(i)))
-	}
-
-	worldSpawn.SetKeyValues(entityList.FindByKeyValue("classname", "worldspawn"))
-	sky, err := bsp.LoadSky(worldSpawn.KeyValues().ValueForKey("skyname"))
-	if err == nil {
-		factory.NewComponent(sky, worldSpawn)
-	}
-
-	scene.Get().SetWorld(worldSpawn)
 }
 
 // Load project config, then derived game information

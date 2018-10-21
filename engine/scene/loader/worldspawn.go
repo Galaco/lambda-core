@@ -1,13 +1,13 @@
-package bsp
+package loader
 
 import (
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/material"
 	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
+	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/stringtable"
-	"github.com/galaco/Gource-Engine/valve/vis"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/dispinfo"
@@ -94,7 +94,7 @@ func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
 	// Load static props
 	LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
-	visData := vis.NewVisFromBSP(file)
+	visData := sceneVisibility.NewVisFromBSP(file)
 
 	return entity.NewWorld(meshList, visData)
 }

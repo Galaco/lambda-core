@@ -3,8 +3,6 @@ package engine
 import (
 	"github.com/galaco/Gource-Engine/engine/core"
 	"github.com/galaco/Gource-Engine/engine/core/event"
-	"github.com/galaco/Gource-Engine/engine/core/interfaces"
-	"github.com/galaco/Gource-Engine/engine/entity"
 	"runtime"
 	"time"
 )
@@ -16,18 +14,13 @@ type Engine struct {
 	Managers        []core.IManager
 	running         bool
 	simulationSpeed float64
-
-	entities   []entity.IEntity
-	components []interfaces.IComponent
 }
 
 // Initialise the engine, and attached managers
 func (engine *Engine) Initialise() {
-
 	for _, manager := range engine.Managers {
 		manager.Register()
 	}
-
 }
 
 // Run the engine
@@ -55,10 +48,6 @@ func (engine *Engine) Run() {
 
 		dt = (float64(time.Now().UTC().Sub(startingTime).Nanoseconds()/1000000) / 1000) * engine.simulationSpeed
 		startingTime = time.Now().UTC()
-	}
-
-	for _, component := range engine.components {
-		component.Destroy()
 	}
 
 	for _, manager := range engine.Managers {

@@ -1,4 +1,4 @@
-package bsp
+package loader
 
 import (
 	"github.com/galaco/Gource-Engine/components"

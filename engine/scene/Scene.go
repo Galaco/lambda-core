@@ -2,12 +2,14 @@ package scene
 
 import (
 	entity2 "github.com/galaco/Gource-Engine/engine/entity"
+	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/entity"
 )
 
 type Scene struct {
 	world    *entity.WorldSpawn
 	entities []entity2.IEntity
+	sky      *material.Cubemap
 }
 
 func (s *Scene) AddEntity(ent entity2.IEntity) {
@@ -37,8 +39,12 @@ func (s *Scene) GetWorld() *entity.WorldSpawn {
 	return s.world
 }
 
-var current Scene
+func (s *Scene) GetSky() *material.Cubemap {
+	return s.sky
+}
+
+var currentScene Scene
 
 func Get() *Scene {
-	return &current
+	return &currentScene
 }

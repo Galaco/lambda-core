@@ -1,4 +1,4 @@
-package bsp
+package loader
 
 import (
 	"errors"

@@ -1,4 +1,4 @@
-package vis
+package visibility
 
 import (
 	"github.com/galaco/bsp"

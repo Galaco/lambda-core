@@ -23,6 +23,13 @@ func (entity *Base) KeyValues() *entity2.Entity {
 	return entity.keyValues
 }
 
+func (entity *Base) ClassName() string {
+	if entity.keyValues == nil {
+		return ""
+	}
+	return entity.keyValues.ValueForKey("classname")
+}
+
 // Set this entity unique id
 func (entity *Base) SetHandle(handle core.Handle) {
 	entity.handle = handle
