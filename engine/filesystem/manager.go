@@ -1,37 +1,40 @@
 package filesystem
 
 import (
-	"github.com/galaco/Gource-Engine/engine/interfaces"
 	"strings"
 )
 
-// Very generic file storage.
-// If the struct came from a file, it should be obtainable from here
+// Very generic filesystem storage.
+// If the struct came from a filesystem, it should be obtainable from here
 type manager struct {
-	filelist map[string]interfaces.IFile
+	resources map[string]IFile
 }
 
-// Add a new file
-func (fm *manager) AddFile(file interfaces.IFile) {
-	fm.filelist[strings.ToLower(file.GetFilePath())] = file
+// Add a new filesystem
+func (m *manager) Add(file IFile) {
+	m.resources[strings.ToLower(file.GetFilePath())] = file
 }
 
-// Remove an open file
-func (fm *manager) RemoveFile(filePath string) {
-	delete(fm.filelist, strings.ToLower(filePath))
+// Remove an open filesystem
+func (m *manager) Remove(filePath string) {
+	delete(m.resources, strings.ToLower(filePath))
 }
 
-// Find a specific file
-func (fm *manager) GetFile(filePath string) interfaces.IFile {
-	return fm.filelist[strings.ToLower(filePath)]
+// Find a specific filesystem
+func (m *manager) Get(filePath string) IFile {
+	return m.resources[strings.ToLower(filePath)]
 }
 
-var filemanager manager
+func (m *manager) Has(filePath string) bool {
+	return (m.resources[strings.ToLower(filePath)] != nil)
+}
 
-func GetFileManager() *manager {
-	if filemanager.filelist == nil {
-		filemanager.filelist = map[string]interfaces.IFile{}
+var resourceManager manager
+
+func Manager() *manager {
+	if resourceManager.resources == nil {
+		resourceManager.resources = map[string]IFile{}
 	}
 
-	return &filemanager
+	return &resourceManager
 }

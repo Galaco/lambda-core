@@ -1,9 +1,9 @@
 package input
 
 import (
-	"github.com/galaco/Gource-Engine/engine/interfaces"
-	"github.com/galaco/Gource-Engine/message/messages"
-	"github.com/galaco/Gource-Engine/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/core/event/message"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
 	"github.com/go-gl/mathgl/mgl64"
 )
 
@@ -16,7 +16,7 @@ func (mouse *Mouse) GetCoordinates() mgl64.Vec2 {
 	return mouse.change
 }
 
-func (mouse *Mouse) ReceiveMessage(message interfaces.IMessage) {
+func (mouse *Mouse) ReceiveMessage(message message.IMessage) {
 	if message.GetType() == messagetype.MouseMove {
 		msg := message.(*messages.MouseMove)
 		mouse.change[0] = msg.X
@@ -29,7 +29,7 @@ func (mouse *Mouse) Update() {
 	mouse.change[1] = 0
 }
 
-func (mouse *Mouse) SendMessage() interfaces.IMessage {
+func (mouse *Mouse) SendMessage() message.IMessage {
 	return nil
 }
 

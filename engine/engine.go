@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"github.com/galaco/Gource-Engine/engine/event"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core/event"
 	"runtime"
 	"time"
 )
@@ -11,21 +11,16 @@ import (
 // Only 1 can be initialised
 type Engine struct {
 	EventManager    event.Manager
-	Managers        []interfaces.IManager
+	Managers        []core.IManager
 	running         bool
 	simulationSpeed float64
-
-	entities   []interfaces.IEntity
-	components []interfaces.IComponent
 }
 
 // Initialise the engine, and attached managers
 func (engine *Engine) Initialise() {
-
 	for _, manager := range engine.Managers {
 		manager.Register()
 	}
-
 }
 
 // Run the engine
@@ -55,17 +50,13 @@ func (engine *Engine) Run() {
 		startingTime = time.Now().UTC()
 	}
 
-	for _, component := range engine.components {
-		component.Destroy()
-	}
-
 	for _, manager := range engine.Managers {
 		manager.Unregister()
 	}
 }
 
 // Add a new manager to the engine
-func (engine *Engine) AddManager(manager interfaces.IManager) {
+func (engine *Engine) AddManager(manager core.IManager) {
 	engine.Managers = append(engine.Managers, manager)
 }
 

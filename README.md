@@ -5,7 +5,7 @@ located in `engine/`.
 
 This project contains a layer built on top of these constructs to be able to work with data types from Valve's Source
 Engine. Game specific components with their associated structs, and systems live in `components/` and `systems/` 
-respectively. `valve/` contains loading and parsing code for Sourcing engine data, including some library wrappers.
+respectively. `lib/` contains loading and parsing code for Sourcing engine data, including some library wrappers.
 
 
 ## What can this do?

@@ -1,16 +1,16 @@
 package components
 
 import (
-	"github.com/galaco/Gource-Engine/engine/base"
-	"github.com/galaco/Gource-Engine/engine/interfaces"
+	"github.com/galaco/Gource-Engine/engine/component"
+	"github.com/galaco/Gource-Engine/engine/mesh"
 )
 
 type RenderableComponent struct {
-	base.Component
-	renderables []interfaces.IGPUMesh
+	component.Component
+	renderables []mesh.IMesh
 }
 
-func (component *RenderableComponent) AddRenderableResource(resource interfaces.IGPUMesh) {
+func (component *RenderableComponent) AddRenderableResource(resource mesh.IMesh) {
 	// Ensure our GPU resource is ready to use
 	resource.Prepare()
 	component.renderables = append(component.renderables, resource)
@@ -18,7 +18,7 @@ func (component *RenderableComponent) AddRenderableResource(resource interfaces.
 
 // Return a list of all renderable from this component
 // this can be many different collections of primitives
-func (component *RenderableComponent) GetRenderables() []interfaces.IGPUMesh {
+func (component *RenderableComponent) GetRenderables() []mesh.IMesh {
 	return component.renderables
 }
 
