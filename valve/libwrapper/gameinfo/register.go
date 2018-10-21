@@ -5,6 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vpk"
 	"github.com/galaco/KeyValues"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -13,6 +14,8 @@ import (
 // All games should ship with a gameinfo.txt, but it isn't actually mandatory
 func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 	searchPaths := gameInfo.FindByKey("GameInfo").FindByKey("FileSystem").FindByKey("SearchPaths")
+	basePath,_ = filepath.Abs(basePath)
+	basePath = strings.Replace(basePath, "\\", "/", -1)
 
 	for _, searchPath := range *searchPaths.GetAllValues() {
 		kv := searchPath.(keyvalues.KeyValue)
@@ -29,7 +32,7 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 		if allSourceEnginePathsRegex.MatchString(path) {
 			path = allSourceEnginePathsRegex.ReplaceAllString(path, basePath+"/../")
 		}
-		if strings.Contains(strings.ToLower(*kv.GetKey()), "mod") {
+		if strings.Contains(strings.ToLower(*kv.GetKey()), "mod") && !strings.HasPrefix(path, basePath) {
 			path = basePath + "/../" + path
 		}
 
@@ -44,6 +47,10 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 			filesystem.AddVpk(vpkHandle)
 			debug.Log("Registered vpk: " + path)
 		} else {
+			// wildcard suffixes not useful
+			if strings.HasSuffix(path, "/*") {
+				path = strings.Replace(path, "/*", "",  -1)
+			}
 			filesystem.AddSearchDirectory(path)
 			debug.Log("Registered path: " + path)
 		}
