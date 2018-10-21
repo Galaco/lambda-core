@@ -2,7 +2,7 @@ package gameinfo
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vpk"
 	"github.com/galaco/KeyValues"
 	"regexp"
@@ -41,10 +41,10 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 				debug.Log(err)
 				continue
 			}
-			file.AddVpk(vpkHandle)
+			filesystem.AddVpk(vpkHandle)
 			debug.Log("Registered vpk: " + path)
 		} else {
-			file.AddSearchDirectory(path)
+			filesystem.AddSearchDirectory(path)
 			debug.Log("Registered path: " + path)
 		}
 

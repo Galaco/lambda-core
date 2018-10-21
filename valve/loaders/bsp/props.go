@@ -2,7 +2,7 @@ package bsp
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/StudioModel"
 	"github.com/galaco/StudioModel/mdl"
 	"github.com/galaco/StudioModel/phy"
@@ -61,7 +61,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop := studiomodel.NewStudioModel(filePath)
 
 	// MDL
-	f, err := file.Load(filePath + ".mdl")
+	f, err := filesystem.Load(filePath + ".mdl")
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddMdl(mdlFile)
 
 	// VVD
-	f, err = file.Load(filePath + ".vvd")
+	f, err = filesystem.Load(filePath + ".vvd")
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddVvd(vvdFile)
 
 	// VTX
-	f, err = file.Load(filePath + ".dx90.vtx")
+	f, err = filesystem.Load(filePath + ".dx90.vtx")
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddVtx(vtxFile)
 
 	// PHY
-	f, err = file.Load(filePath + ".phy")
+	f, err = filesystem.Load(filePath + ".phy")
 	if err != nil {
 		return prop, err
 	}

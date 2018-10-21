@@ -12,7 +12,7 @@ import (
 
 type Camera struct {
 	currentCameraComponent *components.CameraComponent
-	owner                  *entity.Entity
+	owner                  *entity.Base
 }
 
 func (camera *Camera) Initialize() {
@@ -22,7 +22,7 @@ func (camera *Camera) Initialize() {
 func (camera *Camera) ReceiveMessage(message event.IMessage) {
 	if message.GetType() == messagetype.ChangeActiveCamera {
 		camera.currentCameraComponent = message.(*messages.ChangeActiveCamera).Component.(*components.CameraComponent)
-		camera.owner = factory.GetObjectManager().GetEntityByHandle(camera.currentCameraComponent.GetOwnerHandle()).(*entity.Entity)
+		camera.owner = factory.GetObjectManager().GetEntityByHandle(camera.currentCameraComponent.GetOwnerHandle()).(*entity.Base)
 	}
 }
 
@@ -34,7 +34,7 @@ func (camera *Camera) Update(dt float64) {
 	camera.currentCameraComponent.Update(dt)
 }
 
-func (camera *Camera) GetOwner() *entity.Entity {
+func (camera *Camera) GetOwner() *entity.Base {
 	return camera.owner
 }
 

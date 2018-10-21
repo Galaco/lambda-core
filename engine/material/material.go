@@ -12,7 +12,7 @@ type Material struct {
 	width         int
 	height        int
 	rawColourData []uint8
-	vtf *vtf.Vtf
+	vtf           *vtf.Vtf
 }
 
 // Bind this material to the GPU
@@ -71,13 +71,12 @@ func (material *Material) GenerateGPUBuffer() {
 
 func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
-		filePath:      filePath,
-		width:         width,
-		height:        height,
+		filePath: filePath,
+		width:    width,
+		height:   height,
 		vtf:      vtf,
 	}
 }
-
 
 func isTextureCompressed(vtfFormat uint32) bool {
 	switch vtfFormat {

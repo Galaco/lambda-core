@@ -1,47 +1,59 @@
-package base
+package entity
 
 import (
+	"github.com/galaco/Gource-Engine/engine/component"
 	"github.com/galaco/Gource-Engine/engine/core"
+	entity2 "github.com/galaco/source-tools-common/entity"
 )
 
-// Entity is an object in the game world.
+// Base is an object in the game world.
 // By itself entity is nothing more than an identifiable object located at a point in space
-type Entity struct {
+type Base struct {
+	keyValues  *entity2.Entity
 	handle     core.Handle
 	components []core.Handle
-	transform  TransformComponent
+	transform  component.TransformComponent
+}
+
+func (entity *Base) SetKeyValues(keyValues *entity2.Entity) {
+	entity.keyValues = keyValues
+}
+
+func (entity *Base) KeyValues() *entity2.Entity {
+	return entity.keyValues
 }
 
 // Set this entity unique id
-func (entity *Entity) SetHandle(handle core.Handle) {
+func (entity *Base) SetHandle(handle core.Handle) {
 	entity.handle = handle
 }
 
 // Return this entitys unique id
-func (entity *Entity) GetHandle() core.Handle {
+func (entity *Base) GetHandle() core.Handle {
 	return entity.handle
 }
 
 // Get all handles for this entity
-func (entity *Entity) GetComponents() []core.Handle {
+func (entity *Base) GetComponents() []core.Handle {
 	return entity.components
 }
 
 // Associate a new component handle with this entity
-func (entity *Entity) AddComponent(handle core.Handle) {
+func (entity *Base) AddComponent(handle core.Handle) {
 	entity.components = append(entity.components, handle)
 }
 
 // Returns this entity's transform component
-func (entity *Entity) GetTransformComponent() *TransformComponent {
+func (entity *Base) GetTransformComponent() *component.TransformComponent {
 	return &entity.transform
 }
 
-func NewEntity() Entity {
-	ent := Entity{
-		handle: core.NewHandle(),
+func NewEntity(definition *entity2.Entity) Base {
+	ent := Base{
+		keyValues: definition,
+		handle:    core.NewHandle(),
 	}
-	ent.GetTransformComponent().owner = core.NewHandle()
+	ent.GetTransformComponent().SetOwnerHandle(core.NewHandle())
 
 	return ent
 }

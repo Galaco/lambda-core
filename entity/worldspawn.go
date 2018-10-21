@@ -11,8 +11,7 @@ import (
 )
 
 type WorldSpawn struct {
-	ValveEntity
-	entity.Entity
+	entity.Base
 
 	cache       []mesh.IGPUMesh
 	faceList    []primitive.IPrimitive

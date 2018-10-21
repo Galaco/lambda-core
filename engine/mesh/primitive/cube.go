@@ -1,8 +1,7 @@
 package primitive
 
 import (
-	"github.com/galaco/Gource-Engine/engine/base"
-	"github.com/galaco/Gource-Engine/engine/base/material"
+	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
@@ -77,7 +76,7 @@ var cubeUVs = []float32{
 }
 
 type Cube struct {
-	base.Primitive
+	Primitive
 }
 
 func (cube *Cube) GetFaceMode() uint32 {
@@ -86,11 +85,11 @@ func (cube *Cube) GetFaceMode() uint32 {
 
 func NewCube() *Cube {
 	c := &Cube{
-		*base.NewPrimitive(cubeVerts, cubeIndices, cubeNormals),
+		*NewPrimitive(cubeVerts, cubeIndices, cubeNormals),
 	}
 
 	c.AddTextureCoordinateData(cubeUVs)
-	mat := material.NewMaterial("placeholder", 1, 1, []uint8{255, 255, 255})
+	mat := material.NewMaterial("placeholder", nil, 1, 1)
 	mat.GenerateGPUBuffer()
 	c.AddMaterial(mat)
 	c.GenerateGPUBuffer()

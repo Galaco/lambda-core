@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/component"
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
@@ -20,17 +20,17 @@ var minVerticalRotation = mgl32.DegToRad(90)
 var maxVerticalRotation = mgl32.DegToRad(270)
 
 type CameraComponent struct {
-	base.Component
+	component.Component
 	Up        mgl32.Vec3
 	Right     mgl32.Vec3
 	Direction mgl32.Vec3
 	worldUp   mgl32.Vec3
-	owner     *entity.Entity
+	owner     *entity.Base
 	frameTime float64
 }
 
 func (component *CameraComponent) Initialize() {
-	component.owner = factory.GetObjectManager().GetEntityByHandle(component.GetOwnerHandle()).(*entity.Entity)
+	component.owner = factory.GetObjectManager().GetEntityByHandle(component.GetOwnerHandle()).(*entity.Base)
 	component.Up = mgl32.Vec3{0, 1, 0}
 	component.worldUp = mgl32.Vec3{0, 1, 0}
 	component.Direction = mgl32.Vec3{0, 0, -1}

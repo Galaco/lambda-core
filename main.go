@@ -8,13 +8,13 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	entity3 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/scene"
 	entity2 "github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/message/messages"
 	"github.com/galaco/Gource-Engine/message/messagetype"
 	"github.com/galaco/Gource-Engine/systems/renderer"
 	"github.com/galaco/Gource-Engine/systems/window"
-	"github.com/galaco/Gource-Engine/valve/file"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/gameinfo"
 	"github.com/galaco/Gource-Engine/valve/loaders/bsp"
 	bsplib "github.com/galaco/bsp"
@@ -39,7 +39,7 @@ func main() {
 	Application.Initialise()
 
 	// special camera entity - this needs to be refactored out
-	cameraEnt := factory.NewEntity(&entity3.Entity{})
+	cameraEnt := factory.NewEntity(&entity3.Base{})
 	factory.NewComponent(components.NewCameraComponent(), cameraEnt)
 
 	// Load a map!
@@ -64,7 +64,7 @@ func LoadMap(filename string) {
 	if bspData.GetHeader().Version < 20 {
 		debug.Fatal("Unsupported BSP Version. Exiting...")
 	}
-	file.SetPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
+	filesystem.SetPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
 
 	// Load worldspawn
 	worldSpawn := factory.NewEntity(bsp.LoadMap(bspData)).(*entity2.WorldSpawn)
@@ -77,11 +77,11 @@ func LoadMap(filename string) {
 	entityList := entity.FromVmfNodeTree(vmfEntityTree.Unclassified)
 	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
-	//	scene.Get().AddEntity(bsp.CreateEntity(entityList.Get(i)))
+		//	scene.Get().AddEntity(bsp.CreateEntity(entityList.Get(i)))
 	}
 
-	worldSpawn.Definition = entityList.FindByKeyValue("classname", "worldspawn")
-	sky, err := bsp.LoadSky(worldSpawn.Definition.ValueForKey("skyname"))
+	worldSpawn.SetKeyValues(entityList.FindByKeyValue("classname", "worldspawn"))
+	sky, err := bsp.LoadSky(worldSpawn.KeyValues().ValueForKey("skyname"))
 	if err == nil {
 		factory.NewComponent(sky, worldSpawn)
 	}

@@ -1,4 +1,4 @@
-package base
+package core
 
 // Managers exist to create and handle behaviour of components.
 // Normally introduction of a new manager would mean introduction

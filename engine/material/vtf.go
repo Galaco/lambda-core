@@ -2,8 +2,7 @@ package material
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/engine/resource"
-	"github.com/galaco/Gource-Engine/valve/file"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/vtf"
 )
 
@@ -18,12 +17,12 @@ func LoadMaterialList(materialList []string) {
 }
 
 func read(materialList []string) (missingList []string) {
-	ResourceManager := resource.Manager()
+	ResourceManager := filesystem.Manager()
 	materialBasePath := "materials/"
 
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
-		// Only load the file once
+		// Only load the filesystem once
 		if ResourceManager.Get(materialBasePath+materialPath) == nil {
 			if !readVmt(materialBasePath, materialPath) {
 				debug.Log("Could not find: " + materialPath)
@@ -50,10 +49,10 @@ func read(materialList []string) (missingList []string) {
 }
 
 func readVmt(basePath string, filePath string) bool {
-	ResourceManager := resource.Manager()
+	ResourceManager := filesystem.Manager()
 	path := basePath + filePath + ".vmt"
 
-	stream, err := file.Load(path)
+	stream, err := filesystem.Load(path)
 	if err != nil {
 		return false
 	}
@@ -63,14 +62,14 @@ func readVmt(basePath string, filePath string) bool {
 		debug.Log(err)
 		return false
 	}
-	// Add file
+	// Add filesystem
 	ResourceManager.Add(vmt)
 	return true
 }
 
 func readVtf(basePath string, filePath string) bool {
-	ResourceManager := resource.Manager()
-	stream, err := file.Load(basePath + filePath)
+	ResourceManager := filesystem.Manager()
+	stream, err := filesystem.Load(basePath + filePath)
 	if err != nil {
 		return false
 	}
@@ -82,7 +81,7 @@ func readVtf(basePath string, filePath string) bool {
 		debug.Log(err)
 		return false
 	}
-	// Store file containing raw data in memory
+	// Store filesystem containing raw data in memory
 	ResourceManager.Add(
 		NewMaterial(
 			filePath,

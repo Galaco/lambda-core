@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"github.com/galaco/Gource-Engine/engine/core"
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/core/interfaces"
 	"github.com/galaco/Gource-Engine/engine/entity"
@@ -12,7 +13,7 @@ import (
 // Only 1 can be initialised
 type Engine struct {
 	EventManager    event.Manager
-	Managers        []interfaces.IManager
+	Managers        []core.IManager
 	running         bool
 	simulationSpeed float64
 
@@ -66,7 +67,7 @@ func (engine *Engine) Run() {
 }
 
 // Add a new manager to the engine
-func (engine *Engine) AddManager(manager interfaces.IManager) {
+func (engine *Engine) AddManager(manager core.IManager) {
 	engine.Managers = append(engine.Managers, manager)
 }
 

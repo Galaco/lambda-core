@@ -1,4 +1,4 @@
-package base
+package component
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core"

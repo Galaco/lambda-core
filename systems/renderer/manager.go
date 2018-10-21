@@ -2,7 +2,7 @@ package renderer
 
 import (
 	"github.com/galaco/Gource-Engine/components"
-	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/core"
 	entity2 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
@@ -18,7 +18,7 @@ import (
 )
 
 type Manager struct {
-	base.Manager
+	core.Manager
 	defaultShader gl.Context
 	skyShader     gl.Context
 	currentCamera camera.Camera
@@ -73,11 +73,10 @@ func (manager *Manager) Update(dt float64) {
 		manager.drawMesh(resource)
 	}
 
-
 	for _, c := range factory.GetObjectManager().GetAllComponents() {
 		switch c.(type) {
 		case *components.RenderableComponent:
-			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Entity).GetTransformComponent().GetTransformationMatrix()
+			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Base).GetTransformComponent().GetTransformationMatrix()
 			opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
 
 			for _, resource := range c.(*components.RenderableComponent).GetRenderables() {

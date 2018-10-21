@@ -70,7 +70,7 @@ func ParseVmt(filename string, stream io.Reader) (*Vmt, error) {
 		l, err := reader.ReadString([]byte("\n")[0])
 		if err != nil {
 			if err != io.EOF {
-				return nil, errors.New("invalid vmt file")
+				return nil, errors.New("invalid vmt filesystem")
 			} else {
 				line := string(l)
 				// Remove any comments

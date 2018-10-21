@@ -1,7 +1,6 @@
 package vis
 
 import (
-	"github.com/galaco/Gource-Engine/valve/vis/tree"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/leaf"
@@ -13,7 +12,6 @@ import (
 
 type Vis struct {
 	ClusterCache   []Cache
-	BspTree        []tree.Node
 	VisibilityLump *visibility.Vis
 	Leafs          []leaf.Leaf
 	LeafFaces      []uint16
@@ -110,7 +108,6 @@ func (vis *Vis) findCurrentLeafIndex(position mgl32.Vec3) int32 {
 func NewVisFromBSP(file *bsp.Bsp) *Vis {
 	return &Vis{
 		VisibilityLump: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
-		BspTree:        tree.BuildTree(file),
 		viewPosition:   mgl32.Vec3{65536, 65536, 65536},
 		Leafs:          file.GetLump(bsp.LUMP_LEAFS).(*lumps.Leaf).GetData(),
 		LeafFaces:      file.GetLump(bsp.LUMP_LEAFFACES).(*lumps.LeafFace).GetData(),

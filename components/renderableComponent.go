@@ -1,12 +1,12 @@
 package components
 
 import (
-	"github.com/galaco/Gource-Engine/engine/base"
+	"github.com/galaco/Gource-Engine/engine/component"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 )
 
 type RenderableComponent struct {
-	base.Component
+	component.Component
 	renderables []mesh.IGPUMesh
 }
 

@@ -1,4 +1,4 @@
-package base
+package component
 
 import (
 	"github.com/go-gl/mathgl/mgl32"

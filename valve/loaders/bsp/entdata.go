@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// Parse Entity block.
+// Parse Base block.
 // Vmf lib is actually capable of doing this;
 // contents are loaded into Vmf.Unclassified
 func ParseEntities(data string) (vmf.Vmf, error) {
@@ -22,8 +22,8 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 	return reader.Read()
 }
 
-func CreateEntity(ent *entity.Entity) entity3.IEntity{
-	localEdict := &entity3.Entity{}
+func CreateEntity(ent *entity.Entity) entity3.IEntity {
+	localEdict := &entity3.Base{}
 	origin := ent.VectorForKey("origin")
 	localEdict.GetTransformComponent().Position = mgl32.Vec3{origin.X(), origin.Y(), origin.Z()}
 	localEdict.GetTransformComponent().Scale = mgl32.Vec3{8, 8, 8}

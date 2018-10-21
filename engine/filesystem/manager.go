@@ -1,26 +1,26 @@
-package resource
+package filesystem
 
 import (
 	"strings"
 )
 
-// Very generic file storage.
-// If the struct came from a file, it should be obtainable from here
+// Very generic filesystem storage.
+// If the struct came from a filesystem, it should be obtainable from here
 type manager struct {
 	resources map[string]IFile
 }
 
-// Add a new file
+// Add a new filesystem
 func (m *manager) Add(file IFile) {
 	m.resources[strings.ToLower(file.GetFilePath())] = file
 }
 
-// Remove an open file
+// Remove an open filesystem
 func (m *manager) Remove(filePath string) {
 	delete(m.resources, strings.ToLower(filePath))
 }
 
-// Find a specific file
+// Find a specific filesystem
 func (m *manager) Get(filePath string) IFile {
 	return m.resources[strings.ToLower(filePath)]
 }

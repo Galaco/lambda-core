@@ -1,4 +1,4 @@
-package interfaces
+package core
 
 // Generic game manager.
 // Different systems should implement these methods

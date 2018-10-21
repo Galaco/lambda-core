@@ -1,12 +1,12 @@
 package bsp
 
 import (
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/material"
+	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
-	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/Gource-Engine/entity"
 	"github.com/galaco/Gource-Engine/valve/libwrapper/stringtable"
-	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/valve/vis"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
@@ -35,7 +35,7 @@ type bspstructs struct {
 }
 
 func LoadMap(file *bsp.Bsp) *entity.WorldSpawn {
-	ResourceManager := resource.Manager()
+	ResourceManager := filesystem.Manager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
 		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),

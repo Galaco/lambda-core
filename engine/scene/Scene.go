@@ -6,7 +6,7 @@ import (
 )
 
 type Scene struct {
-	world *entity.WorldSpawn
+	world    *entity.WorldSpawn
 	entities []entity2.IEntity
 }
 
