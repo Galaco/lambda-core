@@ -6,14 +6,15 @@ import (
 	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/core/event"
+	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	entity3 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/scene"
-	"github.com/galaco/Gource-Engine/message/messages"
-	"github.com/galaco/Gource-Engine/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
 	"github.com/galaco/Gource-Engine/systems/renderer"
 	"github.com/galaco/Gource-Engine/systems/window"
-	"github.com/galaco/Gource-Engine/valve/libwrapper/gameinfo"
+	"github.com/galaco/Gource-Engine/lib/gameinfo"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -67,7 +68,7 @@ type Closeable struct {
 	target *engine.Engine
 }
 
-func (closer Closeable) ReceiveMessage(message event.IMessage) {
+func (closer Closeable) ReceiveMessage(message message.IMessage) {
 	if message.GetType() == messagetype.KeyDown {
 		if message.(*messages.KeyDown).Key == glfw.KeyEscape {
 			// Will shutdown the engine at the end of the current loop

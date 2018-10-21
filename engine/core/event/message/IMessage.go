@@ -1,4 +1,4 @@
-package event
+package message
 
 // Generic event manager message interface
 // All messages need to implement this

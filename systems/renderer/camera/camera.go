@@ -3,10 +3,11 @@ package camera
 import (
 	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/engine/core/event"
+	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
-	"github.com/galaco/Gource-Engine/message/messages"
-	"github.com/galaco/Gource-Engine/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
@@ -19,14 +20,14 @@ func (camera *Camera) Initialize() {
 	event.GetEventManager().Listen(messagetype.ChangeActiveCamera, camera)
 }
 
-func (camera *Camera) ReceiveMessage(message event.IMessage) {
+func (camera *Camera) ReceiveMessage(message message.IMessage) {
 	if message.GetType() == messagetype.ChangeActiveCamera {
 		camera.currentCameraComponent = message.(*messages.ChangeActiveCamera).Component.(*components.CameraComponent)
 		camera.owner = factory.GetObjectManager().GetEntityByHandle(camera.currentCameraComponent.GetOwnerHandle()).(*entity.Base)
 	}
 }
 
-func (camera *Camera) SendMessage() event.IMessage {
+func (camera *Camera) SendMessage() message.IMessage {
 	return nil
 }
 

@@ -89,7 +89,7 @@ func (manager *Manager) Update(dt float64) {
 }
 
 // render a mesh and its submeshes/primitives
-func (manager *Manager) drawMesh(resource mesh.IGPUMesh) {
+func (manager *Manager) drawMesh(resource mesh.IMesh) {
 	for _, primitive := range resource.GetPrimitives() {
 		// Missing materials will be flat coloured
 		if primitive == nil || primitive.GetMaterial() == nil {

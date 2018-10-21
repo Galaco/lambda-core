@@ -2,6 +2,7 @@ package event
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"sync"
 )
 
@@ -10,14 +11,14 @@ import (
 // Generally used for engine functionality, such as user input events, window
 // management etc.
 type Manager struct {
-	listenerMap map[Id]map[core.Handle]IEventListenable
+	listenerMap map[message.Id]map[core.Handle]IEventListenable
 	mu          sync.Mutex
 	eventQueue  []*QueueItem
 	runAsync    bool
 }
 
 //Register a new component to listen to an event
-func (manager *Manager) Listen(eventName Id, component IEventListenable) core.Handle {
+func (manager *Manager) Listen(eventName message.Id, component IEventListenable) core.Handle {
 	handle := core.NewHandle()
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName]; !ok {
@@ -60,7 +61,7 @@ func (manager *Manager) RunConcurrent() {
 }
 
 //Remove a listener from listening for an event
-func (manager *Manager) Unlisten(eventName Id, handle core.Handle) {
+func (manager *Manager) Unlisten(eventName message.Id, handle core.Handle) {
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName][handle]; ok {
 		delete(manager.listenerMap[eventName], handle)
@@ -69,7 +70,7 @@ func (manager *Manager) Unlisten(eventName Id, handle core.Handle) {
 }
 
 //Fires an event to all listening components
-func (manager *Manager) Dispatch(eventName Id, message IMessage) {
+func (manager *Manager) Dispatch(eventName message.Id, message message.IMessage) {
 	message.SetType(eventName)
 	queueItem := &QueueItem{
 		EventName: eventName,
@@ -90,7 +91,7 @@ var eventManager Manager
 
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[Id]map[core.Handle]IEventListenable)
+		eventManager.listenerMap = make(map[message.Id]map[core.Handle]IEventListenable)
 	}
 	return &eventManager
 }

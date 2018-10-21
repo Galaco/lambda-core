@@ -3,11 +3,11 @@ package loader
 import (
 	"errors"
 	"github.com/galaco/Gource-Engine/components"
-	"github.com/galaco/Gource-Engine/components/renderable"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/material"
 	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
+	"github.com/galaco/Gource-Engine/engine/model"
 )
 
 var skySuffixes = [6]string{
@@ -51,7 +51,7 @@ func LoadSky(skyName string) (*components.Skybox, error) {
 
 	cube := primitive.NewCube()
 	cube.AddMaterial(cubeMap)
-	resource := renderable.NewGPUResource([]primitive.IPrimitive{cube})
+	resource := model.NewModel([]primitive.IPrimitive{cube})
 	resource.Prepare()
 	sky.AddRenderableResource(resource)
 

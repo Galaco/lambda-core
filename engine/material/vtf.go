@@ -3,7 +3,7 @@ package material
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/valve/libwrapper/vtf"
+	"github.com/galaco/Gource-Engine/lib/vtf"
 )
 
 // Load all materials referenced in the map

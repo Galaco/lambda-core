@@ -7,7 +7,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/Gource-Engine/entity"
-	"github.com/galaco/Gource-Engine/valve/libwrapper/stringtable"
+	"github.com/galaco/Gource-Engine/lib/stringtable"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/dispinfo"

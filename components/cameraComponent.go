@@ -3,11 +3,12 @@ package components
 import (
 	"github.com/galaco/Gource-Engine/engine/component"
 	"github.com/galaco/Gource-Engine/engine/core/event"
+	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
-	"github.com/galaco/Gource-Engine/message/messages"
-	"github.com/galaco/Gource-Engine/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
+	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
@@ -38,7 +39,7 @@ func (component *CameraComponent) Initialize() {
 	event.GetEventManager().Dispatch(messagetype.ChangeActiveCamera, &messages.ChangeActiveCamera{Component: component})
 }
 
-func (component *CameraComponent) ReceiveMessage(message event.IMessage) {
+func (component *CameraComponent) ReceiveMessage(message message.IMessage) {
 
 }
 

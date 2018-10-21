@@ -7,10 +7,10 @@ import (
 
 type RenderableComponent struct {
 	component.Component
-	renderables []mesh.IGPUMesh
+	renderables []mesh.IMesh
 }
 
-func (component *RenderableComponent) AddRenderableResource(resource mesh.IGPUMesh) {
+func (component *RenderableComponent) AddRenderableResource(resource mesh.IMesh) {
 	// Ensure our GPU resource is ready to use
 	resource.Prepare()
 	component.renderables = append(component.renderables, resource)
@@ -18,7 +18,7 @@ func (component *RenderableComponent) AddRenderableResource(resource mesh.IGPUMe
 
 // Return a list of all renderable from this component
 // this can be many different collections of primitives
-func (component *RenderableComponent) GetRenderables() []mesh.IGPUMesh {
+func (component *RenderableComponent) GetRenderables() []mesh.IMesh {
 	return component.renderables
 }
 

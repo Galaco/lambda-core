@@ -1,9 +1,8 @@
-package gameinfo
+package filesystem
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/valve/libwrapper/vpk"
+	"github.com/galaco/Gource-Engine/lib/vpk"
 	"github.com/galaco/KeyValues"
 	"path/filepath"
 	"regexp"
@@ -44,14 +43,14 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 				debug.Log(err)
 				continue
 			}
-			filesystem.AddVpk(vpkHandle)
+			AddVpk(vpkHandle)
 			debug.Log("Registered vpk: " + path)
 		} else {
 			// wildcard suffixes not useful
 			if strings.HasSuffix(path, "/*") {
 				path = strings.Replace(path, "/*", "",  -1)
 			}
-			filesystem.AddSearchDirectory(path)
+			AddSearchDirectory(path)
 			debug.Log("Registered path: " + path)
 		}
 

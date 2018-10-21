@@ -2,10 +2,10 @@ package loader
 
 import (
 	"github.com/galaco/Gource-Engine/components"
-	"github.com/galaco/Gource-Engine/components/renderable"
 	entity3 "github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
+	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"
@@ -29,7 +29,7 @@ func CreateEntity(ent *entity.Entity) entity3.IEntity {
 	localEdict.GetTransformComponent().Scale = mgl32.Vec3{8, 8, 8}
 
 	placeholder := components.NewRenderableComponent()
-	resource := renderable.NewGPUResource([]primitive.IPrimitive{primitive.NewCube()})
+	resource := model.NewModel([]primitive.IPrimitive{primitive.NewCube()})
 	resource.Prepare()
 	placeholder.AddRenderableResource(resource)
 	e := factory.NewEntity(localEdict)

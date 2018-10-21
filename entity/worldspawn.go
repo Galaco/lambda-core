@@ -1,10 +1,10 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/components/renderable"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
+	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/go-gl/mathgl/mgl32"
@@ -13,14 +13,14 @@ import (
 type WorldSpawn struct {
 	entity.Base
 
-	cache       []mesh.IGPUMesh
+	cache       []mesh.IMesh
 	faceList    []primitive.IPrimitive
 	visData     *visibility.Vis
 	LeafCache   *visibility.Cache
 	currentLeaf *leaf.Leaf
 }
 
-func (entity *WorldSpawn) GetPrimitives() []mesh.IGPUMesh {
+func (entity *WorldSpawn) GetPrimitives() []mesh.IMesh {
 	return entity.cache
 }
 
@@ -40,7 +40,7 @@ func (entity *WorldSpawn) UpdateVisibilityList(position mgl32.Vec3) {
 		if len(entity.cache[0].GetPrimitives()) == len(entity.faceList) {
 			return
 		}
-		entity.cache[0].(*renderable.GPUResourceDynamic).Reset()
+		entity.cache[0].(*model.Model).Reset()
 		entity.cache[0].AddPrimitives(entity.faceList)
 		return
 	}
@@ -56,15 +56,15 @@ func (entity *WorldSpawn) UpdateVisibilityList(position mgl32.Vec3) {
 		for _, faceIdx := range entity.LeafCache.Faces {
 			primitives = append(primitives, entity.faceList[faceIdx])
 		}
-		entity.cache[0].(*renderable.GPUResourceDynamic).Reset()
+		entity.cache[0].(*model.Model).Reset()
 		entity.cache[0].AddPrimitives(primitives)
 	}
 }
 
 func NewWorld(faceList []primitive.IPrimitive, visData *visibility.Vis) *WorldSpawn {
 	c := WorldSpawn{
-		cache: []mesh.IGPUMesh{
-			renderable.NewGPUResourceDynamic(make([]primitive.IPrimitive, 0)),
+		cache: []mesh.IMesh{
+			model.NewModel(make([]primitive.IPrimitive, 0)),
 		},
 		faceList: faceList,
 		visData:  visData,
