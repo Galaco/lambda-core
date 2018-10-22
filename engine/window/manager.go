@@ -1,11 +1,13 @@
 package window
 
 import (
+	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core"
-	"github.com/galaco/Gource-Engine/systems/window/input"
-	"github.com/galaco/Gource-Engine/systems/window/window"
+	"github.com/galaco/Gource-Engine/engine/window/input"
+	"github.com/galaco/Gource-Engine/engine/window/window"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
+
 
 type Manager struct {
 	core.Manager
@@ -14,7 +16,7 @@ type Manager struct {
 }
 
 func (manager *Manager) Register() {
-	manager.window = window.Create(640, 480, "test_window")
+	manager.window = window.Create(config.Get().Video.Width, config.Get().Video.Height, "test_window")
 	manager.input.Register(manager.window)
 }
 
