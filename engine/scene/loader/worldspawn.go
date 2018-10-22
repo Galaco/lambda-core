@@ -4,7 +4,8 @@ import (
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/material"
 	material2 "github.com/galaco/Gource-Engine/engine/material"
-	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
+	"github.com/galaco/Gource-Engine/engine/mesh"
+	"github.com/galaco/Gource-Engine/engine/model"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
 	"github.com/galaco/Gource-Engine/lib/stringtable"
@@ -50,7 +51,9 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
 	}
 
-	meshList := make([]primitive.IPrimitive, len(bspStructure.faces))
+
+	worldModel := model.NewModel()
+	meshList := make([]mesh.IMesh, len(bspStructure.faces))
 	materialList := make([]*texinfo.TexInfo, len(bspStructure.faces))
 
 	// BSP FACES
@@ -82,13 +85,13 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		}
 		if ResourceManager.Has(baseTexturePath) {
 			mat := ResourceManager.Get(baseTexturePath).(*material.Material)
-			mesh.(*primitive.Primitive).AddMaterial(mat)
-			mesh.(*primitive.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(mesh.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight()))
+			mesh.SetMaterial(mat)
+			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight())...)
 		} else {
-			mesh.(*primitive.Primitive).AddTextureCoordinateData(texCoordsForFaceFromTexInfo(mesh.GetVertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1))
+			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1)...)
 		}
 
-		mesh.GenerateGPUBuffer()
+		mesh.Finish()
 	}
 
 	// Load static props
@@ -96,14 +99,16 @@ func LoadMap(file *bsp.Bsp) *world.World {
 
 	visData := sceneVisibility.NewVisFromBSP(file)
 
-	return world.NewWorld(meshList, visData)
+	worldModel.AddMesh(meshList...)
+
+	return world.NewWorld(*worldModel, visData)
 }
 
 // Create primitives from face data in the bsp
-func generateBspFace(f *face.Face, bspStructure *bspstructs) primitive.IPrimitive {
+func generateBspFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh {
 	expF := make([]uint16, 0)
-	expV := make([]float32, 0)
-	expN := make([]float32, 0)
+
+	mesh := mesh.NewMesh()
 
 	planeNormal := bspStructure.planes[f.Planenum].Normal
 	// All surfedges associated with this face
@@ -124,22 +129,25 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) primitive.IPrimitiv
 		} else {
 			// Just create a triangle for every edge now
 			expF = append(expF, rootIndex, edge[e1], edge[e2])
-			expV = append(expV, bspStructure.vertexes[rootIndex].X(), bspStructure.vertexes[rootIndex].Y(), bspStructure.vertexes[rootIndex].Z())
-			expN = append(expN, planeNormal.X(), planeNormal.Y(), planeNormal.Z())
-			expV = append(expV, bspStructure.vertexes[edge[e1]].X(), bspStructure.vertexes[edge[e1]].Y(), bspStructure.vertexes[edge[e1]].Z())
-			expN = append(expN, planeNormal.X(), planeNormal.Y(), planeNormal.Z())
-			expV = append(expV, bspStructure.vertexes[edge[e2]].X(), bspStructure.vertexes[edge[e2]].Y(), bspStructure.vertexes[edge[e2]].Z())
-			expN = append(expN, planeNormal.X(), planeNormal.Y(), planeNormal.Z())
+
+			mesh.AddVertex(bspStructure.vertexes[rootIndex].X(), bspStructure.vertexes[rootIndex].Y(), bspStructure.vertexes[rootIndex].Z())
+			mesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
+
+			mesh.AddVertex(bspStructure.vertexes[edge[e1]].X(), bspStructure.vertexes[edge[e1]].Y(), bspStructure.vertexes[edge[e1]].Z())
+			mesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
+
+			mesh.AddVertex(bspStructure.vertexes[edge[e2]].X(), bspStructure.vertexes[edge[e2]].Y(), bspStructure.vertexes[edge[e2]].Z())
+			mesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 		}
 	}
 
-	return primitive.NewPrimitive(expV, expF, expN)
+	return mesh
 }
 
 // Create Primitive from Displacement face
 // This is based on:
 // https://github.com/Metapyziks/VBspViewer/blob/master/Assets/VBspViewer/Scripts/Importing/VBsp/VBspFile.cs
-func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) primitive.IPrimitive {
+func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh {
 	corners := make([]mgl32.Vec3, 4)
 	normal := bspStructure.planes[f.Planenum].Normal
 
@@ -167,8 +175,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) primitive.
 		}
 	}
 
-	verts := make([]float32, 0)
-	normals := make([]float32, 0)
+	mesh := mesh.NewMesh()
 
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
@@ -178,14 +185,14 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) primitive.
 			d := generateDispVert(int(info.DispVertStart), x+1, y, size, corners, firstCorner, &bspStructure.dispVerts)
 
 			// Split into triangles
-			verts = append(verts, a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z(), c.X(), c.Y(), c.Z())
-			normals = append(normals, normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
-			verts = append(verts, a.X(), a.Y(), a.Z(), c.X(), c.Y(), c.Z(), d.X(), d.Y(), d.Z())
-			normals = append(normals, normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+			mesh.AddVertex(a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z(), c.X(), c.Y(), c.Z())
+			mesh.AddNormal(normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+			mesh.AddVertex(a.X(), a.Y(), a.Z(), c.X(), c.Y(), c.Z(), d.X(), d.Y(), d.Z())
+			mesh.AddNormal(normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
 		}
 	}
 
-	return primitive.NewPrimitive(verts, make([]uint16, 3), normals)
+	return mesh
 }
 
 func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {

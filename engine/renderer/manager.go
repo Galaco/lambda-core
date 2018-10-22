@@ -1,16 +1,13 @@
 package renderer
 
 import (
-	"github.com/galaco/Gource-Engine/components"
 	"github.com/galaco/Gource-Engine/engine/core"
-	entity2 "github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/input"
-	"github.com/galaco/Gource-Engine/engine/mesh"
+	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl"
-	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders/sky"
+	"github.com/galaco/Gource-Engine/engine/scene"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
@@ -65,73 +62,68 @@ func (manager *Manager) Update(dt float64) {
 	world := *currentScene.GetWorld()
 	world.UpdateVisibilityList(scene.Get().CurrentCamera().Transform().Position)
 	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-	for _, resource := range world.GetPrimitives() {
-		manager.drawMesh(resource)
-	}
+	manager.drawModel(world.GetModel())
 
-	for _, c := range factory.GetObjectManager().GetAllComponents() {
-		switch c.(type) {
-		case *components.RenderableComponent:
-			modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Base).Transform().GetTransformationMatrix()
-			opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
-
-			for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
-				manager.drawMesh(resource)
-			}
-		case *components.Skybox:
-			manager.drawSky(c.(*components.Skybox))
-		}
-	}
+	//for _, c := range factory.GetObjectManager().GetAllComponents() {
+	//	switch c.(type) {
+	//	case *components.RenderableComponent:
+	//		modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Base).Transform().GetTransformationMatrix()
+	//		opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
+	//
+	//		for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
+	//			manager.drawMesh(resource)
+	//		}
+	//}
 }
 
 // render a mesh and its submeshes/primitives
-func (manager *Manager) drawMesh(resource mesh.IMesh) {
-	for _, primitive := range resource.GetPrimitives() {
+func (manager *Manager) drawModel(model *model.Model) {
+	for _, mesh := range model.GetMeshes() {
 		// Missing materials will be flat coloured
-		if primitive == nil || primitive.GetMaterial() == nil {
+		if mesh == nil || mesh.GetMaterial() == nil {
 			// We need the fallback material
 			continue
 		}
-		primitive.Bind()
-		primitive.GetMaterial().Bind()
+		mesh.Bind()
+		mesh.GetMaterial().Bind()
 		if manager.renderAsWireframe == true {
-			opengl.DrawArrays(opengl.LINES, 0, int32(len(primitive.GetVertices()))/3)
+			opengl.DrawArrays(opengl.LINES, 0, int32(len(mesh.Vertices()))/3)
 		} else {
-			opengl.DrawArrays(primitive.GetFaceMode(), 0, int32(len(primitive.GetVertices()))/3)
+			opengl.DrawArrays(opengl.TRIANGLES, 0, int32(len(mesh.Vertices()))/3)
 		}
 	}
 }
 
-func (manager *Manager) drawSky(skybox *components.Skybox) {
-	var oldCullFaceMode int32
-	opengl.GetIntegerv(opengl.CULL_FACE_MODE, &oldCullFaceMode)
-	var oldDepthFuncMode int32
-	opengl.GetIntegerv(opengl.DEPTH_FUNC, &oldDepthFuncMode)
-	manager.skyShader.UseProgram()
-	model := mgl32.Ident4()
-	camTransform := scene.Get().CurrentCamera().Transform().Position
-	model = model.Mul4(mgl32.Translate3D(camTransform.X(), camTransform.Y(), camTransform.Z()))
-	model = model.Mul4(mgl32.Scale3D(20, 20, 20))
-	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("model"), 1, false, &model[0])
-	view := scene.Get().CurrentCamera().ViewMatrix()
-	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("view"), 1, false, &view[0])
-	projection := scene.Get().CurrentCamera().ProjectionMatrix()
-	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("projection"), 1, false, &projection[0])
-
-	opengl.CullFace(opengl.FRONT)
-	opengl.DepthFunc(opengl.LEQUAL)
-	//DRAW
-	manager.drawMesh(skybox.GetRenderables()[0])
-
-	// Set back to default shader.
-	// Why? Only called 1 time per frame
-	manager.defaultShader.UseProgram()
-	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("view"), 1, false, &view[0])
-	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("projection"), 1, false, &projection[0])
-
-	opengl.CullFace(uint32(oldCullFaceMode))
-	opengl.DepthFunc(uint32(oldDepthFuncMode))
-}
+//func (manager *Manager) drawSky(skybox *components.Skybox) {
+//	var oldCullFaceMode int32
+//	opengl.GetIntegerv(opengl.CULL_FACE_MODE, &oldCullFaceMode)
+//	var oldDepthFuncMode int32
+//	opengl.GetIntegerv(opengl.DEPTH_FUNC, &oldDepthFuncMode)
+//	manager.skyShader.UseProgram()
+//	model := mgl32.Ident4()
+//	camTransform := scene.Get().CurrentCamera().Transform().Position
+//	model = model.Mul4(mgl32.Translate3D(camTransform.X(), camTransform.Y(), camTransform.Z()))
+//	model = model.Mul4(mgl32.Scale3D(20, 20, 20))
+//	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("model"), 1, false, &model[0])
+//	view := scene.Get().CurrentCamera().ViewMatrix()
+//	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("view"), 1, false, &view[0])
+//	projection := scene.Get().CurrentCamera().ProjectionMatrix()
+//	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("projection"), 1, false, &projection[0])
+//
+//	opengl.CullFace(opengl.FRONT)
+//	opengl.DepthFunc(opengl.LEQUAL)
+//	//DRAW
+//	manager.drawMesh(skybox.GetRenderables()[0])
+//
+//	// Set back to default shader.
+//	// Why? Only called 1 time per frame
+//	manager.defaultShader.UseProgram()
+//	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("view"), 1, false, &view[0])
+//	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("projection"), 1, false, &projection[0])
+//
+//	opengl.CullFace(uint32(oldCullFaceMode))
+//	opengl.DepthFunc(uint32(oldDepthFuncMode))
+//}
 
 func (manager *Manager) updateRendererProperties() {
 	manager.renderAsWireframe = input.GetKeyboard().IsKeyDown(glfw.KeyX)

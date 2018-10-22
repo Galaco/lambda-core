@@ -3,7 +3,6 @@ package scene
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/factory"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/scene/loader"
 	bsplib "github.com/galaco/bsp"
@@ -27,9 +26,6 @@ func LoadFromFile(fileName string) {
 
 	loadEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData))
 
-
-	loadSky(currentScene.FindEntitiesByKey("classname", "worldspawn")[0].KeyValues().ValueForKey("skyname"))
-
 	loadCamera()
 }
 
@@ -46,15 +42,6 @@ func loadEntities(entdata *lumps.EntData) {
 	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
 		currentScene.AddEntity(loader.CreateEntity(entityList.Get(i)))
-	}
-}
-
-func loadSky(skyname string) {
-	currentScene.GetWorld()
-
-	sky, err := loader.LoadSky(skyname)
-	if err == nil {
-		factory.NewComponent(sky, currentScene.GetWorld())
 	}
 }
 

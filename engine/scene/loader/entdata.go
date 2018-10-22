@@ -22,7 +22,8 @@ func CreateEntity(ent *entity.Entity) entity3.IEntity {
 	localEdict := entity3.NewGenericEntity(ent)
 	origin := ent.VectorForKey("origin")
 	localEdict.Transform().Position = mgl32.Vec3{origin.X(), origin.Y(), origin.Z()}
-	localEdict.Transform().Scale = mgl32.Vec3{8, 8, 8}
+	angles := ent.VectorForKey("angles")
+	localEdict.Transform().Rotation = mgl32.Vec3{angles.X(), angles.Y(), angles.Z()}
 
 	return localEdict
 }
