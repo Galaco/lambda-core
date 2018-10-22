@@ -7,7 +7,9 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/renderer"
 	"github.com/galaco/Gource-Engine/engine/scene"
+	"github.com/galaco/Gource-Engine/engine/window"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -18,6 +20,9 @@ func main() {
 	// Initialise current setup. Note this doesn't start any loop, but
 	// allows for configuration of systems by the engine
 	Application.Initialise()
+
+	Application.AddManager(&window.Manager{})
+	Application.AddManager(&renderer.Manager{})
 
 	// Load a map!
 	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")

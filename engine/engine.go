@@ -6,8 +6,6 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/engine/renderer"
-	"github.com/galaco/Gource-Engine/engine/window"
 	"github.com/galaco/Gource-Engine/lib/gameinfo"
 	"runtime"
 	"time"
@@ -29,14 +27,6 @@ func (engine *Engine) Initialise() {
 
 	// Derive and register game resource paths
 	filesystem.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
-
-	// Add various entity managers
-	engine.AddManager(&window.Manager{})
-	engine.AddManager(&renderer.Manager{})
-
-	for _, manager := range engine.Managers {
-		manager.Register()
-	}
 }
 
 // Run the engine
@@ -74,6 +64,7 @@ func (engine *Engine) Run() {
 // Add a new manager to the engine
 func (engine *Engine) AddManager(manager core.IManager) {
 	engine.Managers = append(engine.Managers, manager)
+	manager.Register()
 }
 
 func (engine *Engine) Close() {
