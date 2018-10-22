@@ -41,18 +41,21 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 	numVisible := 0
 
 	faces := make([]uint16, 0)
-	for _, l := range vis.Leafs {
+	leafs := make([]uint16, 0)
+	for idx, l := range vis.Leafs {
 		//Check if cluster is in pvs
 		if !vis.clusterVisible(&clusterList, l.Cluster) {
 			continue
 		}
 		numVisible++
+		leafs = append(leafs, uint16(idx))
 		faces = append(faces, vis.LeafFaces[l.FirstLeafFace:l.FirstLeafFace+l.NumLeafFaces]...)
 	}
 
 	cache := Cache{
 		ClusterId: clusterId,
 		Faces:     faces,
+		Leafs:	   leafs,
 	}
 
 	vis.ClusterCache = append(vis.ClusterCache, cache)

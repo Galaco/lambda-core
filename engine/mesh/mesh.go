@@ -11,7 +11,7 @@ type Mesh struct {
 	textureCoordinates []float32
 
 	gpuInfo buffer
-	material *material.Material
+	material material.IMaterial
 }
 
 func (mesh *Mesh) AddVertex(vertex ...float32) {
@@ -69,11 +69,11 @@ func (mesh *Mesh) TextureCoordinates() []float32 {
 	return mesh.textureCoordinates
 }
 
-func (mesh *Mesh) GetMaterial() *material.Material{
+func (mesh *Mesh) GetMaterial() material.IMaterial{
 	return mesh.material
 }
 
-func (mesh *Mesh) SetMaterial(mat *material.Material) {
+func (mesh *Mesh) SetMaterial(mat material.IMaterial) {
 	mesh.material = mat
 }
 

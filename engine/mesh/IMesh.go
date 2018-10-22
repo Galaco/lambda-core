@@ -17,8 +17,8 @@ type IMesh interface {
  	Normals() []float32
 	TextureCoordinates() []float32
 
-	GetMaterial() *material.Material
-	SetMaterial(*material.Material)
+	GetMaterial() material.IMaterial
+	SetMaterial(material.IMaterial)
 
 	Bind()
 }

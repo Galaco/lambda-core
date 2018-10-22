@@ -1,11 +1,7 @@
 package visibility
 
-import (
-	"github.com/galaco/bsp/primitives/leaf"
-)
-
 type Cache struct {
-	Leaves     []*leaf.Leaf
+	Leafs     []uint16
 	ClusterId  int16
 	SkyVisible bool
 	Faces      []uint16

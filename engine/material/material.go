@@ -26,11 +26,11 @@ func (material *Material) GetFilePath() string {
 	return material.filePath
 }
 
-func (material *Material) GetWidth() int {
+func (material *Material) Width() int {
 	return material.width
 }
 
-func (material *Material) GetHeight() int {
+func (material *Material) Height() int {
 	return material.height
 }
 

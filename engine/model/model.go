@@ -7,6 +7,7 @@ import (
 // A collection of renderable primitives/submeshes
 type Model struct {
 	meshes   []mesh.IMesh
+	fileName string
 }
 
 // Add a new primitive
@@ -23,8 +24,13 @@ func (model *Model) Reset() {
 	model.meshes = []mesh.IMesh{}
 }
 
-func NewModel(meshes ...mesh.IMesh) *Model {
+func (model *Model) GetFilePath() string {
+	return model.fileName
+}
+
+func NewModel(filename string, meshes ...mesh.IMesh) *Model {
 	return &Model{
+		fileName: filename,
 		meshes:   meshes,
 	}
 }

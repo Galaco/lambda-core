@@ -8,6 +8,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders/sky"
 	"github.com/galaco/Gource-Engine/engine/scene"
+	"github.com/galaco/Gource-Engine/engine/scene/world"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl32"
@@ -53,16 +54,13 @@ func (manager *Manager) Update(dt float64) {
 
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 
-	modelUniform := manager.defaultShader.GetUniform("model")
-	model := mgl32.Ident4()
 	viewUniform := manager.defaultShader.GetUniform("view")
 	view := scene.Get().CurrentCamera().ViewMatrix()
 	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
 
-	world := *currentScene.GetWorld()
-	world.UpdateVisibilityList(scene.Get().CurrentCamera().Transform().Position)
-	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
-	manager.drawModel(world.GetModel())
+	manager.drawBsp(currentScene.GetWorld())
+
+	manager.drawStaticProps(currentScene.GetWorld())
 
 	//for _, c := range factory.GetObjectManager().GetAllComponents() {
 	//	switch c.(type) {
@@ -74,6 +72,24 @@ func (manager *Manager) Update(dt float64) {
 	//			manager.drawMesh(resource)
 	//		}
 	//}
+}
+
+func (manager *Manager) drawBsp(world *world.World) {
+	modelUniform := manager.defaultShader.GetUniform("model")
+	model := mgl32.Ident4()
+	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+	world.UpdateVisibilityList(scene.Get().CurrentCamera().Transform().Position)
+	manager.drawModel(world.GetVisibleBsp())
+}
+
+func (manager *Manager) drawStaticProps(world *world.World) {
+	modelUniform := manager.defaultShader.GetUniform("model")
+
+	for _,prop := range world.GetVisibleStaticProps() {
+		model := mgl32.Ident4()
+		opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+		manager.drawModel(prop.GetModel())
+	}
 }
 
 // render a mesh and its submeshes/primitives

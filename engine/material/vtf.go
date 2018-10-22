@@ -18,6 +18,11 @@ func LoadMaterialList(materialList []string) {
 
 func read(materialList []string) (missingList []string) {
 	ResourceManager := filesystem.Manager()
+
+	// Ensure that error texture is available
+	ResourceManager.Add(NewError())
+
+
 	materialBasePath := "materials/"
 
 	for _, materialPath := range materialList {
@@ -44,6 +49,9 @@ func read(materialList []string) (missingList []string) {
 			}
 		}
 	}
+
+	// @TODO
+	// All missing textures should be replaced with Error texture
 
 	return missingList
 }

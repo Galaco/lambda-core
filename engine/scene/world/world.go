@@ -12,14 +12,20 @@ import (
 type World struct {
 	entity.Base
 	visibleModel *model.Model
-	model 	     model.Model
-	visData     *visibility.Vis
-	LeafCache   *visibility.Cache
-	currentLeaf *leaf.Leaf
+	bspModel     model.Model
+	visibleProps  []*StaticProp
+	staticProps   []StaticProp
+	visData      *visibility.Vis
+	LeafCache    *visibility.Cache
+	currentLeaf  *leaf.Leaf
 }
 
-func (entity *World) GetModel() *model.Model {
+func (entity *World) GetVisibleBsp() *model.Model {
 	return entity.visibleModel
+}
+
+func (entity *World) GetVisibleStaticProps() []*StaticProp {
+	return entity.visibleProps
 }
 
 // Rebuild the current facelist to render, by first
@@ -35,10 +41,10 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 
 	if currentLeaf == nil || currentLeaf.Cluster == -1 {
 		// Still outside the world
-		if len(entity.visibleModel.GetMeshes()) == len(entity.model.GetMeshes()) {
+		if len(entity.visibleModel.GetMeshes()) == len(entity.bspModel.GetMeshes()) {
 			return
 		}
-		entity.visibleModel = &entity.model
+		entity.visibleModel = &entity.bspModel
 		return
 	}
 
@@ -50,18 +56,39 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 	entity.LeafCache = entity.visData.GetPVSCacheForCluster(currentLeaf.Cluster)
 	if entity.LeafCache != nil {
 		primitives := make([]mesh.IMesh, 0)
+		// Rebuild bsp faces
 		for _, faceIdx := range entity.LeafCache.Faces {
-			primitives = append(primitives, entity.model.GetMeshes()[faceIdx])
+			primitives = append(primitives, entity.bspModel.GetMeshes()[faceIdx])
 		}
-		entity.visibleModel = model.NewModel()
+		entity.visibleModel = model.NewModel("worldspawn_visible")
 		entity.visibleModel.AddMesh(primitives...)
+
+		// Rebuild visible props
+		entity.visibleProps = make([]*StaticProp, 0)
+		for idx,prop := range entity.staticProps {
+			found := false
+			for _,leafId := range entity.LeafCache.Leafs {
+				for _,propLeafId := range prop.leafList {
+					if leafId == propLeafId {
+						entity.visibleProps = append(entity.visibleProps, &entity.staticProps[idx])
+						found = true
+						break
+					}
+				}
+				if found == true {
+					break
+				}
+			}
+		}
 	}
 }
 
-func NewWorld(world model.Model, visData *visibility.Vis) *World {
+func NewWorld(world model.Model, staticProps []StaticProp, visData *visibility.Vis) *World {
 	c := World{
-		visibleModel: model.NewModel(),
-		model: world,
+		visibleModel: model.NewModel("worldspawn_visible"),
+		bspModel: world,
+		visibleProps: make([]*StaticProp, 0),
+		staticProps: staticProps,
 		visData:  visData,
 	}
 

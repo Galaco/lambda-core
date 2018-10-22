@@ -52,7 +52,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	}
 
 
-	worldModel := model.NewModel()
+	worldModel := model.NewModel("worldspawn")
 	meshList := make([]mesh.IMesh, len(bspStructure.faces))
 	materialList := make([]*texinfo.TexInfo, len(bspStructure.faces))
 
@@ -84,24 +84,26 @@ func LoadMap(file *bsp.Bsp) *world.World {
 			baseTexturePath = ResourceManager.Get(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
 		}
 		if ResourceManager.Has(baseTexturePath) {
-			mat := ResourceManager.Get(baseTexturePath).(*material.Material)
+			mat := ResourceManager.Get(baseTexturePath).(material.IMaterial)
 			mesh.SetMaterial(mat)
-			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.GetWidth(), mat.GetHeight())...)
+			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
 		} else {
-			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], 1, 1)...)
+			mat := ResourceManager.Get("materials/error").(material.IMaterial)
+			mesh.SetMaterial(mat)
+			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Width())...)
 		}
 
 		mesh.Finish()
 	}
 
 	// Load static props
-	LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	staticPropModel := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := sceneVisibility.NewVisFromBSP(file)
 
 	worldModel.AddMesh(meshList...)
 
-	return world.NewWorld(*worldModel, visData)
+	return world.NewWorld(*worldModel, staticPropModel, visData)
 }
 
 // Create primitives from face data in the bsp
