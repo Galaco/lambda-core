@@ -1,13 +1,24 @@
 package mesh
 
-import "github.com/galaco/Gource-Engine/engine/mesh/primitive"
+import (
+	"github.com/galaco/Gource-Engine/engine/material"
+)
 
 // Generic Mesh object
 // Most renderable objects should implement this, but there
 // are probably many custom cases that may not
 type IMesh interface {
-	Prepare()
-	AddPrimitive(primitive primitive.IPrimitive)
-	AddPrimitives(primitives []primitive.IPrimitive)
-	GetPrimitives() []primitive.IPrimitive
+	AddVertex(...float32)
+	AddNormal(...float32)
+	AddTextureCoordinate(...float32)
+	Finish()
+
+	Vertices() []float32
+ 	Normals() []float32
+	TextureCoordinates() []float32
+
+	GetMaterial() *material.Material
+	SetMaterial(*material.Material)
+
+	Bind()
 }

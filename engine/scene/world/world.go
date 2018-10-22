@@ -3,7 +3,6 @@ package world
 import (
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/mesh"
-	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
 	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/bsp/primitives/leaf"
@@ -12,15 +11,15 @@ import (
 
 type World struct {
 	entity.Base
-	cache       []mesh.IMesh
-	faceList    []primitive.IPrimitive
+	visibleModel *model.Model
+	model 	     model.Model
 	visData     *visibility.Vis
 	LeafCache   *visibility.Cache
 	currentLeaf *leaf.Leaf
 }
 
-func (entity *World) GetPrimitives() []mesh.IMesh {
-	return entity.cache
+func (entity *World) GetModel() *model.Model {
+	return entity.visibleModel
 }
 
 // Rebuild the current facelist to render, by first
@@ -36,11 +35,10 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 
 	if currentLeaf == nil || currentLeaf.Cluster == -1 {
 		// Still outside the world
-		if len(entity.cache[0].GetPrimitives()) == len(entity.faceList) {
+		if len(entity.visibleModel.GetMeshes()) == len(entity.model.GetMeshes()) {
 			return
 		}
-		entity.cache[0].(*model.Model).Reset()
-		entity.cache[0].AddPrimitives(entity.faceList)
+		entity.visibleModel = &entity.model
 		return
 	}
 
@@ -51,21 +49,19 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 
 	entity.LeafCache = entity.visData.GetPVSCacheForCluster(currentLeaf.Cluster)
 	if entity.LeafCache != nil {
-		primitives := make([]primitive.IPrimitive, 0)
+		primitives := make([]mesh.IMesh, 0)
 		for _, faceIdx := range entity.LeafCache.Faces {
-			primitives = append(primitives, entity.faceList[faceIdx])
+			primitives = append(primitives, entity.model.GetMeshes()[faceIdx])
 		}
-		entity.cache[0].(*model.Model).Reset()
-		entity.cache[0].AddPrimitives(primitives)
+		entity.visibleModel = model.NewModel()
+		entity.visibleModel.AddMesh(primitives...)
 	}
 }
 
-func NewWorld(faceList []primitive.IPrimitive, visData *visibility.Vis) *World {
+func NewWorld(world model.Model, visData *visibility.Vis) *World {
 	c := World{
-		cache: []mesh.IMesh{
-			model.NewModel(make([]primitive.IPrimitive, 0)),
-		},
-		faceList: faceList,
+		visibleModel: model.NewModel(),
+		model: world,
 		visData:  visData,
 	}
 

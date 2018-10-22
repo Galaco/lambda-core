@@ -3,29 +3,17 @@ package main
 import (
 	"github.com/galaco/Gource-Engine/engine"
 	"github.com/galaco/Gource-Engine/engine/config"
-	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
-	"github.com/galaco/Gource-Engine/engine/renderer"
-	"github.com/galaco/Gource-Engine/systems/window"
-	"github.com/galaco/Gource-Engine/lib/gameinfo"
+	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 func main() {
 	// Build our engine setup
 	Application := engine.NewEngine()
-
-	// Load engine configuration
-	LoadConfig()
-	// Derive and register game resource paths
-	filesystem.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
-
-	RegisterManagers(Application)
 
 	// Initialise current setup. Note this doesn't start any loop, but
 	// allows for configuration of systems by the engine
@@ -37,24 +25,10 @@ func main() {
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
 
-	Application.SetSimulationSpeed(2.5)
+	//Application.SetSimulationSpeed(2.5)
 
 	// Run the engine
 	Application.Run()
-}
-
-// Load project config, then derived game information
-func LoadConfig() {
-	cfg, err := config.Load()
-	if err != nil {
-		debug.Log(err)
-	}
-	gameinfo.LoadConfig(cfg.GameDirectory)
-}
-
-func RegisterManagers(app *engine.Engine) {
-	app.AddManager(&window.Manager{})
-	app.AddManager(&renderer.Manager{})
 }
 
 // Simple object to control engine shutdown utilising the internal event manager

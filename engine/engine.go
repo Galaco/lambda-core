@@ -1,8 +1,14 @@
 package engine
 
 import (
+	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core"
+	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/core/event"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/renderer"
+	"github.com/galaco/Gource-Engine/engine/window"
+	"github.com/galaco/Gource-Engine/lib/gameinfo"
 	"runtime"
 	"time"
 )
@@ -18,6 +24,16 @@ type Engine struct {
 
 // Initialise the engine, and attached managers
 func (engine *Engine) Initialise() {
+	// Load engine configuration
+	engine.loadConfig()
+
+	// Derive and register game resource paths
+	filesystem.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
+
+	// Add various entity managers
+	engine.AddManager(&window.Manager{})
+	engine.AddManager(&renderer.Manager{})
+
 	for _, manager := range engine.Managers {
 		manager.Register()
 	}
@@ -69,6 +85,14 @@ func (engine *Engine) SetSimulationSpeed(multiplier float64) {
 		return
 	}
 	engine.simulationSpeed = multiplier
+}
+
+func (engine *Engine) loadConfig() {
+	cfg, err := config.Load()
+	if err != nil {
+		debug.Log(err)
+	}
+	gameinfo.LoadConfig(cfg.GameDirectory)
 }
 
 func NewEngine() *Engine {

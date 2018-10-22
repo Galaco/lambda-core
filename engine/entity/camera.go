@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -87,7 +88,7 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 }
 
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
-	return mgl32.Perspective(70, 640/480, 0.1, 16384)
+	return mgl32.Perspective(mgl32.DegToRad(70), float32(config.Get().Video.Width)/float32(config.Get().Video.Height), 0.1, 16384)
 }
 
 func NewCamera() *Camera {

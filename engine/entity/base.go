@@ -12,7 +12,6 @@ type Base struct {
 	transform  Transform
 
 	handle     core.Handle
-	components []core.Handle
 }
 
 func (entity *Base) SetKeyValues(keyValues *entity2.Entity) {
@@ -23,7 +22,7 @@ func (entity *Base) KeyValues() *entity2.Entity {
 	return entity.keyValues
 }
 
-func (entity *Base) ClassName() string {
+func (entity *Base) Classname() string {
 	if entity.keyValues == nil {
 		return ""
 	}
@@ -38,16 +37,6 @@ func (entity *Base) SetHandle(handle core.Handle) {
 // Return this entitys unique id
 func (entity *Base) GetHandle() core.Handle {
 	return entity.handle
-}
-
-// Get all handles for this entity
-func (entity *Base) GetComponents() []core.Handle {
-	return entity.components
-}
-
-// Associate a new component handle with this entity
-func (entity *Base) AddComponent(handle core.Handle) {
-	entity.components = append(entity.components, handle)
 }
 
 // Returns this entity's transform component

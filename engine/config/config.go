@@ -5,10 +5,18 @@ import (
 	"io/ioutil"
 )
 
+
+const minWidth = 320
+const minHeight = 240
+
 // Project configuration properties
 // Engine needs to know where to locate its game data
 type Config struct {
 	GameDirectory string
+	Video struct {
+		Width int
+		Height int
+	}
 }
 
 var config Config
@@ -29,5 +37,17 @@ func Load() (*Config, error) {
 		return &config, err
 	}
 
+	validate()
+
 	return &config, nil
+}
+
+func validate() {
+	if config.Video.Width < minWidth {
+		config.Video.Width = minWidth
+	}
+
+	if config.Video.Height < minHeight {
+		config.Video.Height = minHeight
+	}
 }

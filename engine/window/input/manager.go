@@ -26,9 +26,11 @@ func (manager *Manager) Register(window *glfw.Window) {
 }
 
 func (manager *Manager) Update(dt float64) {
+	// Get window size
+	x,y := manager.window.GetSize()
 	if input.GetKeyboard().IsKeyDown(glfw.KeyE) {
 		manager.lockMouse = true
-		manager.window.SetCursorPos(320, 240)
+		manager.window.SetCursorPos(float64(x) / 2, float64(y) / 2)
 		manager.window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
 	} else {
 		manager.lockMouse = false
