@@ -17,14 +17,14 @@ type Manager struct {
 	runAsync    bool
 }
 
-//Register a new component to listen to an event
-func (manager *Manager) Listen(eventName message.Id, component IEventListenable) core.Handle {
+//Register a new listener to listen to an event
+func (manager *Manager) Listen(eventName message.Id, listener IEventListenable) core.Handle {
 	handle := core.NewHandle()
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName]; !ok {
 		manager.listenerMap[eventName] = make(map[core.Handle]IEventListenable)
 	}
-	manager.listenerMap[eventName][handle] = component
+	manager.listenerMap[eventName][handle] = listener
 	manager.mu.Unlock()
 
 	return handle
@@ -52,8 +52,8 @@ func (manager *Manager) RunConcurrent() {
 				// Fire event
 				listeners := manager.listenerMap[item.EventName]
 				manager.mu.Unlock()
-				for _, component := range listeners {
-					component.ReceiveMessage(item.Message)
+				for _, listener := range listeners {
+					listener.ReceiveMessage(item.Message)
 				}
 			}
 		}
@@ -69,7 +69,7 @@ func (manager *Manager) Unlisten(eventName message.Id, handle core.Handle) {
 	manager.mu.Unlock()
 }
 
-//Fires an event to all listening components
+//Fires an event to all listening objects
 func (manager *Manager) Dispatch(eventName message.Id, message message.IMessage) {
 	message.SetType(eventName)
 	queueItem := &QueueItem{

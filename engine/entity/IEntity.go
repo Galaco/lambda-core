@@ -9,9 +9,7 @@ import (
 // All game entities need to implement this
 type IEntity interface {
 	KeyValues() *entity.Entity
-	ClassName() string
+	Classname() string
 	SetHandle(core.Handle)
 	GetHandle() core.Handle
-	GetComponents() []core.Handle
-	AddComponent(handle core.Handle)
 }

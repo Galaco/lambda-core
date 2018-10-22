@@ -18,33 +18,33 @@ type Transform struct {
 	matrix       mgl32.Mat4
 }
 
-func (component *Transform) GetTransformationMatrix() mgl32.Mat4 {
-	if !component.Position.ApproxEqual(component.prevPosition) ||
-		!component.Rotation.ApproxEqual(component.prevRotation) ||
-		!component.Scale.ApproxEqual(component.prevScale) {
+func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
+	if !transform.Position.ApproxEqual(transform.prevPosition) ||
+		!transform.Rotation.ApproxEqual(transform.prevRotation) ||
+		!transform.Scale.ApproxEqual(transform.prevScale) {
 		// Scale of 0 is invalid
-		if component.Scale.X() == 0 ||
-			component.Scale.Y() == 0 ||
-			component.Scale.Z() == 0 {
-			component.Scale = mgl32.Vec3{1, 1, 1}
+		if transform.Scale.X() == 0 ||
+			transform.Scale.Y() == 0 ||
+			transform.Scale.Z() == 0 {
+			transform.Scale = mgl32.Vec3{1, 1, 1}
 		}
 
 		//Translate
-		translation := mgl32.Translate3D(component.Position.X(), component.Position.Y(), component.Position.Z())
+		translation := mgl32.Translate3D(transform.Position.X(), transform.Position.Y(), transform.Position.Z())
 
 		// rotate
 		rotation := mgl32.Ident4()
 		//@TODO ROTATIONS
 
 		// scale
-		scale := mgl32.Scale3D(component.Scale.X(), component.Scale.Y(), component.Scale.Z())
+		scale := mgl32.Scale3D(transform.Scale.X(), transform.Scale.Y(), transform.Scale.Z())
 
-		component.prevPosition = component.Position
-		component.prevRotation = component.Rotation
-		component.prevScale = component.Scale
+		transform.prevPosition = transform.Position
+		transform.prevRotation = transform.Rotation
+		transform.prevScale = transform.Scale
 
-		component.matrix = translation.Mul4(rotation).Mul4(scale)
+		transform.matrix = translation.Mul4(rotation).Mul4(scale)
 	}
 
-	return component.matrix
+	return transform.matrix
 }
