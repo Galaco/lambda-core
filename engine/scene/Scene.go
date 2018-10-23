@@ -13,6 +13,8 @@ type Scene struct {
 
 	cameras []entity.Camera
 	currentCamera *entity.Camera
+
+	isLoaded bool
 }
 
 func (s *Scene) AddEntity(ent entity.IEntity) {
@@ -69,6 +71,20 @@ func (s *Scene) AddCamera(camera *entity.Camera) {
 
 func (s *Scene) CurrentCamera() *entity.Camera {
 	return s.currentCamera
+}
+
+func (s *Scene) IsLoaded() bool {
+	return s.isLoaded
+}
+
+// Empty the current scene
+func (s *Scene) Reset() {
+	s.isLoaded = false
+
+	s.currentCamera = nil
+	s.cameras = make([]entity.Camera, 0)
+	s.entities = make([]entity.IEntity, 0)
+	s.world = world.World{}
 }
 
 var currentScene Scene

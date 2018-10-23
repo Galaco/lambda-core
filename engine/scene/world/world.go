@@ -68,6 +68,11 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 		for idx,prop := range entity.staticProps {
 			found := false
 			for _,leafId := range entity.LeafCache.Leafs {
+
+				entity.visibleProps = append(entity.visibleProps, &entity.staticProps[idx])
+				found = true
+				break
+				
 				for _,propLeafId := range prop.leafList {
 					if leafId == propLeafId {
 						entity.visibleProps = append(entity.visibleProps, &entity.staticProps[idx])

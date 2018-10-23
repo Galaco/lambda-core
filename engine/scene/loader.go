@@ -27,6 +27,8 @@ func LoadFromFile(fileName string) {
 	loadEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData))
 
 	loadCamera()
+
+	currentScene.isLoaded = true
 }
 
 func loadWorld(file *bsplib.Bsp) {

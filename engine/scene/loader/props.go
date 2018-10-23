@@ -3,8 +3,11 @@ package loader
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
+	studiomodellib "github.com/galaco/Gource-Engine/lib/studiomodel"
 	"github.com/galaco/StudioModel"
 	"github.com/galaco/StudioModel/mdl"
 	"github.com/galaco/StudioModel/phy"
@@ -40,7 +43,11 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 			numLoaded++
 		}
 		if err != nil {
-			debug.Log(err)
+			if prop == nil {
+				debug.Logf("Failed to load %s, reason was %s", path, err)
+			} else {
+				debug.Log(err)
+			}
 			continue
 		}
 	}
@@ -126,6 +133,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 		return nil, err
 	}
 	vtxFile, err := vtx.ReadFromStream(f)
+
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +155,38 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 }
 
 func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel) *model.Model {
-	return model.NewModel(filename)
+	verts, normals, textureCoordinates,err := studiomodellib.VertexDataForModel(studioModel, 0)
+	if err != nil {
+		debug.Log(err)
+		return nil
+	}
+	outModel := model.NewModel(filename)
+	mats := materialsForStudioModel(studioModel.Mdl)
+	for i := 0; i < len(verts); i++ { //verts is a slice of slices, (ie vertex data per mesh)
+		smMesh := mesh.NewMesh()
+		smMesh.AddVertex(verts[i]...)
+		smMesh.AddNormal(normals[i]...)
+		smMesh.AddTextureCoordinate(textureCoordinates[i]...)
+		smMesh.Finish()
+
+		//@TODO Map ALL materials to mesh data
+		smMesh.SetMaterial(mats[0])
+
+		outModel.AddMesh(smMesh)
+	}
+
+	return outModel
+}
+
+func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
+	materials := make([]material.IMaterial, 0)
+	for _,dir := range mdlData.TextureDirs {
+		for _, name := range mdlData.TextureNames {
+			path := strings.Replace(dir, "\\", "/", -1) + name + ".vmt"
+			materials = append(materials, material.LoadSingleMaterial(path))
+		}
+	}
+	return materials
 }
 
 func createStaticProp(prop game.IStaticPropDataLump, model *model.Model) *world.StaticProp {

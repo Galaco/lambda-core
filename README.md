@@ -9,6 +9,7 @@ You can build this right now, and, assuming you set the configuration to point t
 * Load BSP map
 * Load high-resolution texture data for bsp faces, including pakfile entries
 * Full visibility data support
+* Staticprop loading (working, but is incomplete)
 
 ##### Counterstrike: Source de_dust2.bsp
 ![de_dust2](https://raw.githubusercontent.com/Galaco/Gource-Engine/master/Documents/de_dust2.jpg)
@@ -28,8 +29,14 @@ you are targeting (e.g. HL2 would be `<steam_dir>/steamapps/common/hl2`).
 ## Contributing
 There is loads to do! Right now there are a few core issues that need fixing, and loads of fundamental features to add. Here
 are just a few!
-* StudioModel library needs finishing before props can be properly added
-* No Physics
+* StudioModel library needs finishing before props can be properly added. There are some issues around multiple stripgroups per mesh, multiple
+materials per prop, mdl data not fully loaded, and likely more
+* Implement physics (probably bullet physics? Accurate VPhysics is probably not worthwhile, but needs investigation)
 * A vulkan renderer would be a huge step forward, particularly this early on. Abstracting a mesh away from ogl would also help
-* Displacement support incomplete - generation is buggy, and visibility checks cull displacements always
+* Displacement support incomplete - generation is buggy, and visibility checks cull displacements always (visible when outside of world only)
 * Additional game support/testing in BSP library
+
+
+#### Additional examples
+##### Counterstrike: Source ze_FFVII_Mako_Reactor_v5_3.bsp
+![de_dust2](https://raw.githubusercontent.com/Galaco/Gource-Engine/master/Documents/ze_FFVII_Mako_Reactor_v5_3.jpg)

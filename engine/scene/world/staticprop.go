@@ -24,6 +24,8 @@ func NewStaticProp(lumpProp game.IStaticPropDataLump, renderable *model.Model) *
 	for i := uint16(0); i < lumpProp.GetLeafCount(); i++ {
 		prop.leafList = append(prop.leafList, lumpProp.GetFirstLeaf() + i)
 	}
+	prop.Transform().Position = lumpProp.GetOrigin()
+	prop.Transform().Rotation = lumpProp.GetAngles()
 
 	return &prop
 }

@@ -49,8 +49,12 @@ func (manager *Manager) Register() {
 
 func (manager *Manager) Update(dt float64) {
 	currentScene := scene.Get()
+	if !currentScene.IsLoaded() {
+		return
+	}
+
 	manager.updateRendererProperties()
-	scene.Get().CurrentCamera().Update(dt)
+	currentScene.CurrentCamera().Update(dt)
 
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 
@@ -61,17 +65,6 @@ func (manager *Manager) Update(dt float64) {
 	manager.drawBsp(currentScene.GetWorld())
 
 	manager.drawStaticProps(currentScene.GetWorld())
-
-	//for _, c := range factory.GetObjectManager().GetAllComponents() {
-	//	switch c.(type) {
-	//	case *components.RenderableComponent:
-	//		modelMatrix := factory.GetObjectManager().GetEntityByHandle(c.GetOwnerHandle()).(*entity2.Base).Transform().GetTransformationMatrix()
-	//		opengl.UniformMatrix4fv(modelUniform, 1, false, &modelMatrix[0])
-	//
-	//		for _, resource := range c.(*components.RenderableComponent).GetRenderables() {
-	//			manager.drawMesh(resource)
-	//		}
-	//}
 }
 
 func (manager *Manager) drawBsp(world *world.World) {
@@ -86,7 +79,7 @@ func (manager *Manager) drawStaticProps(world *world.World) {
 	modelUniform := manager.defaultShader.GetUniform("model")
 
 	for _,prop := range world.GetVisibleStaticProps() {
-		model := mgl32.Ident4()
+		model := prop.Transform().GetTransformationMatrix()
 		opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 		manager.drawModel(prop.GetModel())
 	}

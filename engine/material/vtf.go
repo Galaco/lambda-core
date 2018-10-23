@@ -4,6 +4,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/lib/vtf"
+	"strings"
 )
 
 // Load all materials referenced in the map
@@ -13,10 +14,10 @@ import (
 // 3. Game VPK
 // 4. Other game shared VPK
 func LoadMaterialList(materialList []string) {
-	read(materialList)
+	loadMaterials(materialList...)
 }
 
-func read(materialList []string) (missingList []string) {
+func loadMaterials(materialList ...string) (missingList []string) {
 	ResourceManager := filesystem.Manager()
 
 	// Ensure that error texture is available
@@ -27,14 +28,18 @@ func read(materialList []string) (missingList []string) {
 
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
+
+		if !strings.HasSuffix(materialPath,".vmt") {
+			materialPath += ".vmt"
+		}
 		// Only load the filesystem once
 		if ResourceManager.Get(materialBasePath+materialPath) == nil {
 			if !readVmt(materialBasePath, materialPath) {
-				debug.Log("Could not find: " + materialPath)
+				debug.Log("Unable to parse: " + materialBasePath + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
-			vmt := ResourceManager.Get(materialPath).(*Vmt)
+			vmt := ResourceManager.Get(materialBasePath + materialPath).(*Vmt)
 
 			// NOTE: in patch vmts include is not supported
 			if vmt.GetProperty("baseTexture").AsString() != "" {
@@ -43,7 +48,7 @@ func read(materialList []string) (missingList []string) {
 
 			if vtfTexturePath != "" && !ResourceManager.Has(vtfTexturePath) {
 				if !readVtf(materialBasePath, vtfTexturePath) {
-					debug.Log("Could not find: " + materialPath)
+					debug.Log("Could not find: " + materialBasePath + materialPath)
 					missingList = append(missingList, vtfTexturePath)
 				}
 			}
@@ -56,16 +61,31 @@ func read(materialList []string) (missingList []string) {
 	return missingList
 }
 
+func LoadSingleMaterial(filePath string) IMaterial {
+	result := loadMaterials(filePath)
+	if len(result) > 0 {
+		// Error
+		return filesystem.Manager().Get("materials/error").(IMaterial)
+	}
+
+	vmt := filesystem.Manager().Get("materials/" + filePath).(*Vmt)
+	vtfPath := vmt.GetProperty("basetexture").AsString() + ".vtf"
+	if len(vtfPath) < 11 { // 11 because len("materials/<>")
+		return filesystem.Manager().Get("materials/error").(IMaterial)
+	}
+	return filesystem.Manager().Get("materials/" + vtfPath).(IMaterial)
+}
+
 func readVmt(basePath string, filePath string) bool {
 	ResourceManager := filesystem.Manager()
-	path := basePath + filePath + ".vmt"
+	path := basePath + filePath
 
 	stream, err := filesystem.Load(path)
 	if err != nil {
 		return false
 	}
 
-	vmt, err := ParseVmt(filePath, stream)
+	vmt, err := ParseVmt(path, stream)
 	if err != nil {
 		debug.Log(err)
 		return false
@@ -92,13 +112,13 @@ func readVtf(basePath string, filePath string) bool {
 	// Store filesystem containing raw data in memory
 	ResourceManager.Add(
 		NewMaterial(
-			filePath,
+			basePath + filePath,
 			texture,
 			int(texture.GetHeader().Width),
 			int(texture.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	ResourceManager.Get(filePath).(*Material).GenerateGPUBuffer()
+	ResourceManager.Get(basePath + filePath).(*Material).GenerateGPUBuffer()
 	return true
 }
 

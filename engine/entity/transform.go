@@ -16,12 +16,17 @@ type Transform struct {
 	prevRotation mgl32.Vec3
 	prevScale    mgl32.Vec3
 	matrix       mgl32.Mat4
+	quat         mgl32.Quat
 }
 
 func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 	if !transform.Position.ApproxEqual(transform.prevPosition) ||
 		!transform.Rotation.ApproxEqual(transform.prevRotation) ||
 		!transform.Scale.ApproxEqual(transform.prevScale) {
+
+		transform.quat = mgl32.QuatIdent()
+
+
 		// Scale of 0 is invalid
 		if transform.Scale.X() == 0 ||
 			transform.Scale.Y() == 0 ||
@@ -33,7 +38,13 @@ func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 		translation := mgl32.Translate3D(transform.Position.X(), transform.Position.Y(), transform.Position.Z())
 
 		// rotate
+		// IMPORTANT. Source engine has Y and Z axis switched
 		rotation := mgl32.Ident4()
+		rotation = transform.rotateAroundAxis(rotation, mgl32.Vec3{1, 0, 0}, mgl32.DegToRad(transform.Rotation.X()))
+		rotation = transform.rotateAroundAxis(rotation, mgl32.Vec3{0, 1, 0}, mgl32.DegToRad(transform.Rotation.Z()))
+		rotation = transform.rotateAroundAxis(rotation, mgl32.Vec3{0, 0, 1}, mgl32.DegToRad(transform.Rotation.Y()))
+
+
 		//@TODO ROTATIONS
 
 		// scale
@@ -47,4 +58,13 @@ func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 	}
 
 	return transform.matrix
+}
+
+func (transform *Transform) rotateAroundAxis(matrix mgl32.Mat4, axis mgl32.Vec3, angle float32) mgl32.Mat4 {
+	q1 := mgl32.QuatRotate(angle, axis)
+	transform.quat = transform.quat.Mul(q1)
+
+	return matrix.Mul4(q1.Mat4())
+
+
 }

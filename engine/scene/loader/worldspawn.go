@@ -78,10 +78,10 @@ func LoadMap(file *bsp.Bsp) *world.World {
 			continue
 		}
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		vmtPath := faceVmt
+		vmtPath := "materials/" + faceVmt + ".vmt"
 		baseTexturePath := "-1"
 		if ResourceManager.Has(vmtPath) {
-			baseTexturePath = ResourceManager.Get(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
+			baseTexturePath = "materials/" + ResourceManager.Get(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
 		}
 		if ResourceManager.Has(baseTexturePath) {
 			mat := ResourceManager.Get(baseTexturePath).(material.IMaterial)
@@ -97,13 +97,13 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	}
 
 	// Load static props
-	staticPropModel := LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := sceneVisibility.NewVisFromBSP(file)
 
 	worldModel.AddMesh(meshList...)
 
-	return world.NewWorld(*worldModel, staticPropModel, visData)
+	return world.NewWorld(*worldModel, staticProps, visData)
 }
 
 // Create primitives from face data in the bsp
