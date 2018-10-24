@@ -17,12 +17,12 @@ func (prop *StaticProp) GetModel() *model.Model {
 }
 
 
-func NewStaticProp(lumpProp game.IStaticPropDataLump, renderable *model.Model) *StaticProp {
+func NewStaticProp(lumpProp game.IStaticPropDataLump, propLeafs *game.StaticPropLeafLump, renderable *model.Model) *StaticProp {
 	prop := StaticProp{
 		model: renderable,
 	}
 	for i := uint16(0); i < lumpProp.GetLeafCount(); i++ {
-		prop.leafList = append(prop.leafList, lumpProp.GetFirstLeaf() + i)
+		prop.leafList = append(prop.leafList, propLeafs.Leaf[lumpProp.GetFirstLeaf() + i])
 	}
 	prop.Transform().Position = lumpProp.GetOrigin()
 	prop.Transform().Rotation = lumpProp.GetAngles()

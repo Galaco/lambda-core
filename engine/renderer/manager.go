@@ -64,7 +64,9 @@ func (manager *Manager) Update(dt float64) {
 
 	manager.drawBsp(currentScene.GetWorld())
 
-	manager.drawStaticProps(currentScene.GetWorld())
+	manager.drawStaticProps(currentScene.GetWorld().GetVisibleStaticProps())
+
+	manager.drawSkybox(currentScene.GetWorld().GetSkybox())
 }
 
 func (manager *Manager) drawBsp(world *world.World) {
@@ -75,14 +77,23 @@ func (manager *Manager) drawBsp(world *world.World) {
 	manager.drawModel(world.GetVisibleBsp())
 }
 
-func (manager *Manager) drawStaticProps(world *world.World) {
+func (manager *Manager) drawStaticProps(props []*world.StaticProp) {
 	modelUniform := manager.defaultShader.GetUniform("model")
 
-	for _,prop := range world.GetVisibleStaticProps() {
+	for _,prop := range props {
 		model := prop.Transform().GetTransformationMatrix()
 		opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
 		manager.drawModel(prop.GetModel())
 	}
+}
+
+func (manager *Manager) drawSkybox(sky *world.Sky) {
+	modelUniform := manager.defaultShader.GetUniform("model")
+	model := sky.Transform().GetTransformationMatrix()
+	opengl.UniformMatrix4fv(modelUniform, 1, false, &model[0])
+	manager.drawModel(sky.GetVisibleBsp())
+
+	manager.drawStaticProps(sky.GetVisibleProps())
 }
 
 // render a mesh and its submeshes/primitives

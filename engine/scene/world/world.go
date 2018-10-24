@@ -15,6 +15,7 @@ type World struct {
 	bspModel     model.Model
 	visibleProps  []*StaticProp
 	staticProps   []StaticProp
+	sky 		 *Sky
 	visData      *visibility.Vis
 	LeafCache    *visibility.Cache
 	currentLeaf  *leaf.Leaf
@@ -26,6 +27,10 @@ func (entity *World) GetVisibleBsp() *model.Model {
 
 func (entity *World) GetVisibleStaticProps() []*StaticProp {
 	return entity.visibleProps
+}
+
+func (entity *World) GetSkybox() *Sky {
+	return entity.sky
 }
 
 // Rebuild the current facelist to render, by first
@@ -55,37 +60,46 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 
 	entity.LeafCache = entity.visData.GetPVSCacheForCluster(currentLeaf.Cluster)
 	if entity.LeafCache != nil {
-		primitives := make([]mesh.IMesh, 0)
-		// Rebuild bsp faces
-		for _, faceIdx := range entity.LeafCache.Faces {
-			primitives = append(primitives, entity.bspModel.GetMeshes()[faceIdx])
-		}
-		entity.visibleModel = model.NewModel("worldspawn_visible")
-		entity.visibleModel.AddMesh(primitives...)
+		entity.visibleModel, entity.visibleProps = entity.visibleDataFromLeaf(entity.LeafCache)
+	}
+}
 
-		// Rebuild visible props
-		entity.visibleProps = make([]*StaticProp, 0)
-		for idx,prop := range entity.staticProps {
-			found := false
-			for _,leafId := range entity.LeafCache.Leafs {
+func (entity *World) visibleDataFromLeaf(cache *visibility.Cache) (*model.Model, []*StaticProp){
+	primitives := make([]mesh.IMesh, 0)
+	// Rebuild bsp faces
+	for _, faceIdx := range cache.Faces {
+		primitives = append(primitives, entity.bspModel.GetMeshes()[faceIdx])
+	}
+	visibleModel := model.NewModel("worldspawn_visible")
+	visibleModel.AddMesh(primitives...)
 
-				entity.visibleProps = append(entity.visibleProps, &entity.staticProps[idx])
-				found = true
-				break
-				
-				for _,propLeafId := range prop.leafList {
-					if leafId == propLeafId {
-						entity.visibleProps = append(entity.visibleProps, &entity.staticProps[idx])
-						found = true
-						break
-					}
-				}
-				if found == true {
+	// Rebuild visible props
+	visibleProps := make([]*StaticProp, 0)
+	for idx, prop := range entity.staticProps {
+		found := false
+		for _, leafId := range cache.Leafs {
+			for _, propLeafId := range prop.leafList {
+				if leafId == propLeafId {
+					visibleProps = append(visibleProps, &entity.staticProps[idx])
+					found = true
 					break
 				}
 			}
+			if found == true {
+				break
+			}
 		}
 	}
+	return visibleModel, visibleProps
+}
+
+func (entity *World) BuildSkybox(position mgl32.Vec3, scale float32) {
+	l := entity.visData.FindCurrentLeaf(position)
+	cache := entity.visData.GetPVSCacheForCluster(l.Cluster)
+
+	models, props := entity.visibleDataFromLeaf(cache)
+
+	entity.sky = NewSky(models, props, position, scale)
 }
 
 func NewWorld(world model.Model, staticProps []StaticProp, visData *visibility.Vis) *World {

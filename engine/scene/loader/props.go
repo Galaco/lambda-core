@@ -60,7 +60,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 		modelName := propLump.DictLump.Name[propEntry.GetPropType()]
 		m := ResourceManager.Get(modelName)
 		if m != nil {
-			staticPropList = append(staticPropList, *createStaticProp(propEntry, m.(*model.Model)))
+			staticPropList = append(staticPropList, *createStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
 			continue
 		}
 		// Model missing, use error model
@@ -75,7 +75,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 			}
 		}
 		m = ResourceManager.Get("models/error.mdl")
-		staticPropList = append(staticPropList, *createStaticProp(propEntry, m.(*model.Model)))
+		staticPropList = append(staticPropList, *createStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
 	}
 
 	return staticPropList
@@ -189,6 +189,6 @@ func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
 	return materials
 }
 
-func createStaticProp(prop game.IStaticPropDataLump, model *model.Model) *world.StaticProp {
-	return world.NewStaticProp(prop, model)
+func createStaticProp(prop game.IStaticPropDataLump, propLeafs *game.StaticPropLeafLump, model *model.Model) *world.StaticProp {
+	return world.NewStaticProp(prop, propLeafs, model)
 }

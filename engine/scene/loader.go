@@ -45,6 +45,13 @@ func loadEntities(entdata *lumps.EntData) {
 	for i := 0; i < entityList.Length(); i++ {
 		currentScene.AddEntity(loader.CreateEntity(entityList.Get(i)))
 	}
+
+	skyCamera := entityList.FindByKeyValue("classname", "sky_camera")
+	if skyCamera == nil {
+		return
+	}
+
+	currentScene.world.BuildSkybox(skyCamera.VectorForKey("origin"), float32(skyCamera.IntForKey("scale")))
 }
 
 func loadCamera() {
