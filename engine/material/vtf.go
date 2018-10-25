@@ -76,6 +76,13 @@ func LoadSingleMaterial(filePath string) IMaterial {
 	return filesystem.Manager().Get("materials/" + vtfPath).(IMaterial)
 }
 
+func LoadSingleVtf(filePath string) IMaterial {
+	if !readVtf("materials/", filePath) {
+		return filesystem.Manager().Get("materials/error").(IMaterial)
+	}
+	return filesystem.Manager().Get("materials/" + filePath).(IMaterial)
+}
+
 func readVmt(basePath string, filePath string) bool {
 	ResourceManager := filesystem.Manager()
 	path := basePath + filePath

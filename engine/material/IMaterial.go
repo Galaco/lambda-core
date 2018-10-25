@@ -5,4 +5,6 @@ type IMaterial interface {
 	Bind()
 	Width() int
 	Height() int
+	Format() uint32
+	PixelDataForFrame(int) []byte
 }

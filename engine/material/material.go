@@ -34,6 +34,13 @@ func (material *Material) Height() int {
 	return material.height
 }
 
+func (material *Material) Format() uint32 {
+	return material.vtf.GetHeader().HighResImageFormat
+}
+func (material *Material) PixelDataForFrame(frame int) []byte {
+	return material.vtf.GetHighestResolutionImageForFrame(frame)
+}
+
 // Generate the GPU buffer for this material
 func (material *Material) GenerateGPUBuffer() {
 	gl.GenTextures(1, &material.Buffer)

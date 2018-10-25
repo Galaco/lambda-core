@@ -7,12 +7,17 @@ import (
 )
 
 type Sky struct {
+	geometry *model.Model
 	skybox *model.Model
 	props []*StaticProp
 	transform entity.Transform
 }
 
 func (sky *Sky) GetVisibleBsp() *model.Model {
+	return sky.geometry
+}
+
+func (sky *Sky) GetBackdrop() *model.Model {
 	return sky.skybox
 }
 
@@ -24,9 +29,10 @@ func (sky *Sky) Transform() *entity.Transform {
 	return &sky.transform
 }
 
-func NewSky(model *model.Model, props []*StaticProp, position mgl32.Vec3, scale float32) *Sky {
+func NewSky(model *model.Model, sky *model.Model, props []*StaticProp, position mgl32.Vec3, scale float32) *Sky {
 	s := Sky{
-		skybox: model,
+		geometry: model,
+		skybox: sky,
 	}
 
 	skyCameraPosition := (mgl32.Vec3{0,0,0}).Sub(position)
