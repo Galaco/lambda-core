@@ -9,6 +9,31 @@ type Error struct {
 	Material
 }
 
+func (error *Error) Format() uint32 {
+	return 2
+}
+
+func (error *Error) PixelDataForFrame(frame int) []byte {
+	return []uint8{
+		255, 0, 255,
+		255, 0, 255,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		255, 0, 255,
+		255, 0, 255,
+		255, 0, 255,
+		255, 0, 255,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		0, 0, 0,
+		255, 0, 255,
+		255, 0, 255,
+	}
+}
+
 func (error *Error) GenerateGPUBuffer() {
 	gl.GenTextures(1, &error.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)

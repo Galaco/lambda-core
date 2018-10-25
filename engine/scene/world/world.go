@@ -93,13 +93,13 @@ func (entity *World) visibleDataFromLeaf(cache *visibility.Cache) (*model.Model,
 	return visibleModel, visibleProps
 }
 
-func (entity *World) BuildSkybox(position mgl32.Vec3, scale float32) {
+func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale float32) {
 	l := entity.visData.FindCurrentLeaf(position)
 	cache := entity.visData.GetPVSCacheForCluster(l.Cluster)
 
-	models, props := entity.visibleDataFromLeaf(cache)
+	geometry, props := entity.visibleDataFromLeaf(cache)
 
-	entity.sky = NewSky(models, props, position, scale)
+	entity.sky = NewSky(geometry, sky, props, position, scale)
 }
 
 func NewWorld(world model.Model, staticProps []StaticProp, visData *visibility.Vis) *World {

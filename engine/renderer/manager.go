@@ -53,6 +53,11 @@ func (manager *Manager) Update(dt float64) {
 		return
 	}
 
+	manager.defaultShader.UseProgram()
+	projectionUniform := manager.defaultShader.GetUniform("projection")
+	projection := scene.Get().CurrentCamera().ProjectionMatrix()
+	opengl.UniformMatrix4fv(projectionUniform, 1, false, &projection[0])
+
 	manager.updateRendererProperties()
 	currentScene.CurrentCamera().Update(dt)
 
@@ -94,6 +99,8 @@ func (manager *Manager) drawSkybox(sky *world.Sky) {
 	manager.drawModel(sky.GetVisibleBsp())
 
 	manager.drawStaticProps(sky.GetVisibleProps())
+
+	manager.drawSkyMaterial(sky.GetBackdrop())
 }
 
 // render a mesh and its submeshes/primitives
@@ -114,36 +121,30 @@ func (manager *Manager) drawModel(model *model.Model) {
 	}
 }
 
-//func (manager *Manager) drawSky(skybox *components.Skybox) {
-//	var oldCullFaceMode int32
-//	opengl.GetIntegerv(opengl.CULL_FACE_MODE, &oldCullFaceMode)
-//	var oldDepthFuncMode int32
-//	opengl.GetIntegerv(opengl.DEPTH_FUNC, &oldDepthFuncMode)
-//	manager.skyShader.UseProgram()
-//	model := mgl32.Ident4()
-//	camTransform := scene.Get().CurrentCamera().Transform().Position
-//	model = model.Mul4(mgl32.Translate3D(camTransform.X(), camTransform.Y(), camTransform.Z()))
-//	model = model.Mul4(mgl32.Scale3D(20, 20, 20))
-//	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("model"), 1, false, &model[0])
-//	view := scene.Get().CurrentCamera().ViewMatrix()
-//	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("view"), 1, false, &view[0])
-//	projection := scene.Get().CurrentCamera().ProjectionMatrix()
-//	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("projection"), 1, false, &projection[0])
-//
-//	opengl.CullFace(opengl.FRONT)
-//	opengl.DepthFunc(opengl.LEQUAL)
-//	//DRAW
-//	manager.drawMesh(skybox.GetRenderables()[0])
-//
-//	// Set back to default shader.
-//	// Why? Only called 1 time per frame
-//	manager.defaultShader.UseProgram()
-//	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("view"), 1, false, &view[0])
-//	opengl.UniformMatrix4fv(manager.defaultShader.GetUniform("projection"), 1, false, &projection[0])
-//
-//	opengl.CullFace(uint32(oldCullFaceMode))
-//	opengl.DepthFunc(uint32(oldDepthFuncMode))
-//}
+func (manager *Manager) drawSkyMaterial(skybox *model.Model) {
+	var oldCullFaceMode int32
+	opengl.GetIntegerv(opengl.CULL_FACE_MODE, &oldCullFaceMode)
+	var oldDepthFuncMode int32
+	opengl.GetIntegerv(opengl.DEPTH_FUNC, &oldDepthFuncMode)
+	manager.skyShader.UseProgram()
+	model := mgl32.Ident4()
+	camTransform := scene.Get().CurrentCamera().Transform().Position
+	model = model.Mul4(mgl32.Translate3D(camTransform.X(), camTransform.Y(), camTransform.Z()))
+	model = model.Mul4(mgl32.Scale3D(20, 20, 20))
+	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("model"), 1, false, &model[0])
+	view := scene.Get().CurrentCamera().ViewMatrix()
+	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("view"), 1, false, &view[0])
+	projection := scene.Get().CurrentCamera().ProjectionMatrix()
+	opengl.UniformMatrix4fv(manager.skyShader.GetUniform("projection"), 1, false, &projection[0])
+
+	opengl.CullFace(opengl.FRONT)
+	opengl.DepthFunc(opengl.LEQUAL)
+	//DRAW
+	manager.drawModel(skybox)
+
+	opengl.CullFace(uint32(oldCullFaceMode))
+	opengl.DepthFunc(uint32(oldDepthFuncMode))
+}
 
 func (manager *Manager) updateRendererProperties() {
 	manager.renderAsWireframe = input.GetKeyboard().IsKeyDown(glfw.KeyX)
