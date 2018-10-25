@@ -29,15 +29,16 @@ func NewSky(model *model.Model, props []*StaticProp, position mgl32.Vec3, scale 
 		skybox: model,
 	}
 
-	skyCameraPosition := position.Mul(-1)
+	skyCameraPosition := (mgl32.Vec3{0,0,0}).Sub(position)
 	skyCameraScale := mgl32.Vec3{scale, scale, scale}
 
-	s.transform.Position = skyCameraPosition
+	s.transform.Position = skyCameraPosition.Mul(scale)
 	s.transform.Scale = skyCameraScale
 
 	// remap prop transform to real world
 	for _,prop := range props {
 		prop.Transform().Position = prop.Transform().Position.Add(skyCameraPosition)
+		prop.Transform().Position = prop.Transform().Position.Mul(scale)
 		prop.Transform().Scale = skyCameraScale
 	}
 
