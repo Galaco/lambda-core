@@ -17,7 +17,9 @@ You can build this right now, and, assuming you set the configuration to point t
 
 ## What will this do?
 The end goal is to be able to point this application at a source engine game, with a bsp as the target, and be able to
-load and play that map.
+load and play that map. Where this progresses beyond that, needs to be decided. Most likely this will be come either a thin client for multiple
+source games with game specific code layered on top (target multiplayer as priority), or the full server simulation for single player games
+would be written (targeting single player as priority).
 
 
 ## Getting started

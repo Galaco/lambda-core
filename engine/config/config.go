@@ -26,8 +26,8 @@ func Get() *Config {
 	return &config
 }
 
-func Load() (*Config, error) {
-	data, err := ioutil.ReadFile("config.json")
+func Load(path string) (*Config, error) {
+	data, err := ioutil.ReadFile(path + "config.json")
 	if err != nil {
 		return &config, err
 	}

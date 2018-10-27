@@ -109,7 +109,7 @@ func getGLTextureFormat(vtfFormat uint32) uint32 {
 	case 12:
 		return gl.BGRA
 	case 13:
-		return gl.COMPRESSED_RGB_S3TC_DXT1_EXT
+		return gl.COMPRESSED_RGBA_S3TC_DXT1_EXT
 	case 14:
 		return gl.COMPRESSED_RGBA_S3TC_DXT3_EXT
 	case 15:

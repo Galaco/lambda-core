@@ -29,26 +29,11 @@ func (entity *Base) Classname() string {
 	return entity.keyValues.ValueForKey("classname")
 }
 
-// Set this entity unique id
-func (entity *Base) SetHandle(handle core.Handle) {
-	entity.handle = handle
-}
-
-// Return this entitys unique id
-func (entity *Base) GetHandle() core.Handle {
-	return entity.handle
-}
-
 // Returns this entity's transform component
 func (entity *Base) Transform() *Transform {
 	return &entity.transform
 }
 
-func NewEntity(definition *entity2.Entity) Base {
-	ent := Base{
-		keyValues: definition,
-		handle:    core.NewHandle(),
-	}
-
-	return ent
+func (entity *Base) New() IEntity {
+	return &Base{}
 }

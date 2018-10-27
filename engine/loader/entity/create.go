@@ -1,7 +1,8 @@
-package loader
+package entity
 
 import (
 	entity3 "github.com/galaco/Gource-Engine/engine/entity"
+	"github.com/galaco/Gource-Engine/engine/loader/entity/classmap"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"
@@ -19,11 +20,25 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 }
 
 func CreateEntity(ent *entity.Entity) entity3.IEntity {
-	localEdict := entity3.NewGenericEntity(ent)
+	localEdict := loader.New(ent.ValueForKey("classname"))
+	if localEdict == nil {
+		localEdict = entity3.NewGenericEntity(ent)
+	} else {
+		localEdict.SetKeyValues(ent)
+	}
+
 	origin := ent.VectorForKey("origin")
 	localEdict.Transform().Position = mgl32.Vec3{origin.X(), origin.Y(), origin.Z()}
 	angles := ent.VectorForKey("angles")
 	localEdict.Transform().Rotation = mgl32.Vec3{angles.X(), angles.Y(), angles.Z()}
 
+	AssignProperties(localEdict)
+
 	return localEdict
+}
+
+func AssignProperties(ent entity3.IEntity) {
+	if DoesEntityReferenceStudioModel(ent) {
+		AssignStudioModelToEntity(ent)
+	}
 }

@@ -19,6 +19,7 @@ import (
 	"github.com/galaco/bsp/primitives/visibility"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
+	"strings"
 )
 
 type bspstructs struct {
@@ -78,6 +79,9 @@ func LoadMap(file *bsp.Bsp) *world.World {
 			continue
 		}
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
+		if strings.HasPrefix(faceVmt, "TOOLS/") {
+			continue
+		}
 		vmtPath := "materials/" + faceVmt + ".vmt"
 		baseTexturePath := "-1"
 		if ResourceManager.Has(vmtPath) {
@@ -166,7 +170,6 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh
 		if surfEdge < 0 {
 			vert = bspStructure.vertexes[edge[1]]
 		}
-
 		corners[surfId-f.FirstEdge] = vert
 
 		dist2tmp := info.StartPosition.Sub(vert)

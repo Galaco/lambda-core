@@ -4,7 +4,8 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/engine/scene/loader"
+	"github.com/galaco/Gource-Engine/engine/loader"
+	entity2 "github.com/galaco/Gource-Engine/engine/loader/entity"
 	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	entitylib "github.com/galaco/source-tools-common/entity"
@@ -36,14 +37,14 @@ func loadWorld(file *bsplib.Bsp) {
 }
 
 func loadEntities(entdata *lumps.EntData) {
-	vmfEntityTree, err := loader.ParseEntities(entdata.GetData())
+	vmfEntityTree, err := entity2.ParseEntities(entdata.GetData())
 	if err != nil {
 		debug.Fatal(err)
 	}
 	entityList := entitylib.FromVmfNodeTree(vmfEntityTree.Unclassified)
 	debug.Logf("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
-		currentScene.AddEntity(loader.CreateEntity(entityList.Get(i)))
+		currentScene.AddEntity(entity2.CreateEntity(entityList.Get(i)))
 	}
 
 	skyCamera := entityList.FindByKeyValue("classname", "sky_camera")
