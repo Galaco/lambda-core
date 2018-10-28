@@ -66,8 +66,7 @@ func (manager *Renderer) EndFrame() {
 
 // Draw the main bsp world
 func (manager *Renderer) DrawBsp(world *world.World) {
-	world.UpdateVisibilityList(scene.Get().CurrentCamera().Transform().Position)
-	manager.DrawModel(world.GetVisibleBsp(), mgl32.Ident4())
+	manager.DrawModel(world.VisibleWorld().Bsp(), mgl32.Ident4())
 }
 
 // Draw passed static props
@@ -79,7 +78,13 @@ func (manager *Renderer) DrawStaticProps(props []*world.StaticProp) {
 
 // Draw skybox (bsp model, staticprops, sky material)
 func (manager *Renderer) DrawSkybox(sky *world.Sky) {
-	manager.DrawModel(sky.GetVisibleBsp(), sky.Transform().GetTransformationMatrix())
+	if sky == nil {
+		return
+	}
+
+	if sky.GetVisibleBsp() != nil {
+		manager.DrawModel(sky.GetVisibleBsp(), sky.Transform().GetTransformationMatrix())
+	}
 
 	manager.DrawStaticProps(sky.GetVisibleProps())
 

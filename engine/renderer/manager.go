@@ -38,13 +38,16 @@ func (manager *Manager) Update(dt float64) {
 
 	manager.updateRendererProperties()
 	currentScene.CurrentCamera().Update(dt)
+	currentScene.GetWorld().TestVisibility(currentScene.CurrentCamera().Transform().Position)
+
+	renderableWorld := currentScene.GetWorld().VisibleWorld()
 
 	// Begin actual rendering
 	manager.renderer.StartFrame(currentScene.CurrentCamera())
 
 	// Draw static world first
 	manager.renderer.DrawBsp(currentScene.GetWorld())
-	manager.renderer.DrawStaticProps(currentScene.GetWorld().GetVisibleStaticProps())
+	manager.renderer.DrawStaticProps(renderableWorld.Staticprops())
 
 	// Dynamic objects
 	cacheMutex.Lock()
@@ -54,7 +57,7 @@ func (manager *Manager) Update(dt float64) {
 	cacheMutex.Unlock()
 
 	// Finish up with the skybox
-	manager.renderer.DrawSkybox(currentScene.GetWorld().GetSkybox())
+	manager.renderer.DrawSkybox(renderableWorld.Sky())
 
 	manager.renderer.EndFrame()
 }
