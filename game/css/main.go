@@ -34,7 +34,7 @@ func main() {
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
 
-	//Application.SetSimulationSpeed(2.5)
+	Application.SetSimulationSpeed(5)
 
 	// Run the engine
 	Application.Run()
@@ -61,7 +61,10 @@ func RegisterShutdownMethod(app *engine.Engine) {
 
 func RegisterEntityList() {
 	loader.RegisterClass(&common.PropDynamic{})
+	loader.RegisterClass(&common.PropDynamicOrnament{})
 	loader.RegisterClass(&common.PropDynamicOverride{})
 	loader.RegisterClass(&common.PropPhysics{})
 	loader.RegisterClass(&common.PropPhysicsMultiplayer{})
+	loader.RegisterClass(&common.PropPhysicsOverride{})
+	loader.RegisterClass(&common.PropRagdoll{})
 }

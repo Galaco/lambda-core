@@ -5,15 +5,15 @@ import (
 	entity2 "github.com/galaco/Gource-Engine/entity"
 )
 
-type PropDynamicOverride struct {
+type PropDynamicOrnament struct {
 	entity.Base
 	entity2.PropBase
 }
 
-func (entity *PropDynamicOverride) New() entity.IEntity {
+func (entity *PropDynamicOrnament) New() entity.IEntity {
 	return &PropDynamicOverride{}
 }
 
-func (entity PropDynamicOverride) Classname() string {
-	return "prop_dynamic_override"
+func (entity PropDynamicOrnament) Classname() string {
+	return "prop_dynamic_ornament"
 }
