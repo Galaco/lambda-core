@@ -11,7 +11,6 @@ func LoadSky(materialName string) *model.Model {
 
 	mats := make([]material.IMaterial, 6)
 
-
 	mats[0] = material.LoadSingleVtf(materialName + "up")
 	mats[1] = material.LoadSingleVtf(materialName + "dn")
 	mats[2] = material.LoadSingleVtf(materialName + "lf")

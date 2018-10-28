@@ -4,7 +4,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/input"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/galaco/Gource-Engine/engine/input/keyboard"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 )
@@ -30,16 +30,16 @@ func (camera *Camera) ReceiveMessage(message message.IMessage) {
 
 func (camera *Camera) Update(dt float64) {
 	vel := cameraSpeed * dt
-	if input.GetKeyboard().IsKeyDown(glfw.KeyW) {
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyW) {
 		camera.Transform().Position = camera.Transform().Position.Add(camera.Direction.Mul(float32(vel)))
 	}
-	if input.GetKeyboard().IsKeyDown(glfw.KeyA) {
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyA) {
 		camera.Transform().Position = camera.Transform().Position.Sub(camera.Right.Mul(float32(vel)))
 	}
-	if input.GetKeyboard().IsKeyDown(glfw.KeyS) {
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyS) {
 		camera.Transform().Position = camera.Transform().Position.Sub(camera.Direction.Mul(float32(vel)))
 	}
-	if input.GetKeyboard().IsKeyDown(glfw.KeyD) {
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyD) {
 		camera.Transform().Position = camera.Transform().Position.Add(camera.Right.Mul(float32(vel)))
 	}
 
@@ -93,9 +93,9 @@ func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
 
 func NewCamera() *Camera {
 	return &Camera{
-		Base: &Base{},
-		Up: mgl32.Vec3{0, 1, 0},
-		worldUp: mgl32.Vec3{0, 1, 0},
+		Base:      &Base{},
+		Up:        mgl32.Vec3{0, 1, 0},
+		worldUp:   mgl32.Vec3{0, 1, 0},
 		Direction: mgl32.Vec3{0, 0, -1},
 	}
 }

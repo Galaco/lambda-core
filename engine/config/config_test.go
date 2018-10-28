@@ -11,7 +11,7 @@ func TestGet(t *testing.T) {
 }
 
 func TestLoad(t *testing.T) {
-	_,err := Load("../../")
+	_, err := Load("../../")
 
 	if err != nil {
 		t.Error(err)

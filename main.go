@@ -7,10 +7,10 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/input/keyboard"
 	"github.com/galaco/Gource-Engine/engine/renderer"
 	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/galaco/Gource-Engine/engine/window"
-	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 func main() {
@@ -43,7 +43,7 @@ type Closeable struct {
 
 func (closer Closeable) ReceiveMessage(message message.IMessage) {
 	if message.GetType() == messagetype.KeyDown {
-		if message.(*messages.KeyDown).Key == glfw.KeyEscape {
+		if message.(*messages.KeyDown).Key == keyboard.KeyEscape {
 			// Will shutdown the engine at the end of the current loop
 			closer.target.Close()
 		}

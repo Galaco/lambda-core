@@ -23,13 +23,12 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	// Ensure that error texture is available
 	ResourceManager.Add(NewError())
 
-
 	materialBasePath := "materials/"
 
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
 
-		if !strings.HasSuffix(materialPath,".vmt") {
+		if !strings.HasSuffix(materialPath, ".vmt") {
 			materialPath += ".vmt"
 		}
 		// Only load the filesystem once
@@ -119,7 +118,7 @@ func readVtf(basePath string, filePath string) bool {
 	// Store filesystem containing raw data in memory
 	ResourceManager.Add(
 		NewMaterial(
-			basePath + filePath,
+			basePath+filePath,
 			texture,
 			int(texture.GetHeader().Width),
 			int(texture.GetHeader().Height)))

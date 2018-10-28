@@ -52,7 +52,6 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
 	}
 
-
 	worldModel := model.NewModel("worldspawn")
 	meshList := make([]mesh.IMesh, len(bspStructure.faces))
 	materialList := make([]*texinfo.TexInfo, len(bspStructure.faces))

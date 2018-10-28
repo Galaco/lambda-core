@@ -8,10 +8,10 @@ import (
 // Base is an object in the game world.
 // By itself entity is nothing more than an identifiable object located at a point in space
 type Base struct {
-	keyValues  *entity2.Entity
-	transform  Transform
+	keyValues *entity2.Entity
+	transform Transform
 
-	handle     core.Handle
+	handle core.Handle
 }
 
 func (entity *Base) SetKeyValues(keyValues *entity2.Entity) {

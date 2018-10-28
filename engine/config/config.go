@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 )
 
-
 const minWidth = 320
 const minHeight = 240
 
@@ -13,8 +12,8 @@ const minHeight = 240
 // Engine needs to know where to locate its game data
 type Config struct {
 	GameDirectory string
-	Video struct {
-		Width int
+	Video         struct {
+		Width  int
 		Height int
 	}
 }

@@ -26,7 +26,6 @@ func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 
 		transform.quat = mgl32.QuatIdent()
 
-
 		// Scale of 0 is invalid
 		if transform.Scale.X() == 0 ||
 			transform.Scale.Y() == 0 ||
@@ -43,7 +42,6 @@ func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 		rotation = transform.rotateAroundAxis(rotation, mgl32.Vec3{1, 0, 0}, mgl32.DegToRad(transform.Rotation.X()))
 		rotation = transform.rotateAroundAxis(rotation, mgl32.Vec3{0, 1, 0}, mgl32.DegToRad(transform.Rotation.Z()))
 		rotation = transform.rotateAroundAxis(rotation, mgl32.Vec3{0, 0, 1}, mgl32.DegToRad(transform.Rotation.Y()))
-
 
 		//@TODO ROTATIONS
 
@@ -65,6 +63,5 @@ func (transform *Transform) rotateAroundAxis(matrix mgl32.Mat4, axis mgl32.Vec3,
 	transform.quat = transform.quat.Mul(q1)
 
 	return matrix.Mul4(q1.Mat4())
-
 
 }

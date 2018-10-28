@@ -3,11 +3,10 @@ package renderer
 import (
 	"github.com/galaco/Gource-Engine/engine/core"
 	"github.com/galaco/Gource-Engine/engine/input"
+	"github.com/galaco/Gource-Engine/engine/input/keyboard"
 	"github.com/galaco/Gource-Engine/engine/renderer/cache"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl"
 	"github.com/galaco/Gource-Engine/engine/scene"
-	opengl "github.com/go-gl/gl/v4.1-core/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
 	"strings"
 	"sync"
 )
@@ -25,8 +24,6 @@ func (manager *Manager) Register() {
 	manager.renderer = gl.NewRenderer()
 
 	manager.renderer.LoadShaders()
-
-	manager.renderer.SetVertexDrawMode(opengl.TRIANGLES)
 }
 
 func (manager *Manager) Update(dt float64) {
@@ -51,7 +48,7 @@ func (manager *Manager) Update(dt float64) {
 
 	// Dynamic objects
 	cacheMutex.Lock()
-	for _,entry := range *manager.dynamicPropCache.All() {
+	for _, entry := range *manager.dynamicPropCache.All() {
 		manager.renderer.DrawModel(entry.Model, entry.Transform.GetTransformationMatrix())
 	}
 	cacheMutex.Unlock()
@@ -63,17 +60,13 @@ func (manager *Manager) Update(dt float64) {
 }
 
 func (manager *Manager) updateRendererProperties() {
-	if input.GetKeyboard().IsKeyDown(glfw.KeyX) {
-		manager.renderer.SetVertexDrawMode(opengl.LINES)
-	} else {
-		manager.renderer.SetVertexDrawMode(opengl.TRIANGLES)
-	}
+	manager.renderer.SetWireframeMode(input.GetKeyboard().IsKeyDown(keyboard.KeyX))
 }
 
 func (manager *Manager) RecacheEntities(scene *scene.Scene) {
 	c := cache.NewPropCache()
 	go func() {
-		for _,ent := range *scene.GetAllEntities() {
+		for _, ent := range *scene.GetAllEntities() {
 			if ent.KeyValues().ValueForKey("model") == "" {
 				continue
 			}

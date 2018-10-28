@@ -13,9 +13,9 @@ type World struct {
 	entity.Base
 	visibleModel *model.Model
 	bspModel     model.Model
-	visibleProps  []*StaticProp
-	staticProps   []StaticProp
-	sky 		 *Sky
+	visibleProps []*StaticProp
+	staticProps  []StaticProp
+	sky          *Sky
 	visData      *visibility.Vis
 	LeafCache    *visibility.Cache
 	currentLeaf  *leaf.Leaf
@@ -64,7 +64,7 @@ func (entity *World) UpdateVisibilityList(position mgl32.Vec3) {
 	}
 }
 
-func (entity *World) visibleDataFromLeaf(cache *visibility.Cache) (*model.Model, []*StaticProp){
+func (entity *World) visibleDataFromLeaf(cache *visibility.Cache) (*model.Model, []*StaticProp) {
 	primitives := make([]mesh.IMesh, 0)
 	// Rebuild bsp faces
 	for _, faceIdx := range cache.Faces {
@@ -105,10 +105,10 @@ func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale fl
 func NewWorld(world model.Model, staticProps []StaticProp, visData *visibility.Vis) *World {
 	c := World{
 		visibleModel: model.NewModel("worldspawn_visible"),
-		bspModel: world,
+		bspModel:     world,
 		visibleProps: make([]*StaticProp, 0),
-		staticProps: staticProps,
-		visData:  visData,
+		staticProps:  staticProps,
+		visData:      visData,
 	}
 
 	c.UpdateVisibilityList(mgl32.Vec3{0, 0, 0})

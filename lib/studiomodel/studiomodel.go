@@ -11,18 +11,18 @@ func VertexDataForModel(studioModel *studiomodel.StudioModel, lodIdx int) ([][]f
 	vertices := make([][]float32, 0)
 	normals := make([][]float32, 0)
 	textureCoordinates := make([][]float32, 0)
-	for _,bodyPart := range studioModel.Vtx.BodyParts {
-		for _,model := range bodyPart.Models {
+	for _, bodyPart := range studioModel.Vtx.BodyParts {
+		for _, model := range bodyPart.Models {
 			if len(model.LODS) < lodIdx {
 				return nil, nil, nil, errors.New("invalid LOD index requested for model")
 			}
-			for _,mesh := range model.LODS[lodIdx].Meshes {
+			for _, mesh := range model.LODS[lodIdx].Meshes {
 				indices := indicesForMesh(&mesh)
 				if len(indices) == 0 {
 					continue
 				}
 
-				v,n,uv := vertexDataForMesh(indices, studioModel.Vvd)
+				v, n, uv := vertexDataForMesh(indices, studioModel.Vvd)
 				vertices = append(vertices, v)
 				normals = append(normals, n)
 				textureCoordinates = append(textureCoordinates, uv)
@@ -30,7 +30,7 @@ func VertexDataForModel(studioModel *studiomodel.StudioModel, lodIdx int) ([][]f
 		}
 	}
 
-	return vertices, normals, textureCoordinates,nil
+	return vertices, normals, textureCoordinates, nil
 }
 
 func indicesForMesh(mesh *vtx.Mesh) []uint16 {
@@ -46,29 +46,29 @@ func indicesForMesh(mesh *vtx.Mesh) []uint16 {
 		indexMap = append(indexMap, stripGroup.Vertexes[i].OriginalMeshVertexID)
 	}
 
-	for _,strip := range stripGroup.Strips {
+	for _, strip := range stripGroup.Strips {
 		for j := int32(0); j < strip.NumIndices; j++ {
-			index := stripGroup.Indices[strip.IndexOffset + j]
+			index := stripGroup.Indices[strip.IndexOffset+j]
 			vert := stripGroup.Vertexes[index]
 
-			meshIndices = append(meshIndices, uint16(strip.VertOffset) + vert.OriginalMeshVertexID)
+			meshIndices = append(meshIndices, uint16(strip.VertOffset)+vert.OriginalMeshVertexID)
 		}
 	}
 
 	return meshIndices
 }
 
-func vertexDataForMesh(indices []uint16, vvd *vvd.Vvd) ([]float32,[]float32,[]float32) {
+func vertexDataForMesh(indices []uint16, vvd *vvd.Vvd) ([]float32, []float32, []float32) {
 	verts := make([]float32, 0)
 	normals := make([]float32, 0)
 	textureCoordinates := make([]float32, 0)
 
-	for _,index := range indices {
+	for _, index := range indices {
 		vvdVert := &vvd.Vertices[index]
 
-		verts = append(verts, vvdVert.Position.X(), vvdVert.Position.Y(),vvdVert.Position.Z())
-		normals = append(normals, vvdVert.Normal.X(), vvdVert.Normal.Y(),vvdVert.Normal.Z())
+		verts = append(verts, vvdVert.Position.X(), vvdVert.Position.Y(), vvdVert.Position.Z())
+		normals = append(normals, vvdVert.Normal.X(), vvdVert.Normal.Y(), vvdVert.Normal.Z())
 		textureCoordinates = append(textureCoordinates, vvdVert.UVs.X(), vvdVert.UVs.Y())
 	}
-	return verts,normals,textureCoordinates
+	return verts, normals, textureCoordinates
 }

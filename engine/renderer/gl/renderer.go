@@ -11,6 +11,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
+//OpenGL renderer
 type Renderer struct {
 	defaultShader Context
 	skyShader     Context
@@ -20,6 +21,8 @@ type Renderer struct {
 	vertexDrawMode uint32
 }
 
+// Preparation function
+// Loads shaders and sets necessary constants for opengls state machine
 func (manager *Renderer) LoadShaders() {
 	manager.defaultShader = NewContext()
 	manager.defaultShader.AddShader(shaders.Vertex, opengl.VERTEX_SHADER)
@@ -32,8 +35,6 @@ func (manager *Renderer) LoadShaders() {
 
 	manager.uniformMap = map[string]int32{}
 
-
-
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
 	opengl.Enable(opengl.DEPTH_TEST)
@@ -43,6 +44,7 @@ func (manager *Renderer) LoadShaders() {
 	opengl.ClearColor(0, 0, 0, 1)
 }
 
+// Called at the start of a frame
 func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	manager.defaultShader.UseProgram()
 	manager.uniformMap["model"] = manager.defaultShader.GetUniform("model")
@@ -57,22 +59,25 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 }
 
+// Called at the end of a frame
 func (manager *Renderer) EndFrame() {
 
 }
 
-
+// Draw the main bsp world
 func (manager *Renderer) DrawBsp(world *world.World) {
 	world.UpdateVisibilityList(scene.Get().CurrentCamera().Transform().Position)
 	manager.DrawModel(world.GetVisibleBsp(), mgl32.Ident4())
 }
 
+// Draw passed static props
 func (manager *Renderer) DrawStaticProps(props []*world.StaticProp) {
-	for _,prop := range props {
+	for _, prop := range props {
 		manager.DrawModel(prop.GetModel(), prop.Transform().GetTransformationMatrix())
 	}
 }
 
+// Draw skybox (bsp model, staticprops, sky material)
 func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 	manager.DrawModel(sky.GetVisibleBsp(), sky.Transform().GetTransformationMatrix())
 
@@ -81,7 +86,7 @@ func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 	manager.DrawSkyMaterial(sky.GetBackdrop())
 }
 
-// render a mesh and its submeshes/primitives
+// Render a mesh and its submeshes/primitives
 func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 	opengl.UniformMatrix4fv(manager.uniformMap["model"], 1, false, &transform[0])
 
@@ -97,6 +102,7 @@ func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 	}
 }
 
+// Render the sky material
 func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
 	var oldCullFaceMode int32
 	opengl.GetIntegerv(opengl.CULL_FACE_MODE, &oldCullFaceMode)
@@ -122,14 +128,18 @@ func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
 	opengl.DepthFunc(uint32(oldDepthFuncMode))
 }
 
-func (manager *Renderer) SetVertexDrawMode(mode uint32) {
-	manager.vertexDrawMode = mode
+// Change the draw format.
+func (manager *Renderer) SetWireframeMode(mode bool) {
+	if mode == true {
+		manager.vertexDrawMode = opengl.LINES
+	} else {
+		manager.vertexDrawMode = opengl.TRIANGLES
+	}
 }
-
 
 func NewRenderer() *Renderer {
 	r := Renderer{}
-	r.SetVertexDrawMode(opengl.TRIANGLES)
+	r.SetWireframeMode(false)
 
 	return &r
 }

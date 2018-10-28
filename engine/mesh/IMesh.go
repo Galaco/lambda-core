@@ -14,7 +14,7 @@ type IMesh interface {
 	Finish()
 
 	Vertices() []float32
- 	Normals() []float32
+	Normals() []float32
 	TextureCoordinates() []float32
 
 	GetMaterial() material.IMaterial

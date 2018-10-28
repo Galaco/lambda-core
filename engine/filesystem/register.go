@@ -13,7 +13,7 @@ import (
 // All games should ship with a gameinfo.txt, but it isn't actually mandatory
 func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 	searchPaths := gameInfo.FindByKey("GameInfo").FindByKey("FileSystem").FindByKey("SearchPaths")
-	basePath,_ = filepath.Abs(basePath)
+	basePath, _ = filepath.Abs(basePath)
 	basePath = strings.Replace(basePath, "\\", "/", -1)
 
 	for _, searchPath := range *searchPaths.GetAllValues() {
@@ -48,7 +48,7 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 		} else {
 			// wildcard suffixes not useful
 			if strings.HasSuffix(path, "/*") {
-				path = strings.Replace(path, "/*", "",  -1)
+				path = strings.Replace(path, "/*", "", -1)
 			}
 			AddSearchDirectory(path)
 			debug.Log("Registered path: " + path)

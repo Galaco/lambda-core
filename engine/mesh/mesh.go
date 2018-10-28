@@ -10,7 +10,7 @@ type Mesh struct {
 	normals            []float32
 	textureCoordinates []float32
 
-	gpuInfo buffer
+	gpuInfo  buffer
 	material material.IMaterial
 }
 
@@ -69,7 +69,7 @@ func (mesh *Mesh) TextureCoordinates() []float32 {
 	return mesh.textureCoordinates
 }
 
-func (mesh *Mesh) GetMaterial() material.IMaterial{
+func (mesh *Mesh) GetMaterial() material.IMaterial {
 	return mesh.material
 }
 

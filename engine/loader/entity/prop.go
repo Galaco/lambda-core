@@ -16,7 +16,7 @@ func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 func AssignStudioModelToEntity(entity entity.IEntity) {
 	modelName := entity.KeyValues().ValueForKey("model")
 	if !filesystem.Manager().Has(modelName) {
-		m,_ := prop.LoadProp(modelName)
+		m, _ := prop.LoadProp(modelName)
 		entity.(entity2.IProp).SetModel(m)
 	} else {
 		entity.(entity2.IProp).SetModel(filesystem.Manager().Get(modelName).(*model.Model))

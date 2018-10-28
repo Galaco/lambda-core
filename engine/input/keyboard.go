@@ -4,7 +4,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/galaco/Gource-Engine/engine/input/keyboard"
 )
 
 // Keyboard key wrapper
@@ -13,7 +13,7 @@ type Keyboard struct {
 }
 
 // Check if a specific key is pressed
-func (keyboard *Keyboard) IsKeyDown(key glfw.Key) bool {
+func (keyboard *Keyboard) IsKeyDown(key keyboard.Key) bool {
 	return keyboard.keysDown[int(key)]
 }
 
@@ -32,8 +32,8 @@ func (keyboard *Keyboard) SendMessage() message.IMessage {
 	return nil
 }
 
-var keyboard Keyboard
+var staticKeyboard Keyboard
 
 func GetKeyboard() *Keyboard {
-	return &keyboard
+	return &staticKeyboard
 }

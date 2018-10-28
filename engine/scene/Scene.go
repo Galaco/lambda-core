@@ -11,7 +11,7 @@ type Scene struct {
 	entities []entity.IEntity
 	sky      *material.Cubemap
 
-	cameras []entity.Camera
+	cameras       []entity.Camera
 	currentCamera *entity.Camera
 
 	isLoaded bool
@@ -30,7 +30,7 @@ func (s *Scene) GetEntity(idx int) entity.IEntity {
 
 func (s *Scene) FindEntitiesByKey(key string, value string) []entity.IEntity {
 	ret := make([]entity.IEntity, 0)
-	for idx,ent := range s.entities {
+	for idx, ent := range s.entities {
 		if ent.KeyValues().ValueForKey(key) == value {
 			ret = append(ret, s.entities[idx])
 		}

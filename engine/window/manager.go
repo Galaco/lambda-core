@@ -8,7 +8,6 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
-
 type Manager struct {
 	core.Manager
 	window *glfw.Window

@@ -15,6 +15,6 @@ type IRenderer interface {
 	DrawStaticProps([]*world.StaticProp)
 	DrawModel(*model.Model, mgl32.Mat4)
 	DrawSkyMaterial(model *model.Model)
-	SetVertexDrawMode(uint32)
+	SetWireframeMode(bool)
 	EndFrame()
 }

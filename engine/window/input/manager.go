@@ -2,9 +2,10 @@ package input
 
 import (
 	"github.com/galaco/Gource-Engine/engine/core/event"
-	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/input"
+	"github.com/galaco/Gource-Engine/engine/input/keyboard"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl64"
 )
@@ -27,10 +28,10 @@ func (manager *Manager) Register(window *glfw.Window) {
 
 func (manager *Manager) Update(dt float64) {
 	// Get window size
-	x,y := manager.window.GetSize()
-	if input.GetKeyboard().IsKeyDown(glfw.KeyE) {
+	x, y := manager.window.GetSize()
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyE) {
 		manager.lockMouse = true
-		manager.window.SetCursorPos(float64(x) / 2, float64(y) / 2)
+		manager.window.SetCursorPos(float64(x)/2, float64(y)/2)
 		manager.window.SetInputMode(glfw.CursorMode, glfw.CursorDisabled)
 	} else {
 		manager.lockMouse = false
@@ -48,11 +49,11 @@ func (manager *Manager) Unregister() {
 func (manager *Manager) KeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	switch action {
 	case glfw.Press:
-		event.GetEventManager().Dispatch(messagetype.KeyDown, &messages.KeyDown{Key: key})
+		event.GetEventManager().Dispatch(messagetype.KeyDown, &messages.KeyDown{Key: keyboard.Key(key)})
 	case glfw.Repeat:
-		event.GetEventManager().Dispatch(messagetype.KeyHeld, &messages.KeyHeld{Key: key})
+		event.GetEventManager().Dispatch(messagetype.KeyHeld, &messages.KeyHeld{Key: keyboard.Key(key)})
 	case glfw.Release:
-		event.GetEventManager().Dispatch(messagetype.KeyReleased, &messages.KeyReleased{Key: key})
+		event.GetEventManager().Dispatch(messagetype.KeyReleased, &messages.KeyReleased{Key: keyboard.Key(key)})
 	}
 }
 

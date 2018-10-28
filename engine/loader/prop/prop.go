@@ -15,10 +15,10 @@ import (
 	"strings"
 )
 
-func LoadProp(path string) (*model.Model,error) {
+func LoadProp(path string) (*model.Model, error) {
 	ResourceManager := filesystem.Manager()
 	if ResourceManager.Has(path) {
-		return ResourceManager.Get(path).(*model.Model),nil
+		return ResourceManager.Get(path).(*model.Model), nil
 	}
 	prop, err := loadProp(strings.Split(path, ".mdl")[0])
 	if prop != nil {
@@ -27,10 +27,10 @@ func LoadProp(path string) (*model.Model,error) {
 			ResourceManager.Add(m)
 		}
 	} else {
-		return ResourceManager.Get("models/error.mdl").(*model.Model),err
+		return ResourceManager.Get("models/error.mdl").(*model.Model), err
 	}
 
-	return ResourceManager.Get(path).(*model.Model),err
+	return ResourceManager.Get(path).(*model.Model), err
 }
 
 func loadProp(filePath string) (*studiomodel.StudioModel, error) {
@@ -86,7 +86,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 }
 
 func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel) *model.Model {
-	verts, normals, textureCoordinates,err := studiomodellib.VertexDataForModel(studioModel, 0)
+	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
 		debug.Log(err)
 		return nil
@@ -111,7 +111,7 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel)
 
 func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
 	materials := make([]material.IMaterial, 0)
-	for _,dir := range mdlData.TextureDirs {
+	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
 			path := strings.Replace(dir, "\\", "/", -1) + name + ".vmt"
 			materials = append(materials, material.LoadSingleMaterial(path))

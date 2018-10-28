@@ -55,7 +55,7 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 	cache := Cache{
 		ClusterId: clusterId,
 		Faces:     faces,
-		Leafs:	   leafs,
+		Leafs:     leafs,
 	}
 
 	vis.ClusterCache = append(vis.ClusterCache, cache)
