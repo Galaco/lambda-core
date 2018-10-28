@@ -4,7 +4,7 @@ a Source Engine game installation directory will allow for loading that targets 
 
 
 ## Current state
-You can build this right now, and, assuming you set the configuration to point to an existing Source game installation (this is tested against CS:S and CS:GO):
+You can build this right now, and, assuming you set the configuration to point to an existing Source game installation (this is tested primarily against CS:S):
 * Loads game data files from projects gameinfo.txt
 * Load BSP map
 * Load high-resolution texture data for bsp faces, including pakfile entries

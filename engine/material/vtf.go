@@ -69,7 +69,7 @@ func LoadSingleMaterial(filePath string) IMaterial {
 
 	vmt := filesystem.Manager().Get("materials/" + filePath).(*Vmt)
 	vtfPath := vmt.GetProperty("basetexture").AsString() + ".vtf"
-	if len(vtfPath) < 11 { // 11 because len("materials/<>")
+	if len(vtfPath) < 11 || !filesystem.Manager().Has("materials/" + vtfPath) { // 11 because len("materials/<>")
 		return filesystem.Manager().Get("materials/error").(IMaterial)
 	}
 	return filesystem.Manager().Get("materials/" + vtfPath).(IMaterial)

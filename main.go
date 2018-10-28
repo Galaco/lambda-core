@@ -11,6 +11,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/renderer"
 	"github.com/galaco/Gource-Engine/engine/scene"
 	"github.com/galaco/Gource-Engine/engine/window"
+	"github.com/galaco/Gource-Engine/game"
 )
 
 func main() {
@@ -24,8 +25,11 @@ func main() {
 	Application.AddManager(&window.Manager{})
 	Application.AddManager(&renderer.Manager{})
 
+	Game := game.CounterstrikeSource{}
+	Game.RegisterEntityClasses()
+
 	// Load a map!
-	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/ze_bioshock_v6_3.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
