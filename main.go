@@ -7,6 +7,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/input/keyboard"
 	"github.com/galaco/Gource-Engine/engine/renderer"
 	"github.com/galaco/Gource-Engine/engine/scene"
@@ -28,8 +29,11 @@ func main() {
 	Game := game.CounterstrikeSource{}
 	Game.RegisterEntityClasses()
 
+	filesystem.Manager().SetErrorModelName("models/error.mdl")
+	filesystem.Manager().SetErrorTextureName("materials/error.vtf")
+
 	// Load a map!
-	scene.LoadFromFile(config.Get().GameDirectory + "/maps/ze_bioshock_v6_3.bsp")
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)

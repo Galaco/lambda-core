@@ -91,7 +91,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 			mesh.SetMaterial(mat)
 			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
 		} else {
-			mat := ResourceManager.Get("materials/error").(material.IMaterial)
+			mat := ResourceManager.Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 			mesh.SetMaterial(mat)
 			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Width())...)
 		}

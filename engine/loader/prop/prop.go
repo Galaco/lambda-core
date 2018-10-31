@@ -27,7 +27,7 @@ func LoadProp(path string) (*model.Model, error) {
 			ResourceManager.Add(m)
 		}
 	} else {
-		return ResourceManager.Get("models/error.mdl").(*model.Model), err
+		return ResourceManager.Get(ResourceManager.ErrorModelName()).(*model.Model), err
 	}
 
 	return ResourceManager.Get(path).(*model.Model), err

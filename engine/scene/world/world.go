@@ -16,7 +16,7 @@ type World struct {
 	staticProps  []StaticProp
 	sky          Sky
 
-	visibleWorld *VisibleWorld
+	visibleWorld VisibleWorld
 	visData      *visibility.Vis
 	LeafCache    *visibility.Cache
 	currentLeaf  *leaf.Leaf
@@ -26,7 +26,7 @@ type World struct {
 
 func (entity *World) VisibleWorld() *VisibleWorld {
 	entity.rebuildMutex.Lock()
-	vw := entity.visibleWorld
+	vw := &entity.visibleWorld
 	entity.rebuildMutex.Unlock()
 	return vw
 }
@@ -105,7 +105,7 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 		}
 
 		entity.rebuildMutex.Lock()
-		entity.visibleWorld = visibleWorld
+		entity.visibleWorld = *visibleWorld
 		entity.rebuildMutex.Unlock()
 	}(entity.LeafCache)
 }
@@ -149,7 +149,7 @@ func NewWorld(world model.Model, staticProps []StaticProp, visData *visibility.V
 		bspModel:     world,
 		staticProps:  staticProps,
 		visData:      visData,
-		visibleWorld: NewVisibleWorld(),
+		visibleWorld: *NewVisibleWorld(),
 	}
 
 	c.TestVisibility(mgl32.Vec3{0, 0, 0})

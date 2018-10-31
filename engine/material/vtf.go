@@ -21,7 +21,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	ResourceManager := filesystem.Manager()
 
 	// Ensure that error texture is available
-	ResourceManager.Add(NewError())
+	ResourceManager.Add(NewError(ResourceManager.ErrorTextureName()))
 
 	materialBasePath := "materials/"
 
@@ -64,20 +64,20 @@ func LoadSingleMaterial(filePath string) IMaterial {
 	result := loadMaterials(filePath)
 	if len(result) > 0 {
 		// Error
-		return filesystem.Manager().Get("materials/error").(IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(IMaterial)
 	}
 
 	vmt := filesystem.Manager().Get("materials/" + filePath).(*Vmt)
 	vtfPath := vmt.GetProperty("basetexture").AsString() + ".vtf"
 	if len(vtfPath) < 11 || !filesystem.Manager().Has("materials/" + vtfPath) { // 11 because len("materials/<>")
-		return filesystem.Manager().Get("materials/error").(IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(IMaterial)
 	}
 	return filesystem.Manager().Get("materials/" + vtfPath).(IMaterial)
 }
 
 func LoadSingleVtf(filePath string) IMaterial {
 	if !readVtf("materials/", filePath) {
-		return filesystem.Manager().Get("materials/error").(IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(IMaterial)
 	}
 	return filesystem.Manager().Get("materials/" + filePath).(IMaterial)
 }
@@ -126,19 +126,4 @@ func readVtf(basePath string, filePath string) bool {
 	// Finally generate the gpu buffer for the material
 	ResourceManager.Get(basePath + filePath).(*Material).GenerateGPUBuffer()
 	return true
-}
-
-func LoadSkyboxTextures(skyName string) {
-	exts := []string{
-		"lf",
-		"bk",
-		"rt",
-		"ft",
-		"up",
-		"dn",
-	}
-
-	for _, ext := range exts {
-		readVtf("materials/skybox/", skyName+ext+".vtf")
-	}
 }

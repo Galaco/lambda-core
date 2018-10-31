@@ -55,12 +55,12 @@ func (error *Error) GenerateGPUBuffer() {
 		gl.Ptr(error.rawColourData))
 }
 
-func NewError() *Error {
+func NewError(name string) *Error {
 	mat := Error{}
 
 	mat.width = 4
 	mat.height = 4
-	mat.filePath = "materials/error"
+	mat.filePath = name
 	mat.rawColourData = []uint8{
 		255, 0, 255,
 		255, 0, 255,

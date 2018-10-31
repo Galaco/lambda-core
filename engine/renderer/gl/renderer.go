@@ -65,8 +65,8 @@ func (manager *Renderer) EndFrame() {
 }
 
 // Draw the main bsp world
-func (manager *Renderer) DrawBsp(world *world.World) {
-	manager.DrawModel(world.VisibleWorld().Bsp(), mgl32.Ident4())
+func (manager *Renderer) DrawBsp(world *world.VisibleWorld) {
+	manager.DrawModel(world.Bsp(), mgl32.Ident4())
 }
 
 // Draw passed static props
@@ -109,6 +109,9 @@ func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 
 // Render the sky material
 func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
+	if skybox == nil {
+		return
+	}
 	var oldCullFaceMode int32
 	opengl.GetIntegerv(opengl.CULL_FACE_MODE, &oldCullFaceMode)
 	var oldDepthFuncMode int32

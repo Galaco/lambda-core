@@ -12,9 +12,9 @@ import (
 )
 
 func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
-	prop.LoadProp("models/error.mdl")
-
 	ResourceManager := filesystem.Manager()
+	prop.LoadProp(ResourceManager.ErrorModelName())
+
 	log.Println("Loading static props")
 	propPaths := make([]string, 0)
 	for _, propEntry := range propLump.PropLumps {
@@ -44,7 +44,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 			continue
 		}
 		// Model missing, use error model
-		m = ResourceManager.Get("models/error.mdl")
+		m = ResourceManager.Get(ResourceManager.ErrorModelName())
 		staticPropList = append(staticPropList, *createStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
 	}
 

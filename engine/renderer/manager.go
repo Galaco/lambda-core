@@ -46,7 +46,7 @@ func (manager *Manager) Update(dt float64) {
 	manager.renderer.StartFrame(currentScene.CurrentCamera())
 
 	// Draw static world first
-	manager.renderer.DrawBsp(currentScene.GetWorld())
+	manager.renderer.DrawBsp(renderableWorld)
 	manager.renderer.DrawStaticProps(renderableWorld.Staticprops())
 
 	// Dynamic objects
