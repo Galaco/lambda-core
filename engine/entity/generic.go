@@ -6,12 +6,12 @@ import (
 )
 
 type GenericEntity struct {
-	*Base
+	Base
 }
 
-func NewGenericEntity(definition *entity2.Entity) GenericEntity {
-	ent := GenericEntity{
-		Base: &Base{
+func NewGenericEntity(definition *entity2.Entity) *GenericEntity {
+	ent := &GenericEntity{
+		Base: Base{
 			keyValues: definition,
 			handle:    core.NewHandle(),
 		},
