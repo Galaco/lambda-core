@@ -40,6 +40,9 @@ func (manager *Renderer) LoadShaders() {
 	opengl.Enable(opengl.DEPTH_TEST)
 	opengl.LineWidth(32)
 	opengl.DepthFunc(opengl.LEQUAL)
+	opengl.Enable(opengl.CULL_FACE)
+	opengl.CullFace(opengl.BACK)
+	opengl.FrontFace(opengl.CW)
 
 	opengl.ClearColor(0, 0, 0, 1)
 }
