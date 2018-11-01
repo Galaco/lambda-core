@@ -1,16 +1,32 @@
 package stringtable
 
 import (
-	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
+	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/source-tools-common/texdatastringtable"
 )
 
-func GetTable(bsp *bsplib.Bsp) *texdatastringtable.TexDataStringTable {
+func GetTable(stringData *lumps.TexdataStringData, stringTable *lumps.TexDataStringTable) *texdatastringtable.TexDataStringTable {
 	// Prepare texture lookup table
-	stringData := bsp.GetLump(bsplib.LUMP_TEXDATA_STRING_DATA).(*lumps.TexdataStringData).GetData()
-	stringTable := bsp.GetLump(bsplib.LUMP_TEXDATA_STRING_TABLE).(*lumps.TexDataStringTable).GetData()
-	return texdatastringtable.NewTable(
-		stringData,
-		stringTable)
+	return texdatastringtable.NewTable(stringData.GetData(), stringTable.GetData())
 }
+
+func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos *[]texinfo.TexInfo) []string {
+	materialList := make([]string, 0)
+	for _, ti := range *texInfos {
+		target, _ := stringTable.GetString(int(ti.TexData))
+		found := false
+		for _, cur := range materialList {
+			if cur == target {
+				found = true
+				break
+			}
+		}
+		if found == false {
+			materialList = append(materialList, target)
+		}
+	}
+
+	return materialList
+}
+

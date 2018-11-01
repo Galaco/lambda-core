@@ -8,7 +8,6 @@ import (
 	"github.com/galaco/Gource-Engine/engine/model"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
-	"github.com/galaco/Gource-Engine/lib/stringtable"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/common"
@@ -56,13 +55,16 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		lightmap:	file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
 	}
 
-	worldModel := model.NewModel("worldspawn")
-	meshList := make([]mesh.IMesh, len(bspStructure.faces))
-	materialList := make([]*texinfo.TexInfo, len(bspStructure.faces))
+	//MATERIALS
+	stringTable := matloader.LoadMaterials(
+		file.GetLump(bsp.LUMP_TEXDATA_STRING_DATA).(*lumps.TexdataStringData),
+		file.GetLump(bsp.LUMP_TEXDATA_STRING_TABLE).(*lumps.TexDataStringTable),
+		&bspStructure.texInfos)
 
 	// BSP FACES
+	worldModel := model.NewModel("worldspawn")
+	meshList := make([]mesh.IMesh, len(bspStructure.faces))
 	for idx, f := range bspStructure.faces {
-		materialList[idx] = &bspStructure.texInfos[f.TexInfo]
 
 		if f.DispInfo > -1 {
 			// This face is a displacement
@@ -82,10 +84,6 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		meshList[idx].GetLightmap().Finish()
 	}
 
-	//MATERIALS
-	stringTable := stringtable.GetTable(file)
-	matloader.LoadMaterialList(stringtable.SortUnique(stringTable, materialList))
-
 	// Add MATERIALS TO FACES
 	for idx, mesh := range meshList {
 		if mesh == nil {
@@ -100,18 +98,22 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		if ResourceManager.Has(vmtPath) {
 			baseTexturePath = "materials/" + ResourceManager.Get(vmtPath).(*matloader.Vmt).GetProperty("basetexture").AsString() + ".vtf"
 		}
+		var mat material.IMaterial
 		if ResourceManager.Has(baseTexturePath) {
-			mat := ResourceManager.Get(baseTexturePath).(material.IMaterial)
-			mesh.SetMaterial(mat)
-			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
+			mat = ResourceManager.Get(baseTexturePath).(material.IMaterial)
 		} else {
-			mat := ResourceManager.Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
-			mesh.SetMaterial(mat)
-			mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Width())...)
+			mat = ResourceManager.Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 		}
+		mesh.SetMaterial(mat)
+		mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
 
 		mesh.Finish()
 	}
+
+	// We cam build a more optimised environment here.
+	// Group by cluster, then by material
+	// This will reducde draw calls down to materials * visible clusters
+
 
 	// Load static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
