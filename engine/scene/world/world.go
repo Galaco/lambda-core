@@ -40,13 +40,15 @@ func (entity *World) TestVisibility(position mgl32.Vec3) {
 	if currentLeaf == entity.currentLeaf {
 		return
 	}
-	entity.currentLeaf = currentLeaf
 
 	if currentLeaf == nil || currentLeaf.Cluster == -1 {
 		// Still outside the world
-		if len(entity.visibleWorld.visibleModel.GetMeshes()) == len(entity.bspModel.GetMeshes()) {
+		if entity.currentLeaf == nil {
 			return
 		}
+
+		entity.currentLeaf = currentLeaf
+
 		entity.AsyncRebuildVisibleWorld()
 		return
 	}
@@ -56,7 +58,7 @@ func (entity *World) TestVisibility(position mgl32.Vec3) {
 		return
 	}
 
-	entity.LeafCache = entity.visData.GetPVSCacheForCluster(entity.currentLeaf.Cluster)
+	entity.LeafCache = entity.visData.GetPVSCacheForCluster(currentLeaf.Cluster)
 
 	entity.AsyncRebuildVisibleWorld()
 }
@@ -66,10 +68,9 @@ func (entity *World) TestVisibility(position mgl32.Vec3) {
 // travelling between clusters
 func (entity *World) AsyncRebuildVisibleWorld() {
 	go func(cache *visibility.Cache) {
-		visibleWorld := &VisibleWorld{
-			sky: &entity.sky,
-		}
-		if entity.LeafCache != nil {
+		visibleWorld := &VisibleWorld{}
+
+		if cache != nil {
 			primitives := make([]mesh.IMesh, 0)
 			// Rebuild bsp faces
 			for _, faceIdx := range cache.Faces {
@@ -98,9 +99,16 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 
 			visibleWorld.visibleModel = visibleModel
 			visibleWorld.visibleProps = visibleProps
+
+			if cache.SkyVisible == true {
+				visibleWorld.sky = &entity.sky
+			} else {
+				visibleWorld.sky = nil
+			}
 		} else {
 			entity.rebuildMutex.Lock()
 			visibleWorld.visibleModel = &entity.bspModel
+			visibleWorld.sky = nil
 			entity.rebuildMutex.Unlock()
 		}
 

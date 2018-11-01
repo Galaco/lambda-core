@@ -38,7 +38,7 @@ func (vis *Vis) GetPVSCacheForCluster(clusterId int16) *Cache {
 func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 	clusterList := vis.VisibilityLump.GetPVSForCluster(clusterId)
 
-	numVisible := 0
+	skyVisible := false
 
 	faces := make([]uint16, 0)
 	leafs := make([]uint16, 0)
@@ -47,7 +47,9 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 		if !vis.clusterVisible(&clusterList, l.Cluster) {
 			continue
 		}
-		numVisible++
+		if l.Flags() & leaf.LEAF_FLAGS_SKY > 0 {
+			skyVisible = true
+		}
 		leafs = append(leafs, uint16(idx))
 		faces = append(faces, vis.LeafFaces[l.FirstLeafFace:l.FirstLeafFace+l.NumLeafFaces]...)
 	}
@@ -56,6 +58,7 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 		ClusterId: clusterId,
 		Faces:     faces,
 		Leafs:     leafs,
+		SkyVisible: skyVisible,
 	}
 
 	vis.ClusterCache = append(vis.ClusterCache, cache)

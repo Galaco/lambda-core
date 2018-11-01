@@ -26,6 +26,8 @@ func LoadProp(path string) (*model.Model, error) {
 		m := modelFromStudioModel(path, prop)
 		if m != nil {
 			ResourceManager.Add(m)
+		} else {
+			return ResourceManager.Get(ResourceManager.ErrorModelName()).(*model.Model), err
 		}
 	} else {
 		return ResourceManager.Get(ResourceManager.ErrorModelName()).(*model.Model), err

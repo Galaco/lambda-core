@@ -9,7 +9,7 @@ type Color struct {
 }
 
 func (error *Color) Format() uint32 {
-	return 2
+	return gl.RGB
 }
 
 func (error *Color) PixelDataForFrame(frame int) []byte {
@@ -35,11 +35,11 @@ func (error *Color) bindInternal(textureSlot uint32) {
 	gl.TexImage2D(
 		gl.TEXTURE_2D,
 		0,
-		gl.RGB,
+		gl.RGBA,
 		int32(error.width),
 		int32(error.height),
 		0,
-		gl.RGB,
+		error.Format(),
 		gl.UNSIGNED_BYTE,
 		gl.Ptr(error.rawColourData))
 }

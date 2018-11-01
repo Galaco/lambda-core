@@ -64,7 +64,6 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 
 // Called at the end of a frame
 func (manager *Renderer) EndFrame() {
-
 }
 
 // Draw the main bsp world

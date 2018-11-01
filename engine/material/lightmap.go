@@ -25,9 +25,9 @@ func LightmapFromColorRGBExp32(width int, height int, colorMaps []common.ColorRG
 	raw := make([]uint8, len(colorMaps) * 3)
 
 	for idx,sample := range colorMaps {
-		raw[idx * 3] = sample.R * sample.Exponent
-		raw[idx * 3 + 1] = sample.G * sample.Exponent
-		raw[idx * 3 + 2] = sample.B * sample.Exponent
+		raw[idx * 3] = sample.R// * sample.Exponent
+		raw[idx * 3 + 1] = sample.G// * sample.Exponent
+		raw[idx * 3 + 2] = sample.B// * sample.Exponent
 	}
 
 	mat := &Lightmap{}

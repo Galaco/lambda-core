@@ -37,6 +37,7 @@ func (material *Material) Height() int {
 func (material *Material) Format() uint32 {
 	return material.vtf.GetHeader().HighResImageFormat
 }
+
 func (material *Material) PixelDataForFrame(frame int) []byte {
 	return material.vtf.GetHighestResolutionImageForFrame(frame)
 }
@@ -66,7 +67,7 @@ func (material *Material) Finish() {
 		gl.TexImage2D(
 			gl.TEXTURE_2D,
 			0,
-			gl.RGB,
+			gl.RGBA,
 			int32(material.vtf.GetHeader().Width),
 			int32(material.vtf.GetHeader().Height),
 			0,
