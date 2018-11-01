@@ -4,38 +4,27 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
-type Error struct {
+type Color struct {
 	Material
 }
 
-func (error *Error) Format() uint32 {
+func (error *Color) Format() uint32 {
 	return 2
 }
 
-func (error *Error) PixelDataForFrame(frame int) []byte {
-	return []uint8{
-		255, 0, 255,
-		255, 0, 255,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		255, 0, 255,
-		255, 0, 255,
-		255, 0, 255,
-		255, 0, 255,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		0, 0, 0,
-		255, 0, 255,
-		255, 0, 255,
-	}
+func (error *Color) PixelDataForFrame(frame int) []byte {
+	return error.rawColourData
 }
 
-func (error *Error) GenerateGPUBuffer() {
+func (error *Color) Finish() {
 	gl.GenTextures(1, &error.Buffer)
-	gl.ActiveTexture(gl.TEXTURE0)
+
+	error.bindInternal(gl.TEXTURE0)
+}
+
+func (error *Color) bindInternal(textureSlot uint32) {
+	gl.GenTextures(1, &error.Buffer)
+	gl.ActiveTexture(textureSlot)
 	gl.BindTexture(gl.TEXTURE_2D, error.Buffer)
 
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
@@ -55,8 +44,8 @@ func (error *Error) GenerateGPUBuffer() {
 		gl.Ptr(error.rawColourData))
 }
 
-func NewError(name string) *Error {
-	mat := Error{}
+func NewError(name string) *Color {
+	mat := Color{}
 
 	mat.width = 4
 	mat.height = 4
@@ -80,7 +69,7 @@ func NewError(name string) *Error {
 		255, 0, 255,
 	}
 
-	mat.GenerateGPUBuffer()
+	mat.Finish()
 
 	return &mat
 }

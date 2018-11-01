@@ -46,7 +46,7 @@ func (material *Cubemap) Format() uint32 {
 }
 
 // Generate the GPU buffer for this material
-func (material *Cubemap) GenerateGPUBuffer() {
+func (material *Cubemap) Finish() {
 	gl.GenTextures(1, &material.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, material.Buffer)

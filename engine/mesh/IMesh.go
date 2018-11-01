@@ -19,6 +19,8 @@ type IMesh interface {
 
 	GetMaterial() material.IMaterial
 	SetMaterial(material.IMaterial)
+	GetLightmap() material.IMaterial
+	SetLightmap(material.IMaterial)
 
 	Bind()
 }

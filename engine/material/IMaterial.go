@@ -7,4 +7,5 @@ type IMaterial interface {
 	Height() int
 	Format() uint32
 	PixelDataForFrame(int) []byte
+	Finish()
 }

@@ -3,6 +3,7 @@ package material
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/lib/vtf"
 	"strings"
 )
@@ -21,7 +22,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	ResourceManager := filesystem.Manager()
 
 	// Ensure that error texture is available
-	ResourceManager.Add(NewError(ResourceManager.ErrorTextureName()))
+	ResourceManager.Add(material.NewError(ResourceManager.ErrorTextureName()))
 
 	materialBasePath := "materials/"
 
@@ -55,31 +56,31 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	}
 
 	// @TODO
-	// All missing textures should be replaced with Error texture
+	// All missing textures should be replaced with Color texture
 
 	return missingList
 }
 
-func LoadSingleMaterial(filePath string) IMaterial {
+func LoadSingleMaterial(filePath string) material.IMaterial {
 	result := loadMaterials(filePath)
 	if len(result) > 0 {
-		// Error
-		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(IMaterial)
+		// Color
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 	}
 
 	vmt := filesystem.Manager().Get("materials/" + filePath).(*Vmt)
 	vtfPath := vmt.GetProperty("basetexture").AsString() + ".vtf"
 	if len(vtfPath) < 11 || !filesystem.Manager().Has("materials/" + vtfPath) { // 11 because len("materials/<>")
-		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 	}
-	return filesystem.Manager().Get("materials/" + vtfPath).(IMaterial)
+	return filesystem.Manager().Get("materials/" + vtfPath).(material.IMaterial)
 }
 
-func LoadSingleVtf(filePath string) IMaterial {
+func LoadSingleVtf(filePath string) material.IMaterial {
 	if !readVtf("materials/", filePath) {
-		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 	}
-	return filesystem.Manager().Get("materials/" + filePath).(IMaterial)
+	return filesystem.Manager().Get("materials/" + filePath).(material.IMaterial)
 }
 
 func readVmt(basePath string, filePath string) bool {
@@ -117,13 +118,13 @@ func readVtf(basePath string, filePath string) bool {
 	}
 	// Store filesystem containing raw data in memory
 	ResourceManager.Add(
-		NewMaterial(
+		material.NewMaterial(
 			basePath+filePath,
 			texture,
 			int(texture.GetHeader().Width),
 			int(texture.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	ResourceManager.Get(basePath + filePath).(*Material).GenerateGPUBuffer()
+	ResourceManager.Get(basePath + filePath).(material.IMaterial).Finish()
 	return true
 }

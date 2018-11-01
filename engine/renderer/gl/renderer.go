@@ -47,15 +47,18 @@ func (manager *Renderer) LoadShaders() {
 // Called at the start of a frame
 func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	manager.defaultShader.UseProgram()
+
+	//matrixes
 	manager.uniformMap["model"] = manager.defaultShader.GetUniform("model")
 	manager.uniformMap["projection"] = manager.defaultShader.GetUniform("projection")
 	projection := camera.ProjectionMatrix()
 	opengl.UniformMatrix4fv(manager.uniformMap["projection"], 1, false, &projection[0])
-
-	viewUniform := manager.defaultShader.GetUniform("view")
+	manager.uniformMap["view"] = manager.defaultShader.GetUniform("view")
 	view := camera.ViewMatrix()
-	opengl.UniformMatrix4fv(viewUniform, 1, false, &view[0])
+	opengl.UniformMatrix4fv(manager.uniformMap["view"], 1, false, &view[0])
 
+	//material properties
+	manager.uniformMap["useLightmap"] = manager.defaultShader.GetUniform("useLightmap")
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 }
 
@@ -88,7 +91,7 @@ func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 
 	manager.DrawStaticProps(sky.GetVisibleProps())
 
-	manager.DrawSkyMaterial(sky.GetBackdrop())
+	//manager.DrawSkyMaterial(sky.GetBackdrop())
 }
 
 // Render a mesh and its submeshes/primitives
@@ -102,7 +105,15 @@ func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 			continue
 		}
 		mesh.Bind()
+		// $basetexture
 		mesh.GetMaterial().Bind()
+		// Bind lightmap texture if it exists
+		if mesh.GetLightmap() != nil {
+			opengl.Uniform1i(manager.uniformMap["useLightmap"], 1)
+			mesh.GetLightmap().Bind()
+		} else {
+			opengl.Uniform1i(manager.uniformMap["useLightmap"], 0)
+		}
 		opengl.DrawArrays(manager.vertexDrawMode, 0, int32(len(mesh.Vertices()))/3)
 	}
 }

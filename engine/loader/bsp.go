@@ -2,8 +2,8 @@ package loader
 
 import (
 	"github.com/galaco/Gource-Engine/engine/filesystem"
+	matloader "github.com/galaco/Gource-Engine/engine/loader/material"
 	"github.com/galaco/Gource-Engine/engine/material"
-	material2 "github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
@@ -11,6 +11,7 @@ import (
 	"github.com/galaco/Gource-Engine/lib/stringtable"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
+	"github.com/galaco/bsp/primitives/common"
 	"github.com/galaco/bsp/primitives/dispinfo"
 	"github.com/galaco/bsp/primitives/dispvert"
 	"github.com/galaco/bsp/primitives/face"
@@ -20,6 +21,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 	"strings"
+	"unsafe"
 )
 
 type bspstructs struct {
@@ -34,6 +36,7 @@ type bspstructs struct {
 	pakFile    *lumps.Pakfile
 	visibility *visibility.Vis
 	game       *lumps.Game
+	lightmap   []common.ColorRGBExponent32
 }
 
 func LoadMap(file *bsp.Bsp) *world.World {
@@ -50,6 +53,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		pakFile:    file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
 		visibility: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
 		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
+		lightmap:	file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
 	}
 
 	worldModel := model.NewModel("worldspawn")
@@ -66,11 +70,21 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		} else {
 			meshList[idx] = generateBspFace(&f, &bspStructure)
 		}
+
+		// Prepare lightmaps for each face
+		if len(bspStructure.lightmap) < 1 {
+			continue
+		}
+		meshList[idx].SetLightmap(material.LightmapFromColorRGBExp32(
+			int(f.LightmapTextureSizeInLuxels[0] + 1),
+			int(f.LightmapTextureSizeInLuxels[1] + 1),
+			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
+		meshList[idx].GetLightmap().Finish()
 	}
 
 	//MATERIALS
 	stringTable := stringtable.GetTable(file)
-	material2.LoadMaterialList(stringtable.SortUnique(stringTable, materialList))
+	matloader.LoadMaterialList(stringtable.SortUnique(stringTable, materialList))
 
 	// Add MATERIALS TO FACES
 	for idx, mesh := range meshList {
@@ -84,7 +98,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		vmtPath := "materials/" + faceVmt + ".vmt"
 		baseTexturePath := "-1"
 		if ResourceManager.Has(vmtPath) {
-			baseTexturePath = "materials/" + ResourceManager.Get(vmtPath).(*material2.Vmt).GetProperty("basetexture").AsString() + ".vtf"
+			baseTexturePath = "materials/" + ResourceManager.Get(vmtPath).(*matloader.Vmt).GetProperty("basetexture").AsString() + ".vtf"
 		}
 		if ResourceManager.Has(baseTexturePath) {
 			mat := ResourceManager.Get(baseTexturePath).(material.IMaterial)
@@ -236,4 +250,12 @@ func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width 
 	}
 
 	return uvs
+}
+
+func lightmapSamplesFromFace(f *face.Face, samples *[]common.ColorRGBExponent32) []common.ColorRGBExponent32 {
+	sampleSize := int32(unsafe.Sizeof((*samples)[0]))
+	numLuxels := (f.LightmapTextureSizeInLuxels[0] + 1) * (f.LightmapTextureSizeInLuxels[1] + 1)
+	firstSampleIdx := f.Lightofs / sampleSize
+
+	return (*samples)[firstSampleIdx:firstSampleIdx + numLuxels]
 }

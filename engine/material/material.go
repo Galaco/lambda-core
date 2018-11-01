@@ -42,7 +42,7 @@ func (material *Material) PixelDataForFrame(frame int) []byte {
 }
 
 // Generate the GPU buffer for this material
-func (material *Material) GenerateGPUBuffer() {
+func (material *Material) Finish() {
 	gl.GenTextures(1, &material.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)

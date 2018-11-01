@@ -3,6 +3,7 @@ package prop
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
+	material2 "github.com/galaco/Gource-Engine/engine/loader/material"
 	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
@@ -114,7 +115,7 @@ func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
 			path := strings.Replace(dir, "\\", "/", -1) + name + ".vmt"
-			materials = append(materials, material.LoadSingleMaterial(path))
+			materials = append(materials, material2.LoadSingleMaterial(path))
 		}
 	}
 	return materials

@@ -12,6 +12,7 @@ type Mesh struct {
 
 	gpuInfo  buffer
 	material material.IMaterial
+	lightmap material.IMaterial
 }
 
 func (mesh *Mesh) AddVertex(vertex ...float32) {
@@ -75,6 +76,14 @@ func (mesh *Mesh) GetMaterial() material.IMaterial {
 
 func (mesh *Mesh) SetMaterial(mat material.IMaterial) {
 	mesh.material = mat
+}
+
+func (mesh *Mesh) GetLightmap() material.IMaterial {
+	return mesh.lightmap
+}
+
+func (mesh *Mesh) SetLightmap(mat material.IMaterial) {
+	mesh.lightmap = mat
 }
 
 func (mesh *Mesh) Bind() {
