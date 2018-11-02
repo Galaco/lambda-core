@@ -28,11 +28,3 @@
 [prune]
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/bradhe/stopwatch"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/BenLubar/vpk"

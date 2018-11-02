@@ -35,7 +35,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 		// Only load the filesystem once
 		if ResourceManager.Get(materialBasePath+materialPath) == nil {
 			if !readVmt(materialBasePath, materialPath) {
-				debug.Log("Unable to parse: " + materialBasePath + materialPath)
+				debug.Warn("Unable to parse: " + materialBasePath + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
@@ -48,7 +48,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 
 			if vtfTexturePath != "" && !ResourceManager.Has(vtfTexturePath) {
 				if !readVtf(materialBasePath, vtfTexturePath) {
-					debug.Log("Could not find: " + materialBasePath + materialPath)
+					debug.Warn("Could not find: " + materialBasePath + materialPath)
 					missingList = append(missingList, vtfTexturePath)
 				}
 			}
@@ -94,7 +94,7 @@ func readVmt(basePath string, filePath string) bool {
 
 	vmt, err := ParseVmt(path, stream)
 	if err != nil {
-		debug.Log(err)
+		debug.Error(err)
 		return false
 	}
 	// Add filesystem
@@ -113,7 +113,7 @@ func readVtf(basePath string, filePath string) bool {
 	// if this fails (it shouldn't) we can treat it like it was missing
 	texture, err := vtf.ReadFromStream(stream)
 	if err != nil {
-		debug.Log(err)
+		debug.Error(err)
 		return false
 	}
 	// Store filesystem containing raw data in memory

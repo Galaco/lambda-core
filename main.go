@@ -33,12 +33,12 @@ func main() {
 	filesystem.Manager().SetErrorTextureName("materials/error.vtf")
 
 	// Load a map!
-	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_nuke.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
 
-	//Application.SetSimulationSpeed(2.5)
+	Application.SetSimulationSpeed(10)
 
 	// Run the engine
 	Application.Run()

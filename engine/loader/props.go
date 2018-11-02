@@ -22,7 +22,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 	}
 
 	propPaths = buildUniquePropList(propPaths)
-	debug.Logf("Found %d staticprops", len(propPaths))
+	debug.Notice("Found %d staticprops", len(propPaths))
 
 	numLoaded := 0
 	for _, path := range propPaths {
@@ -32,7 +32,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 		prop.LoadProp(path)
 	}
 
-	debug.Logf("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
+	debug.Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
 
 	staticPropList := make([]world.StaticProp, 0)
 

@@ -40,18 +40,18 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 			path = strings.Replace(path, ".vpk", "", 1)
 			vpkHandle, err := vpk.OpenVPK(path)
 			if err != nil {
-				debug.Log(err)
+				debug.Error(err)
 				continue
 			}
 			AddVpk(vpkHandle)
-			debug.Log("Registered vpk: " + path)
+			debug.Notice("Registered vpk: " + path)
 		} else {
 			// wildcard suffixes not useful
 			if strings.HasSuffix(path, "/*") {
 				path = strings.Replace(path, "/*", "", -1)
 			}
 			AddSearchDirectory(path)
-			debug.Log("Registered path: " + path)
+			debug.Notice("Registered path: " + path)
 		}
 
 	}

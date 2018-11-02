@@ -1,6 +1,7 @@
 package gl
 
 import (
+	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders"
@@ -33,8 +34,6 @@ func (manager *Renderer) LoadShaders() {
 	manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
 	manager.skyShader.Finalize()
 
-	manager.uniformMap = map[string]int32{}
-
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
 	opengl.Enable(opengl.DEPTH_TEST)
@@ -46,6 +45,8 @@ func (manager *Renderer) LoadShaders() {
 
 	opengl.ClearColor(0, 0, 0, 1)
 }
+
+var numCalls = 0
 
 // Called at the start of a frame
 func (manager *Renderer) StartFrame(camera *entity.Camera) {
@@ -61,12 +62,20 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	opengl.UniformMatrix4fv(manager.uniformMap["view"], 1, false, &view[0])
 
 	//material properties
+	manager.uniformMap["baseTextureSampler"] = manager.defaultShader.GetUniform("baseTextureSampler")
+
 	manager.uniformMap["useLightmap"] = manager.defaultShader.GetUniform("useLightmap")
+	manager.uniformMap["lightmapTextureSampler"] = manager.defaultShader.GetUniform("lightmapTextureSampler")
 	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
 }
 
 // Called at the end of a frame
 func (manager *Renderer) EndFrame() {
+	if glError := opengl.GetError(); glError != opengl.NO_ERROR {
+		debug.Error("error: %d\n", glError)
+	}
+	//debug.Logf("Calls: %d", numCalls)
+	numCalls = 0
 }
 
 // Draw the main bsp world
@@ -109,14 +118,17 @@ func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 		mesh.Bind()
 		// $basetexture
 		mesh.GetMaterial().Bind()
+		opengl.Uniform1i(manager.uniformMap["baseTextureSampler"], 0)
 		// Bind lightmap texture if it exists
 		if mesh.GetLightmap() != nil {
 			opengl.Uniform1i(manager.uniformMap["useLightmap"], 1)
+			opengl.Uniform1i(manager.uniformMap["lightmapTextureSampler"], 1)
 			mesh.GetLightmap().Bind()
 		} else {
 			opengl.Uniform1i(manager.uniformMap["useLightmap"], 0)
 		}
 		opengl.DrawArrays(manager.vertexDrawMode, 0, int32(len(mesh.Vertices()))/3)
+		numCalls++
 	}
 }
 
@@ -161,6 +173,7 @@ func (manager *Renderer) SetWireframeMode(mode bool) {
 func NewRenderer() *Renderer {
 	r := Renderer{}
 	r.SetWireframeMode(false)
+	r.uniformMap = map[string]int32{}
 
 	return &r
 }

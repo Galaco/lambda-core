@@ -2,6 +2,7 @@ package filesystem
 
 import (
 	"strings"
+	"sync"
 )
 
 // Very generic filesystem storage.
@@ -10,11 +11,15 @@ type manager struct {
 	resources map[string]IFile
 	errorModelName string
 	errorTextureName string
+
+	readMutex sync.Mutex
 }
 
 // Add a new filesystem
 func (m *manager) Add(file IFile) {
+	m.readMutex.Lock()
 	m.resources[strings.ToLower(file.GetFilePath())] = file
+	m.readMutex.Unlock()
 }
 
 // Remove an open filesystem
@@ -44,7 +49,13 @@ func (m *manager) SetErrorTextureName(name string) {
 }
 
 func (m *manager) Has(filePath string) bool {
-	return (m.resources[strings.ToLower(filePath)] != nil)
+	m.readMutex.Lock()
+	if m.resources[strings.ToLower(filePath)] != nil {
+		m.readMutex.Unlock()
+		return true
+	}
+	m.readMutex.Unlock()
+	return false
 }
 
 var resourceManager manager

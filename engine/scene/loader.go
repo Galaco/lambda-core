@@ -42,7 +42,7 @@ func loadEntities(entdata *lumps.EntData) {
 		debug.Fatal(err)
 	}
 	entityList := entitylib.FromVmfNodeTree(vmfEntityTree.Unclassified)
-	debug.Logf("Found %d entities\n", entityList.Length())
+	debug.Notice("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
 		currentScene.AddEntity(entity2.CreateEntity(entityList.Get(i)))
 	}

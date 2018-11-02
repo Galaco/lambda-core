@@ -91,7 +91,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel) *model.Model {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
-		debug.Log(err)
+		debug.Error(err)
 		return nil
 	}
 	outModel := model.NewModel(filename)

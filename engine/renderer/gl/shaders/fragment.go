@@ -4,8 +4,8 @@ var Fragment = `
     #version 410
 
 	uniform int useLightmap;
-	uniform sampler2D baseTexture;
-	uniform sampler2D lightmapTexture;
+	uniform sampler2D baseTextureSampler;
+	uniform sampler2D lightmapTextureSampler;
 
 
 	in vec2 UV;
@@ -16,7 +16,7 @@ var Fragment = `
 	// Nothing is renderable without a base texture
 	void GetBasetexture(inout vec4 fragColour, in sampler2D basetexture, in vec2 uv) 
 	{
-		fragColour = texture( basetexture, uv ).rgba;
+		fragColour = texture(basetexture, uv).rgba;
 	}
 
 	// Lightmaps the face
@@ -27,13 +27,13 @@ var Fragment = `
 			return;
 		}
 
-		fragColour = fragColour * texture( lightmap, UV ).rgba;
+		fragColour = fragColour * texture(lightmap, uv).rgba;
 	}
 
     void main() 
 	{
-		GetBasetexture(frag_colour, baseTexture, UV);
-
-		ApplyLightmap(frag_colour, lightmapTexture, UV);
+		GetBasetexture(frag_colour, baseTextureSampler, UV);
+		
+		ApplyLightmap(frag_colour, lightmapTextureSampler, UV);
     }
 ` + "\x00"

@@ -81,7 +81,7 @@ func (engine *Engine) SetSimulationSpeed(multiplier float64) {
 func (engine *Engine) loadConfig() {
 	cfg, err := config.Load("./")
 	if err != nil {
-		debug.Log(err)
+		debug.Error(err)
 	}
 	gameinfo.LoadConfig(cfg.GameDirectory)
 }

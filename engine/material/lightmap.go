@@ -21,6 +21,28 @@ func (material *Lightmap) Finish() {
 	material.bindInternal(gl.TEXTURE1)
 }
 
+func (material *Lightmap) bindInternal(textureSlot uint32) {
+	gl.GenTextures(1, &material.Buffer)
+	gl.ActiveTexture(textureSlot)
+	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
+
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+	gl.TexImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGBA,
+		int32(material.width),
+		int32(material.height),
+		0,
+		material.Format(),
+		gl.UNSIGNED_BYTE,
+		gl.Ptr(material.rawColourData))
+}
+
 func LightmapFromColorRGBExp32(width int, height int, colorMaps []common.ColorRGBExponent32) *Lightmap {
 	raw := make([]uint8, len(colorMaps) * 3)
 
