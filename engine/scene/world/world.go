@@ -12,7 +12,7 @@ import (
 
 type World struct {
 	entity.Base
-	bspModel     model.Model
+	bspModel     model.Bsp
 	staticProps  []StaticProp
 	sky          Sky
 
@@ -67,17 +67,17 @@ func (entity *World) TestVisibility(position mgl32.Vec3) {
 // Note: This *could* cause rendering issues if the rebuild is slower than
 // travelling between clusters
 func (entity *World) AsyncRebuildVisibleWorld() {
-	go func(cache *visibility.Cache) {
-		visibleWorld := &VisibleWorld{}
+	func(cache *visibility.Cache) {
+		visibleWorld := &VisibleWorld{
+			world: &entity.bspModel,
+		}
 
 		if cache != nil {
-			primitives := make([]mesh.IMesh, 0)
+			faceList := make([]*mesh.Face, 0)
 			// Rebuild bsp faces
 			for _, faceIdx := range cache.Faces {
-				primitives = append(primitives, entity.bspModel.GetMeshes()[faceIdx])
+				faceList = append(faceList, &(entity.bspModel.Faces()[faceIdx]))
 			}
-			visibleModel := model.NewModel("worldspawn_visible")
-			visibleModel.AddMesh(primitives...)
 
 			// Rebuild visible props
 			visibleProps := make([]*StaticProp, 0)
@@ -97,7 +97,7 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 				}
 			}
 
-			visibleWorld.visibleModel = visibleModel
+			visibleWorld.world.SetVisibleFaces(faceList)
 			visibleWorld.visibleProps = visibleProps
 
 			if cache.SkyVisible == true {
@@ -106,8 +106,13 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 				visibleWorld.sky = nil
 			}
 		} else {
+			faceList := make([]*mesh.Face, 0)
+			// Rebuild bsp faces
+			for faceIdx := range entity.bspModel.Faces() {
+				faceList = append(faceList, &(entity.bspModel.Faces()[faceIdx]))
+			}
 			entity.rebuildMutex.Lock()
-			visibleWorld.visibleModel = &entity.bspModel
+			visibleWorld.world.SetVisibleFaces(faceList)
 			visibleWorld.sky = nil
 			entity.rebuildMutex.Unlock()
 		}
@@ -123,13 +128,11 @@ func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale fl
 	l := entity.visData.FindCurrentLeaf(position)
 	cache := entity.visData.GetPVSCacheForCluster(l.Cluster)
 
-	primitives := make([]mesh.IMesh, 0)
 	// Rebuild bsp faces
+	visibleModel := model.NewBsp(entity.bspModel.Mesh().(*mesh.Mesh))
 	for _, faceIdx := range cache.Faces {
-		primitives = append(primitives, entity.bspModel.GetMeshes()[faceIdx])
+		visibleModel.AddFace(&entity.bspModel.Faces()[faceIdx])
 	}
-	visibleModel := model.NewModel("worldspawn_visible")
-	visibleModel.AddMesh(primitives...)
 
 	// Rebuild visible props
 	visibleProps := make([]*StaticProp, 0)
@@ -152,7 +155,7 @@ func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale fl
 	entity.sky = *NewSky(visibleModel, sky, visibleProps, position, scale)
 }
 
-func NewWorld(world model.Model, staticProps []StaticProp, visData *visibility.Vis) *World {
+func NewWorld(world model.Bsp, staticProps []StaticProp, visData *visibility.Vis) *World {
 	c := World{
 		bspModel:     world,
 		staticProps:  staticProps,

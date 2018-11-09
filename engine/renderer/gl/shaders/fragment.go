@@ -34,6 +34,6 @@ var Fragment = `
 	{
 		GetBasetexture(frag_colour, baseTextureSampler, UV);
 		
-		ApplyLightmap(frag_colour, lightmapTextureSampler, UV);
+		//ApplyLightmap(frag_colour, lightmapTextureSampler, UV);
     }
 ` + "\x00"

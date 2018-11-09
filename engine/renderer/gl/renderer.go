@@ -1,8 +1,8 @@
 package gl
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/entity"
+	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders"
 	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders/sky"
@@ -71,16 +71,21 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 
 // Called at the end of a frame
 func (manager *Renderer) EndFrame() {
-	if glError := opengl.GetError(); glError != opengl.NO_ERROR {
-		debug.Error("error: %d\n", glError)
-	}
+	//if glError := opengl.GetError(); glError != opengl.NO_ERROR {
+	//	debug.Error("error: %d\n", glError)
+	//}
 	//debug.Logf("Calls: %d", numCalls)
 	numCalls = 0
 }
 
 // Draw the main bsp world
 func (manager *Renderer) DrawBsp(world *world.VisibleWorld) {
-	manager.DrawModel(world.Bsp(), mgl32.Ident4())
+	modelMatrix := mgl32.Ident4()
+	opengl.UniformMatrix4fv(manager.uniformMap["model"], 1, false, &modelMatrix[0])
+	manager.BindMesh(world.Bsp().Mesh())
+	for _,face := range world.Bsp().VisibleFaces() {
+		manager.DrawFace(face)
+	}
 }
 
 // Draw passed static props
@@ -97,7 +102,12 @@ func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 	}
 
 	if sky.GetVisibleBsp() != nil {
-		manager.DrawModel(sky.GetVisibleBsp(), sky.Transform().GetTransformationMatrix())
+		modelMatrix := sky.Transform().GetTransformationMatrix()
+		opengl.UniformMatrix4fv(manager.uniformMap["model"], 1, false, &modelMatrix[0])
+		manager.BindMesh(sky.GetVisibleBsp().Mesh())
+		for _,face := range sky.GetVisibleBsp().VisibleFaces() {
+			manager.DrawFace(face)
+		}
 	}
 
 	manager.DrawStaticProps(sky.GetVisibleProps())
@@ -115,21 +125,48 @@ func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 			// We need the fallback material
 			continue
 		}
-		mesh.Bind()
-		// $basetexture
-		mesh.GetMaterial().Bind()
-		opengl.Uniform1i(manager.uniformMap["baseTextureSampler"], 0)
-		// Bind lightmap texture if it exists
-		if mesh.GetLightmap() != nil {
-			opengl.Uniform1i(manager.uniformMap["useLightmap"], 1)
-			opengl.Uniform1i(manager.uniformMap["lightmapTextureSampler"], 1)
-			mesh.GetLightmap().Bind()
-		} else {
-			opengl.Uniform1i(manager.uniformMap["useLightmap"], 0)
-		}
+		manager.BindMesh(mesh)
 		opengl.DrawArrays(manager.vertexDrawMode, 0, int32(len(mesh.Vertices()))/3)
+
 		numCalls++
 	}
+}
+
+func (manager *Renderer) BindMesh(target mesh.IMesh) {
+	target.Bind()
+	// $basetexture
+	if target.GetMaterial() != nil {
+		target.GetMaterial().Bind()
+		opengl.Uniform1i(manager.uniformMap["baseTextureSampler"], 0)
+	}
+	// Bind lightmap texture if it exists
+	if target.GetLightmap() != nil {
+		opengl.Uniform1i(manager.uniformMap["useLightmap"], 1)
+		opengl.Uniform1i(manager.uniformMap["lightmapTextureSampler"], 1)
+		target.GetLightmap().Bind()
+	} else {
+		opengl.Uniform1i(manager.uniformMap["useLightmap"], 0)
+	}
+}
+
+func (manager *Renderer) DrawFace(target *mesh.Face) {
+	// Skip materialless faces
+	if target.Material() == nil {
+		return
+	}
+	// $basetexture
+	target.Material().Bind()
+	opengl.Uniform1i(manager.uniformMap["baseTextureSampler"], 0)
+
+	// Bind lightmap texture if it exists
+	if target.IsLightmapped() == true {
+		opengl.Uniform1i(manager.uniformMap["useLightmap"], 1)
+		opengl.Uniform1i(manager.uniformMap["lightmapTextureSampler"], 1)
+		target.Lightmap().Bind()
+	} else {
+		opengl.Uniform1i(manager.uniformMap["useLightmap"], 0)
+	}
+	opengl.DrawArrays(manager.vertexDrawMode, target.Offset(), target.Length())
 }
 
 // Render the sky material
