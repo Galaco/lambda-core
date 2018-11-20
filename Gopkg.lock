@@ -83,15 +83,6 @@
   packages = ["."]
   revision = "3f4d88cb3925ad7bb0d14f5122396421be99a0ce"
 
-[[projects]]
-  branch = "master"
-  name = "github.com/galaco/vtf"
-  packages = [
-    ".",
-    "colourformat"
-  ]
-  revision = "3b4935244fadabd843eeaa9ab187156d5e9acbad"
-
 #[[projects]]
 #  branch = "master"
 #  name = "github.com/go-gl/gl"

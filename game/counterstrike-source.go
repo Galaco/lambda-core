@@ -10,6 +10,7 @@ type CounterstrikeSource struct {
 }
 
 func (target *CounterstrikeSource) RegisterEntityClasses() {
+	loader.RegisterClass(&common.PropDoorRotating{})
 	loader.RegisterClass(&common.PropDynamic{})
 	loader.RegisterClass(&common.PropDynamicOrnament{})
 	loader.RegisterClass(&common.PropDynamicOverride{})
