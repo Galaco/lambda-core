@@ -79,19 +79,19 @@ func (manager *Renderer) EndFrame() {
 }
 
 // Draw the main bsp world
-func (manager *Renderer) DrawBsp(world *world.VisibleWorld) {
+func (manager *Renderer) DrawBsp(world *world.World) {
 	modelMatrix := mgl32.Ident4()
 	opengl.UniformMatrix4fv(manager.uniformMap["model"], 1, false, &modelMatrix[0])
 	manager.BindMesh(world.Bsp().Mesh())
-	for _,face := range world.Bsp().VisibleFaces() {
-		manager.DrawFace(face)
+	for _,cluster := range world.VisibleClusters() {
+		for _,face := range cluster.Faces {
+			manager.DrawFace(&face)
+		}
 	}
-}
-
-// Draw passed static props
-func (manager *Renderer) DrawStaticProps(props []*world.StaticProp) {
-	for _, prop := range props {
-		manager.DrawModel(prop.GetModel(), prop.Transform().GetTransformationMatrix())
+	for _,cluster := range world.VisibleClusters() {
+		for _,prop := range cluster.StaticProps {
+			manager.DrawModel(prop.GetModel(), prop.Transform().GetTransformationMatrix())
+		}
 	}
 }
 
@@ -105,12 +105,17 @@ func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 		modelMatrix := sky.Transform().GetTransformationMatrix()
 		opengl.UniformMatrix4fv(manager.uniformMap["model"], 1, false, &modelMatrix[0])
 		manager.BindMesh(sky.GetVisibleBsp().Mesh())
-		for _,face := range sky.GetVisibleBsp().VisibleFaces() {
-			manager.DrawFace(face)
+		for _,cluster := range sky.GetClusterLeafs() {
+			for _,face := range cluster.Faces {
+				manager.DrawFace(&face)
+			}
+		}
+		for _,cluster := range sky.GetClusterLeafs() {
+			for _,prop := range cluster.StaticProps {
+				manager.DrawModel(prop.GetModel(), prop.Transform().GetTransformationMatrix())
+			}
 		}
 	}
-
-	manager.DrawStaticProps(sky.GetVisibleProps())
 
 	//manager.DrawSkyMaterial(sky.GetBackdrop())
 }

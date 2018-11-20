@@ -5,13 +5,12 @@ import (
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/loader/prop"
 	"github.com/galaco/Gource-Engine/engine/model"
-	"github.com/galaco/Gource-Engine/engine/scene/world"
 	"github.com/galaco/bsp/primitives/game"
 	"log"
 	"strings"
 )
 
-func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
+func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 	ResourceManager := filesystem.Manager()
 	prop.LoadProp(ResourceManager.ErrorModelName())
 
@@ -34,7 +33,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []world.StaticProp {
 
 	debug.Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
 
-	staticPropList := make([]world.StaticProp, 0)
+	staticPropList := make([]model.StaticProp, 0)
 
 	for _, propEntry := range propLump.PropLumps {
 		modelName := propLump.DictLump.Name[propEntry.GetPropType()]
@@ -72,6 +71,6 @@ func buildUniquePropList(propList []string) []string {
 	return retList
 }
 
-func createStaticProp(prop game.IStaticPropDataLump, propLeafs *game.StaticPropLeafLump, model *model.Model) *world.StaticProp {
-	return world.NewStaticProp(prop, propLeafs, model)
+func createStaticProp(prop game.IStaticPropDataLump, propLeafs *game.StaticPropLeafLump, mod *model.Model) *model.StaticProp {
+	return model.NewStaticProp(prop, propLeafs, mod)
 }

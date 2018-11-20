@@ -22,6 +22,10 @@ type Vis struct {
 	viewCurrentLeaf *leaf.Leaf
 }
 
+func (vis *Vis) PVSForCluster(clusterId int16) []int16 {
+	return vis.VisibilityLump.GetVisibleClusters(clusterId)
+}
+
 func (vis *Vis) GetPVSCacheForCluster(clusterId int16) *Cache {
 	if clusterId == -1 {
 		clusterId = int16(vis.findCurrentLeafIndex(vis.viewPosition))

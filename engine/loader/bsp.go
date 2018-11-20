@@ -115,13 +115,36 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	}
 
 	// Finish the bsp object.
-	bspObject.SetFaces(bspFaces)
 	bspMesh.Finish()
 
 	// Load static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
+	// Optimise face data by cluster
 	visData := sceneVisibility.NewVisFromBSP(file)
+	bspClusters := make([]model.ClusterLeaf, bspStructure.visibility.NumClusters)
+	for _,bspLeaf := range visData.Leafs {
+		for _,leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace:bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
+			if bspLeaf.Cluster == -1 {
+				continue
+			}
+			bspClusters[bspLeaf.Cluster].Id = bspLeaf.Cluster
+			bspClusters[bspLeaf.Cluster].Faces = append(bspClusters[bspLeaf.Cluster].Faces, bspFaces[leafFace])
+		}
+	}
+
+	// Assign staticprops to clusters
+	for idx,prop := range staticProps {
+		for _, leafId := range prop.LeafList() {
+			clusterId := visData.Leafs[leafId].Cluster
+			if clusterId == -1 {
+				continue
+			}
+			bspClusters[clusterId].StaticProps = append(bspClusters[clusterId].StaticProps, &staticProps[idx])
+		}
+	}
+
+	bspObject.SetClusterLeafs(bspClusters)
 
 	return world.NewWorld(*bspObject, staticProps, visData)
 }
