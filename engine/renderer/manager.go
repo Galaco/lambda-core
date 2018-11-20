@@ -40,14 +40,13 @@ func (manager *Manager) Update(dt float64) {
 	currentScene.CurrentCamera().Update(dt)
 	currentScene.GetWorld().TestVisibility(currentScene.CurrentCamera().Transform().Position)
 
-	renderableWorld := currentScene.GetWorld().VisibleWorld()
+	renderableWorld := currentScene.GetWorld()
 
 	// Begin actual rendering
 	manager.renderer.StartFrame(currentScene.CurrentCamera())
 
 	// Draw static world first
 	manager.renderer.DrawBsp(renderableWorld)
-	manager.renderer.DrawStaticProps(renderableWorld.Staticprops())
 
 	// Dynamic objects
 	cacheMutex.Lock()

@@ -7,16 +7,19 @@ import (
 	"github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/go-gl/mathgl/mgl32"
+	"log"
 	"sync"
 )
 
 type World struct {
 	entity.Base
-	bspModel     model.Bsp
-	staticProps  []StaticProp
+	staticModel  model.Bsp
+
+	staticProps  []model.StaticProp
 	sky          Sky
 
-	visibleWorld VisibleWorld
+	visibleClusterLeafs []*model.ClusterLeaf
+
 	visData      *visibility.Vis
 	LeafCache    *visibility.Cache
 	currentLeaf  *leaf.Leaf
@@ -24,9 +27,17 @@ type World struct {
 	rebuildMutex sync.Mutex
 }
 
-func (entity *World) VisibleWorld() *VisibleWorld {
+func (entity *World) Bsp() *model.Bsp {
+	return &entity.staticModel
+}
+
+func (entity *World) Sky() *Sky {
+	return &entity.sky
+}
+
+func (entity *World) VisibleClusters() []*model.ClusterLeaf {
 	entity.rebuildMutex.Lock()
-	vw := &entity.visibleWorld
+	vw := entity.visibleClusterLeafs
 	entity.rebuildMutex.Unlock()
 	return vw
 }
@@ -58,6 +69,7 @@ func (entity *World) TestVisibility(position mgl32.Vec3) {
 		return
 	}
 
+	entity.currentLeaf = currentLeaf
 	entity.LeafCache = entity.visData.GetPVSCacheForCluster(currentLeaf.Cluster)
 
 	entity.AsyncRebuildVisibleWorld()
@@ -67,100 +79,62 @@ func (entity *World) TestVisibility(position mgl32.Vec3) {
 // Note: This *could* cause rendering issues if the rebuild is slower than
 // travelling between clusters
 func (entity *World) AsyncRebuildVisibleWorld() {
-	func(cache *visibility.Cache) {
-		visibleWorld := &VisibleWorld{
-			world: &entity.bspModel,
+	func(currentLeaf *leaf.Leaf) {
+		visibleWorld := make([]*model.ClusterLeaf, 0)
+
+		visibleClusterIds := make([]int16, 0)
+
+		if currentLeaf != nil && currentLeaf.Cluster != -1 {
+			visibleClusterIds = entity.visData.PVSForCluster(currentLeaf.Cluster)
 		}
+		log.Println(visibleClusterIds)
 
-		if cache != nil {
-			faceList := make([]*mesh.Face, 0)
-			// Rebuild bsp faces
-			for _, faceIdx := range cache.Faces {
-				faceList = append(faceList, &(entity.bspModel.Faces()[faceIdx]))
-			}
-
-			// Rebuild visible props
-			visibleProps := make([]*StaticProp, 0)
-			for idx, prop := range entity.staticProps {
-				found := false
-				for _, leafId := range cache.Leafs {
-					for _, propLeafId := range prop.leafList {
-						if leafId == propLeafId {
-							visibleProps = append(visibleProps, &entity.staticProps[idx])
-							found = true
-							break
-						}
-					}
-					if found == true {
-						break
-					}
-				}
-			}
-
-			visibleWorld.world.SetVisibleFaces(faceList)
-			visibleWorld.visibleProps = visibleProps
-
-			if cache.SkyVisible == true {
-				visibleWorld.sky = &entity.sky
-			} else {
-				visibleWorld.sky = nil
+		// nothing visible so render everything
+		if len(visibleClusterIds) == 0 {
+			for idx := range entity.staticModel.ClusterLeafs() {
+				visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[idx])
 			}
 		} else {
-			faceList := make([]*mesh.Face, 0)
-			// Rebuild bsp faces
-			for faceIdx := range entity.bspModel.Faces() {
-				faceList = append(faceList, &(entity.bspModel.Faces()[faceIdx]))
+			for clusterId := range visibleClusterIds {
+				visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[clusterId])
 			}
-			entity.rebuildMutex.Lock()
-			visibleWorld.world.SetVisibleFaces(faceList)
-			visibleWorld.sky = nil
-			entity.rebuildMutex.Unlock()
 		}
 
 		entity.rebuildMutex.Lock()
-		entity.visibleWorld = *visibleWorld
+		entity.visibleClusterLeafs = visibleWorld
 		entity.rebuildMutex.Unlock()
-	}(entity.LeafCache)
+	}(entity.currentLeaf)
 }
 
 // Build skybox from tree
 func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale float32) {
-	l := entity.visData.FindCurrentLeaf(position)
-	cache := entity.visData.GetPVSCacheForCluster(l.Cluster)
-
 	// Rebuild bsp faces
-	visibleModel := model.NewBsp(entity.bspModel.Mesh().(*mesh.Mesh))
-	for _, faceIdx := range cache.Faces {
-		visibleModel.AddFace(&entity.bspModel.Faces()[faceIdx])
-	}
+	visibleModel := model.NewBsp(entity.staticModel.Mesh().(*mesh.Mesh))
 
-	// Rebuild visible props
-	visibleProps := make([]*StaticProp, 0)
-	for idx, prop := range entity.staticProps {
-		found := false
-		for _, leafId := range cache.Leafs {
-			for _, propLeafId := range prop.leafList {
-				if leafId == propLeafId {
-					visibleProps = append(visibleProps, &entity.staticProps[idx])
-					found = true
-					break
-				}
-			}
-			if found == true {
-				break
-			}
+	visibleWorld := make([]*model.ClusterLeaf, 0)
+
+	l := entity.visData.FindCurrentLeaf(position)
+	visibleClusterIds := entity.visData.PVSForCluster(l.Cluster)
+
+	// nothing visible so render everything
+	if len(visibleClusterIds) == 0 {
+		for idx := range entity.staticModel.ClusterLeafs() {
+			visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[idx])
+		}
+	} else {
+		for clusterId := range visibleClusterIds {
+			visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[clusterId])
 		}
 	}
 
-	entity.sky = *NewSky(visibleModel, sky, visibleProps, position, scale)
+	entity.sky = *NewSky(visibleModel, visibleWorld, position, scale)
 }
 
-func NewWorld(world model.Bsp, staticProps []StaticProp, visData *visibility.Vis) *World {
+func NewWorld(world model.Bsp, staticProps []model.StaticProp, visData *visibility.Vis) *World {
 	c := World{
-		bspModel:     world,
+		staticModel:  world,
 		staticProps:  staticProps,
 		visData:      visData,
-		visibleWorld: *NewVisibleWorld(),
 	}
 
 	c.TestVisibility(mgl32.Vec3{0, 0, 0})

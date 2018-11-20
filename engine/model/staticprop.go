@@ -1,22 +1,25 @@
-package world
+package model
 
 import (
 	"github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/model"
 	"github.com/galaco/bsp/primitives/game"
 )
 
 type StaticProp struct {
 	entity.Base
 	leafList []uint16
-	model    *model.Model
+	model    *Model
 }
 
-func (prop *StaticProp) GetModel() *model.Model {
+func (prop *StaticProp) GetModel() *Model {
 	return prop.model
 }
 
-func NewStaticProp(lumpProp game.IStaticPropDataLump, propLeafs *game.StaticPropLeafLump, renderable *model.Model) *StaticProp {
+func (prop *StaticProp) LeafList() []uint16 {
+	return prop.leafList
+}
+
+func NewStaticProp(lumpProp game.IStaticPropDataLump, propLeafs *game.StaticPropLeafLump, renderable *Model) *StaticProp {
 	prop := StaticProp{
 		model: renderable,
 	}

@@ -10,9 +10,8 @@ import (
 type IRenderer interface {
 	StartFrame(*entity.Camera)
 	LoadShaders()
-	DrawBsp(*world.VisibleWorld)
+	DrawBsp(*world.World)
 	DrawSkybox(*world.Sky)
-	DrawStaticProps([]*world.StaticProp)
 	DrawModel(*model.Model, mgl32.Mat4)
 	DrawSkyMaterial(*model.Model)
 	SetWireframeMode(bool)
