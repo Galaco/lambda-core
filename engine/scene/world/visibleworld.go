@@ -2,18 +2,20 @@ package world
 
 import (
 	"github.com/galaco/Gource-Engine/engine/entity"
+	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
 )
 
 type VisibleWorld struct {
 	entity.Base
-	visibleModel *model.Model
+
+	world        *model.Bsp
 	visibleProps []*StaticProp
 	sky          *Sky
 }
 
-func (entity *VisibleWorld) Bsp() *model.Model {
-	return entity.visibleModel
+func (entity *VisibleWorld) Bsp() *model.Bsp {
+	return entity.world
 }
 
 func (entity *VisibleWorld) Staticprops() []*StaticProp {
@@ -26,7 +28,7 @@ func (entity *VisibleWorld) Sky() *Sky {
 
 func NewVisibleWorld() *VisibleWorld {
 	c := VisibleWorld{
-		visibleModel: model.NewModel("worldspawn_visible"),
+		world:        model.NewBsp(mesh.NewMesh()),
 		visibleProps: make([]*StaticProp, 0),
 	}
 

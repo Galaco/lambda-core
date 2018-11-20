@@ -29,11 +29,11 @@ func main() {
 	Game := game.CounterstrikeSource{}
 	Game.RegisterEntityClasses()
 
-	filesystem.Manager().SetErrorModelName("models/error.mdl")
+	filesystem.Manager().SetErrorModelName("models/props/de_dust/du_antenna_A.mdl")
 	filesystem.Manager().SetErrorTextureName("materials/error.vtf")
 
 	// Load a map!
-	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_nuke.bsp")
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)

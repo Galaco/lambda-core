@@ -51,7 +51,7 @@ func (mesh *Mesh) Finish() {
 	// gen normal data
 	gl.GenBuffers(1, &mesh.gpuInfo.NormalBuffer)
 	gl.BindBuffer(gl.ARRAY_BUFFER, mesh.gpuInfo.NormalBuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, len(mesh.normals)*3, gl.Ptr(mesh.normals), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(mesh.normals)*4, gl.Ptr(mesh.normals), gl.STATIC_DRAW)
 
 	mesh.gpuInfo.FaceMode = gl.TRIANGLES
 

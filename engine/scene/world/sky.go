@@ -7,13 +7,13 @@ import (
 )
 
 type Sky struct {
-	geometry  *model.Model
+	geometry  *model.Bsp
 	skybox    *model.Model
 	props     []*StaticProp
 	transform entity.Transform
 }
 
-func (sky *Sky) GetVisibleBsp() *model.Model {
+func (sky *Sky) GetVisibleBsp() *model.Bsp {
 	return sky.geometry
 }
 
@@ -29,7 +29,7 @@ func (sky *Sky) Transform() *entity.Transform {
 	return &sky.transform
 }
 
-func NewSky(model *model.Model, sky *model.Model, props []*StaticProp, position mgl32.Vec3, scale float32) *Sky {
+func NewSky(model *model.Bsp, sky *model.Model, props []*StaticProp, position mgl32.Vec3, scale float32) *Sky {
 	s := Sky{
 		geometry: model,
 		skybox:   sky,

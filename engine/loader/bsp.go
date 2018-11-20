@@ -62,37 +62,35 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		&bspStructure.texInfos)
 
 	// BSP FACES
-	worldModel := model.NewModel("worldspawn")
-	meshList := make([]mesh.IMesh, len(bspStructure.faces))
-	for idx, f := range bspStructure.faces {
+	bspMesh := mesh.NewMesh()
+	bspObject := model.NewBsp(bspMesh)
+	bspFaces := make([]mesh.Face, len(bspStructure.faces))
 
+	for idx, f := range bspStructure.faces {
 		if f.DispInfo > -1 {
 			// This face is a displacement
-			meshList[idx] = generateDisplacementFace(&f, &bspStructure)
+			bspFaces[idx] = generateDisplacementFace(&f, &bspStructure, bspMesh)
 		} else {
-			meshList[idx] = generateBspFace(&f, &bspStructure)
+			bspFaces[idx] = generateBspFace(&f, &bspStructure, bspMesh)
 		}
 
 		// Prepare lightmaps for each face
 		if len(bspStructure.lightmap) < 1 {
 			continue
 		}
-		meshList[idx].SetLightmap(material.LightmapFromColorRGBExp32(
+		bspFaces[idx].AddLightmap(material.LightmapFromColorRGBExp32(
 			int(f.LightmapTextureSizeInLuxels[0] + 1),
 			int(f.LightmapTextureSizeInLuxels[1] + 1),
 			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
-		meshList[idx].GetLightmap().Finish()
+		bspFaces[idx].Lightmap().Finish()
 	}
 
 	// Add MATERIALS TO FACES
-	for idx, mesh := range meshList {
-		if mesh == nil {
-			continue
-		}
+	for idx, bspFace := range bspFaces {
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		if strings.HasPrefix(faceVmt, "TOOLS/") {
-			continue
-		}
+		//if strings.HasPrefix(faceVmt, "TOOLS/") {
+		//	continue
+		//}
 		vmtPath := "materials/" + faceVmt + ".vmt"
 		baseTexturePath := "-1"
 		if ResourceManager.Has(vmtPath) {
@@ -104,32 +102,34 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		} else {
 			mat = ResourceManager.Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 		}
-		mesh.SetMaterial(mat)
-		mesh.AddTextureCoordinate(texCoordsForFaceFromTexInfo(mesh.Vertices(), &bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
+		bspFaces[idx].AddMaterial(mat)
+		// Generate texture coordinates
+		bspMesh.AddTextureCoordinate(
+			texCoordsForFaceFromTexInfo(
+				bspMesh.Vertices()[bspFace.Offset()*3:(bspFace.Offset()*3)+(bspFace.Length()*3)],
+				&bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
 
-		mesh.Finish()
+		if strings.HasPrefix(faceVmt, "TOOLS/") {
+			bspFaces[idx].AddMaterial(nil)
+		}
 	}
 
-	// We cam build a more optimised environment here.
-	// Group by cluster, then by material
-	// This will reducde draw calls down to materials * visible clusters
-
+	// Finish the bsp object.
+	bspObject.SetFaces(bspFaces)
+	bspMesh.Finish()
 
 	// Load static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	visData := sceneVisibility.NewVisFromBSP(file)
 
-	worldModel.AddMesh(meshList...)
-
-	return world.NewWorld(*worldModel, staticProps, visData)
+	return world.NewWorld(*bspObject, staticProps, visData)
 }
 
 // Create primitives from face data in the bsp
-func generateBspFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh {
-	expF := make([]uint16, 0)
-
-	mesh := mesh.NewMesh()
+func generateBspFace(f *face.Face, bspStructure *bspstructs, bspMesh mesh.IMesh) mesh.Face {
+	offset := int32(len(bspMesh.Vertices())) / 3
+	length := int32(0)
 
 	planeNormal := bspStructure.planes[f.Planenum].Normal
 	// All surfedges associated with this face
@@ -149,26 +149,26 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh {
 			rootIndex = edge[e1]
 		} else {
 			// Just create a triangle for every edge now
-			expF = append(expF, rootIndex, edge[e1], edge[e2])
+			bspMesh.AddVertex(bspStructure.vertexes[rootIndex].X(), bspStructure.vertexes[rootIndex].Y(), bspStructure.vertexes[rootIndex].Z())
+			bspMesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 
-			mesh.AddVertex(bspStructure.vertexes[rootIndex].X(), bspStructure.vertexes[rootIndex].Y(), bspStructure.vertexes[rootIndex].Z())
-			mesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
+			bspMesh.AddVertex(bspStructure.vertexes[edge[e1]].X(), bspStructure.vertexes[edge[e1]].Y(), bspStructure.vertexes[edge[e1]].Z())
+			bspMesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 
-			mesh.AddVertex(bspStructure.vertexes[edge[e1]].X(), bspStructure.vertexes[edge[e1]].Y(), bspStructure.vertexes[edge[e1]].Z())
-			mesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
+			bspMesh.AddVertex(bspStructure.vertexes[edge[e2]].X(), bspStructure.vertexes[edge[e2]].Y(), bspStructure.vertexes[edge[e2]].Z())
+			bspMesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
 
-			mesh.AddVertex(bspStructure.vertexes[edge[e2]].X(), bspStructure.vertexes[edge[e2]].Y(), bspStructure.vertexes[edge[e2]].Z())
-			mesh.AddNormal(planeNormal.X(), planeNormal.Y(), planeNormal.Z())
+			length += 3 // num verts (3 b/c face triangles
 		}
 	}
 
-	return mesh
+	return mesh.NewFace(offset, length, nil, nil)
 }
 
 // Create Primitive from Displacement face
 // This is based on:
 // https://github.com/Metapyziks/VBspViewer/blob/master/Assets/VBspViewer/Scripts/Importing/VBsp/VBspFile.cs
-func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh {
+func generateDisplacementFace(f *face.Face, bspStructure *bspstructs, bspMesh mesh.IMesh) mesh.Face {
 	corners := make([]mgl32.Vec3, 4)
 	normal := bspStructure.planes[f.Planenum].Normal
 
@@ -176,6 +176,9 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh
 	size := int(1 << uint32(info.Power))
 	firstCorner := int32(0)
 	firstCornerDist2 := float32(math.MaxFloat32)
+
+	offset := int32(len(bspMesh.Vertices())) / 3
+	length := int32(0)
 
 	for surfId := f.FirstEdge; surfId < f.FirstEdge+int32(f.NumEdges); surfId++ {
 		surfEdge := bspStructure.surfEdges[surfId]
@@ -195,8 +198,6 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh
 		}
 	}
 
-	mesh := mesh.NewMesh()
-
 	for x := 0; x < size; x++ {
 		for y := 0; y < size; y++ {
 			a := generateDispVert(int(info.DispVertStart), x, y, size, corners, firstCorner, &bspStructure.dispVerts)
@@ -205,14 +206,16 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs) mesh.IMesh
 			d := generateDispVert(int(info.DispVertStart), x+1, y, size, corners, firstCorner, &bspStructure.dispVerts)
 
 			// Split into triangles
-			mesh.AddVertex(a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z(), c.X(), c.Y(), c.Z())
-			mesh.AddNormal(normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
-			mesh.AddVertex(a.X(), a.Y(), a.Z(), c.X(), c.Y(), c.Z(), d.X(), d.Y(), d.Z())
-			mesh.AddNormal(normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+			bspMesh.AddVertex(a.X(), a.Y(), a.Z(), b.X(), b.Y(), b.Z(), c.X(), c.Y(), c.Z())
+			bspMesh.AddNormal(normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+			bspMesh.AddVertex(a.X(), a.Y(), a.Z(), c.X(), c.Y(), c.Z(), d.X(), d.Y(), d.Z())
+			bspMesh.AddNormal(normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z(), normal.X(), normal.Y(), normal.Z())
+
+			length += 6 // 6 b/c quad = 2*triangle
 		}
 	}
 
-	return mesh
+	return mesh.NewFace(offset, length, nil, nil)
 }
 
 func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {
