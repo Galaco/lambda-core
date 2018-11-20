@@ -10,7 +10,6 @@ import (
 	"github.com/galaco/Gource-Engine/engine/scene/world"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
-	"log"
 )
 
 //OpenGL renderer
@@ -84,7 +83,6 @@ func (manager *Renderer) DrawBsp(world *world.World) {
 	modelMatrix := mgl32.Ident4()
 	opengl.UniformMatrix4fv(manager.uniformMap["model"], 1, false, &modelMatrix[0])
 	manager.BindMesh(world.Bsp().Mesh())
-	log.Println(len(world.VisibleClusters()))
 	for _,cluster := range world.VisibleClusters() {
 		for _,face := range cluster.Faces {
 			manager.DrawFace(&face)

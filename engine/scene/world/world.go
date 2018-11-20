@@ -7,7 +7,6 @@ import (
 	"github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/go-gl/mathgl/mgl32"
-	"log"
 	"sync"
 )
 
@@ -87,7 +86,6 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 		if currentLeaf != nil && currentLeaf.Cluster != -1 {
 			visibleClusterIds = entity.visData.PVSForCluster(currentLeaf.Cluster)
 		}
-		log.Println(visibleClusterIds)
 
 		// nothing visible so render everything
 		if len(visibleClusterIds) == 0 {
@@ -95,7 +93,7 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 				visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[idx])
 			}
 		} else {
-			for clusterId := range visibleClusterIds {
+			for _,clusterId := range visibleClusterIds {
 				visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[clusterId])
 			}
 		}
