@@ -6,10 +6,11 @@ import (
 	"sync"
 )
 
-// Event manager
+// Manager Event manager
 // Handles sending and receiving events for immediate handling
 // Generally used for engine functionality, such as user input events, window
 // management etc.
+// Game entities should use their own event queue, and should not hook into this queue.
 type Manager struct {
 	listenerMap map[message.Id]map[core.Handle]IEventListenable
 	mu          sync.Mutex
@@ -17,7 +18,7 @@ type Manager struct {
 	runAsync    bool
 }
 
-//Register a new listener to listen to an event
+// Listen Register a new listener to listen to an event
 func (manager *Manager) Listen(eventName message.Id, listener IEventListenable) core.Handle {
 	handle := core.NewHandle()
 	manager.mu.Lock()
@@ -30,7 +31,7 @@ func (manager *Manager) Listen(eventName message.Id, listener IEventListenable) 
 	return handle
 }
 
-// Runs the event queue in its own go routine
+// RunConcurrent Runs the event queue in its own go routine
 func (manager *Manager) RunConcurrent() {
 	// Block double-running
 	if manager.runAsync == true {
@@ -60,7 +61,7 @@ func (manager *Manager) RunConcurrent() {
 	}()
 }
 
-//Remove a listener from listening for an event
+// Unlisten Remove a listener from listening for an event
 func (manager *Manager) Unlisten(eventName message.Id, handle core.Handle) {
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName][handle]; ok {
@@ -69,7 +70,7 @@ func (manager *Manager) Unlisten(eventName message.Id, handle core.Handle) {
 	manager.mu.Unlock()
 }
 
-//Fires an event to all listening objects
+// Dispatch Fires an event to all listening objects
 func (manager *Manager) Dispatch(eventName message.Id, message message.IMessage) {
 	message.SetType(eventName)
 	queueItem := &QueueItem{
@@ -81,7 +82,7 @@ func (manager *Manager) Dispatch(eventName message.Id, message message.IMessage)
 	manager.mu.Unlock()
 }
 
-// Close the event manager
+// Unregister Close the event manager
 func (manager *Manager) Unregister() {
 	// Ensure async event queue is halted
 	manager.runAsync = false
@@ -89,6 +90,7 @@ func (manager *Manager) Unregister() {
 
 var eventManager Manager
 
+// GetEventManager return static eventmanager
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
 		eventManager.listenerMap = make(map[message.Id]map[core.Handle]IEventListenable)

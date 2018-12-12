@@ -6,6 +6,8 @@ import (
 	"log"
 )
 
+// @TODO This module should allow output pipe configuration
+
 var a = aurora.NewAurora(false)
 
 // Fatal error, should close the application
@@ -48,6 +50,7 @@ func Error(msg interface{}, v ...interface{}) {
 	}
 }
 
+// print prints a message to console.
 func print(message interface{}, col func(arg interface{}) aurora.Value) {
 	fmt.Println(col(message))
 }

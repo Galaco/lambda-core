@@ -18,13 +18,16 @@ type Config struct {
 	}
 }
 
+// @TODO Implement something nicer than this scoped variable
 var config Config
 
-// Get
+// Get returns (kind-of) static config object
 func Get() *Config {
 	return &config
 }
 
+// Load attempts to open and unmarshall
+// json configuration
 func Load(path string) (*Config, error) {
 	data, err := ioutil.ReadFile(path + "config.json")
 	if err != nil {
@@ -41,6 +44,8 @@ func Load(path string) (*Config, error) {
 	return &config, nil
 }
 
+// validate that expected parameters with known
+// boundaries or limitation fall within expectations.
 func validate() {
 	if config.Video.Width < minWidth {
 		config.Video.Width = minWidth

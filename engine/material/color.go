@@ -4,24 +4,31 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
+// Color is a material defined by raw/computed colour data,
+// rather than loaded vtf data
 type Color struct {
 	Material
 }
 
+// Format returns colour format
 func (error *Color) Format() uint32 {
 	return gl.RGB
 }
 
+// PixelDataForFrame returns raw colour data for specific animation
+// frame
 func (error *Color) PixelDataForFrame(frame int) []byte {
 	return error.rawColourData
 }
 
+// Finish binds colour data to GPU
 func (error *Color) Finish() {
 	gl.GenTextures(1, &error.Buffer)
 
 	error.bindInternal(gl.TEXTURE0)
 }
 
+// bindInternal provides calls to openGL to bind colour data to GPU
 func (error *Color) bindInternal(textureSlot uint32) {
 	gl.GenTextures(1, &error.Buffer)
 	gl.ActiveTexture(textureSlot)
@@ -44,12 +51,15 @@ func (error *Color) bindInternal(textureSlot uint32) {
 		gl.Ptr(error.rawColourData))
 }
 
+// Get New Error material
 func NewError(name string) *Color {
 	mat := Color{}
 
 	mat.width = 8
 	mat.height = 8
 	mat.filePath = name
+
+	// This generates purple & black chequers.
 	mat.rawColourData = []uint8{
 		255, 0, 255,
 		255, 0, 255,

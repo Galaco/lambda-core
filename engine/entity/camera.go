@@ -28,6 +28,7 @@ func (camera *Camera) ReceiveMessage(message message.IMessage) {
 
 }
 
+// Update updates the camera position
 func (camera *Camera) Update(dt float64) {
 	vel := cameraSpeed * dt
 	if input.GetKeyboard().IsKeyDown(keyboard.KeyW) {
@@ -57,7 +58,7 @@ func (camera *Camera) Update(dt float64) {
 	camera.updateVectors()
 }
 
-// Update the camera directional properties with any changes
+// updateVectors Updates the camera directional properties with any changes
 func (camera *Camera) updateVectors() {
 	rot := camera.Transform().Rotation
 
@@ -76,10 +77,12 @@ func (camera *Camera) updateVectors() {
 	camera.Up = camera.Right.Cross(camera.Direction)
 }
 
+// ModelMatrix returns identity matrix (camera model is our position!)
 func (camera *Camera) ModelMatrix() mgl32.Mat4 {
 	return mgl32.Ident4()
 }
 
+// ViewMatrix calculates the cameras View matrix
 func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 	return mgl32.LookAtV(
 		camera.Transform().Position,
@@ -87,10 +90,13 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 		camera.Up)
 }
 
+// ProjectionMatrix calculates projection matrix.
+// This is unlikely to change throughout program lifetime, but could do
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
 	return mgl32.Perspective(mgl32.DegToRad(70), float32(config.Get().Video.Width)/float32(config.Get().Video.Height), 0.1, 16384)
 }
 
+// NewCamera returns new camera
 func NewCamera() *Camera {
 	return &Camera{
 		Base:      &Base{},

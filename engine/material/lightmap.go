@@ -5,6 +5,7 @@ import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
+// Lightmap is a material used for lighting a face
 type Lightmap struct {
 	Color
 }
@@ -15,6 +16,7 @@ func (material *Lightmap) Bind() {
 	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
 }
 
+// Finish binds this material data to the GPU
 func (material *Lightmap) Finish() {
 	gl.GenTextures(1, &material.Buffer)
 
@@ -43,6 +45,7 @@ func (material *Lightmap) bindInternal(textureSlot uint32) {
 		gl.Ptr(material.rawColourData))
 }
 
+// Create a lightmap from BSP stored colour data
 func LightmapFromColorRGBExp32(width int, height int, colorMaps []common.ColorRGBExponent32) *Lightmap {
 	raw := make([]uint8, len(colorMaps) * 3)
 

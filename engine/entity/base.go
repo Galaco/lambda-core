@@ -14,14 +14,17 @@ type Base struct {
 	handle core.Handle
 }
 
+// SetKeyValues set this entity's keyvalues
 func (entity *Base) SetKeyValues(keyValues *entity2.Entity) {
 	entity.keyValues = keyValues
 }
 
+// KeyValues returns this entitys keyvalues
 func (entity *Base) KeyValues() *entity2.Entity {
 	return entity.keyValues
 }
 
+// Get this entitiy's classname
 func (entity *Base) Classname() string {
 	if entity.keyValues == nil {
 		return ""
@@ -29,11 +32,12 @@ func (entity *Base) Classname() string {
 	return entity.keyValues.ValueForKey("classname")
 }
 
-// Returns this entity's transform component
+// Transform Returns this entity's transform component
 func (entity *Base) Transform() *Transform {
 	return &entity.transform
 }
 
+// New entity
 func (entity *Base) New() IEntity {
 	return &Base{}
 }

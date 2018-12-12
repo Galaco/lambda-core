@@ -14,18 +14,26 @@ var gameVPKs []*vpk.VPK
 var fileSystemDirectories []string
 var pakFile *lumps.Pakfile
 
+// AddVpk registers a vpk package as a valid
+// asset directory
 func AddVpk(vpkFile *vpk.VPK) {
 	gameVPKs = append(gameVPKs, vpkFile)
 }
 
+// AddSearchDirectory register a filesystem path as a valid
+// asset directory
 func AddSearchDirectory(directory string) {
 	fileSystemDirectories = append(fileSystemDirectories, directory)
 }
 
+// SetPakfile Set a pakfile to be used as an asset directory.
+// This would normally be called during each map load
 func SetPakfile(pakfile *lumps.Pakfile) {
 	pakFile = pakfile
 }
 
+// Load attempts to get stream for filename.
+// Search order is Pak->VPK->FileSystem
 func Load(filename string) (io.Reader, error) {
 	// try to read from pakfile first
 	f, err := pakFile.GetFile(filename)

@@ -13,6 +13,8 @@ var cubeMapImageType = [6]uint32{
 	gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
 }
 
+// Cubemap is a 6-sided edgeless texture that can be mapped to a cube,
+// Used mainly for pre-computed reflections
 type Cubemap struct {
 	Material
 	Faces []IMaterial
@@ -24,6 +26,8 @@ func (material *Cubemap) Bind() {
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, material.Buffer)
 }
 
+// Width Get material width.
+// Must have exactly 6 faces, and all faces are assumed the same size
 func (material *Cubemap) Width() int {
 	if len(material.Faces) != 6 {
 		return 0
@@ -31,6 +35,8 @@ func (material *Cubemap) Width() int {
 	return material.Faces[0].Width()
 }
 
+// Height Get material height.
+// Must have exactly 6 faces, and all faces are assumed the same size
 func (material *Cubemap) Height() int {
 	if len(material.Faces) != 6 {
 		return 0
@@ -38,6 +44,8 @@ func (material *Cubemap) Height() int {
 	return material.Faces[0].Height()
 }
 
+// Format get material format
+// Same format for all faces assumed
 func (material *Cubemap) Format() uint32 {
 	if len(material.Faces) != 6 {
 		return 0
@@ -45,7 +53,7 @@ func (material *Cubemap) Format() uint32 {
 	return material.Faces[0].Format()
 }
 
-// Generate the GPU buffer for this material
+// Finish Generate the GPU buffer for this material
 func (material *Cubemap) Finish() {
 	gl.GenTextures(1, &material.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)
@@ -84,6 +92,7 @@ func (material *Cubemap) Finish() {
 	}
 }
 
+// NewCubemap returns a new cubemap material
 func NewCubemap(materials []IMaterial) *Cubemap {
 	return &Cubemap{
 		Faces: materials,
