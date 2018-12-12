@@ -9,6 +9,7 @@ type Mesh struct {
 	vertices           []float32
 	normals            []float32
 	textureCoordinates []float32
+	lightmapCoordinates []float32
 
 	gpuInfo  buffer
 	material material.IMaterial
@@ -25,6 +26,10 @@ func (mesh *Mesh) AddNormal(normal ...float32) {
 
 func (mesh *Mesh) AddTextureCoordinate(uv ...float32) {
 	mesh.textureCoordinates = append(mesh.textureCoordinates, uv...)
+}
+
+func (mesh *Mesh) AddLightmapCoordinate(uv ...float32) {
+	mesh.lightmapCoordinates = append(mesh.lightmapCoordinates, uv...)
 }
 
 func (mesh *Mesh) Finish() {
@@ -53,6 +58,15 @@ func (mesh *Mesh) Finish() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, mesh.gpuInfo.NormalBuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, len(mesh.normals)*4, gl.Ptr(mesh.normals), gl.STATIC_DRAW)
 
+	// gen lightmap uv data
+	gl.GenBuffers(1, &mesh.gpuInfo.LightmapUvBuffer)
+	gl.BindBuffer(gl.ARRAY_BUFFER, mesh.gpuInfo.LightmapUvBuffer)
+	// @TODO Find a better solution
+	if len(mesh.lightmapCoordinates) < 2 {
+		mesh.lightmapCoordinates = []float32{0,1}
+	}
+	gl.BufferData(gl.ARRAY_BUFFER, len(mesh.lightmapCoordinates)*4, gl.Ptr(mesh.lightmapCoordinates), gl.STATIC_DRAW)
+
 	mesh.gpuInfo.FaceMode = gl.TRIANGLES
 
 	mesh.gpuInfo.IsPrepared = true
@@ -68,6 +82,10 @@ func (mesh *Mesh) Normals() []float32 {
 
 func (mesh *Mesh) TextureCoordinates() []float32 {
 	return mesh.textureCoordinates
+}
+
+func (mesh *Mesh) LightmapCoordinates() []float32 {
+	return mesh.lightmapCoordinates
 }
 
 func (mesh *Mesh) GetMaterial() material.IMaterial {
@@ -99,6 +117,11 @@ func (mesh *Mesh) Bind() {
 	gl.EnableVertexAttribArray(2)
 	gl.BindBuffer(gl.ARRAY_BUFFER, mesh.gpuInfo.NormalBuffer)
 	gl.VertexAttribPointer(2, 3, gl.FLOAT, false, 0, nil)
+
+	// Lightmap UV's
+	gl.EnableVertexAttribArray(3)
+	gl.BindBuffer(gl.ARRAY_BUFFER, mesh.gpuInfo.LightmapUvBuffer)
+	gl.VertexAttribPointer(3, 2, gl.FLOAT, false, 0, nil)
 }
 
 func NewMesh() *Mesh {

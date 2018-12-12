@@ -11,11 +11,13 @@ type IMesh interface {
 	AddVertex(...float32)
 	AddNormal(...float32)
 	AddTextureCoordinate(...float32)
+	AddLightmapCoordinate(...float32)
 	Finish()
 
 	Vertices() []float32
 	Normals() []float32
 	TextureCoordinates() []float32
+	LightmapCoordinates() []float32
 
 	GetMaterial() material.IMaterial
 	SetMaterial(material.IMaterial)

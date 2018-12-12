@@ -6,6 +6,7 @@ type buffer struct {
 	NormalBuffer  uint32
 	IndicesBuffer uint32
 	UvBuffer      uint32
+	LightmapUvBuffer      uint32
 
 	FaceMode   uint32
 	IsPrepared bool

@@ -9,6 +9,7 @@ var Fragment = `
 
 
 	in vec2 UV;
+	in vec2 LightmapUV;
 
     out vec4 frag_colour;
 
@@ -34,6 +35,6 @@ var Fragment = `
 	{
 		GetBasetexture(frag_colour, baseTextureSampler, UV);
 		
-		//ApplyLightmap(frag_colour, lightmapTextureSampler, UV);
+		ApplyLightmap(frag_colour, lightmapTextureSampler, LightmapUV);
     }
 ` + "\x00"
