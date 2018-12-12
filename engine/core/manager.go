@@ -1,6 +1,6 @@
 package core
 
-// Managers exist to create and handle behaviour.
+// Manager Managers exist to create and handle behaviour.
 type Manager struct {
 }
 
@@ -9,21 +9,21 @@ type Manager struct {
 func (manager *Manager) Register() {
 }
 
-// If this manager is supported to run concurrently, custom concurrency
+// RunConcurrent If this manager is supported to run concurrently, custom concurrency
 // function should be defined here
 func (manager *Manager) RunConcurrent() {
 }
 
-// Called every update loop.
+// Update Called every update loop.
 // dt is the time elapsed since last called
 func (manager *Manager) Update(dt float64) {
 }
 
-// Called when this manager is detached and destroyed by the
+// Unregister Called when this manager is detached and destroyed by the
 // engine
 func (manager *Manager) Unregister() {
 }
 
-// Called at the end of each loop.
+// PostUpdate Called at the end of each loop.
 func (manager *Manager) PostUpdate() {
 }

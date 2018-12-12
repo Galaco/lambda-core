@@ -12,12 +12,12 @@ type Keyboard struct {
 	keysDown [1024]bool
 }
 
-// Check if a specific key is pressed
+// IsKeyDown Check if a specific key is pressed
 func (keyboard *Keyboard) IsKeyDown(key keyboard.Key) bool {
 	return keyboard.keysDown[int(key)]
 }
 
-// Event manager message receiver.
+// ReceiveMessage Event manager message receiver.
 // Used to catch key events from the window library
 func (keyboard *Keyboard) ReceiveMessage(message message.IMessage) {
 	switch message.GetType() {
@@ -34,6 +34,7 @@ func (keyboard *Keyboard) SendMessage() message.IMessage {
 
 var staticKeyboard Keyboard
 
+// GetKeyboard return static keyboard
 func GetKeyboard() *Keyboard {
 	return &staticKeyboard
 }

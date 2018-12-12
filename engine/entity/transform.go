@@ -4,7 +4,7 @@ import (
 	"github.com/go-gl/mathgl/mgl32"
 )
 
-// Represents the transformation of an entity in
+// Transform Represents the transformation of an entity in
 // a 3-dimensional space: position, rotation and scale.
 // Note: Rotation is measured in degrees
 type Transform struct {
@@ -19,6 +19,7 @@ type Transform struct {
 	quat         mgl32.Quat
 }
 
+// GetTransformationMatrix computes object transformation matrix
 func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 	if !transform.Position.ApproxEqual(transform.prevPosition) ||
 		!transform.Rotation.ApproxEqual(transform.prevRotation) ||
@@ -58,6 +59,7 @@ func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
 	return transform.matrix
 }
 
+// rotateAroundAxis rotates a matrix around a given axis
 func (transform *Transform) rotateAroundAxis(matrix mgl32.Mat4, axis mgl32.Vec3, angle float32) mgl32.Mat4 {
 	q1 := mgl32.QuatRotate(angle, axis)
 	transform.quat = transform.quat.Mul(q1)

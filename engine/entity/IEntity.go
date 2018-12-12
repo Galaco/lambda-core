@@ -4,7 +4,7 @@ import (
 	"github.com/galaco/source-tools-common/entity"
 )
 
-// Base interface
+// IEntity Base interface
 // All game entities need to implement this
 type IEntity interface {
 	KeyValues() *entity.Entity
@@ -14,6 +14,8 @@ type IEntity interface {
 	New() IEntity
 }
 
+// IClassname all valid game entities should have a classname,
+// but there may be temporary non-game entities that have classnames
 type IClassname interface {
 	Classname() string
 }

@@ -21,28 +21,32 @@ func (material *Material) Bind() {
 	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
 }
 
-// Get the filepath this data was loaded from
+// GetFilePath Get the filepath this data was loaded from
 func (material *Material) GetFilePath() string {
 	return material.filePath
 }
 
+// Width returns materials width
 func (material *Material) Width() int {
 	return material.width
 }
 
+// Height returns materials height
 func (material *Material) Height() int {
 	return material.height
 }
 
+// Format returns this materials colour format
 func (material *Material) Format() uint32 {
 	return material.vtf.GetHeader().HighResImageFormat
 }
 
+// PixelDataForFrame get raw colour data for this frame
 func (material *Material) PixelDataForFrame(frame int) []byte {
 	return material.vtf.GetHighestResolutionImageForFrame(frame)
 }
 
-// Generate the GPU buffer for this material
+// Finish Generate the GPU buffer for this material
 func (material *Material) Finish() {
 	gl.GenTextures(1, &material.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)
@@ -77,6 +81,7 @@ func (material *Material) Finish() {
 	}
 }
 
+// NewMaterial returns a new material from Vtf
 func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{
 		filePath: filePath,
@@ -86,6 +91,7 @@ func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material
 	}
 }
 
+// isTextureCompressed is a simple check for raw colour format compression
 func isTextureCompressed(vtfFormat uint32) bool {
 	switch vtfFormat {
 	case 13:
@@ -99,6 +105,7 @@ func isTextureCompressed(vtfFormat uint32) bool {
 	return false
 }
 
+// getGLTextureFormat swap vtf format to openGL format
 func getGLTextureFormat(vtfFormat uint32) uint32 {
 	switch vtfFormat {
 	case 0:
