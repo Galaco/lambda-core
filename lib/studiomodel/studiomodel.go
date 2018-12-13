@@ -7,6 +7,7 @@ import (
 	"github.com/galaco/StudioModel/vvd"
 )
 
+// VertexDataForModel loads model vertex data
 func VertexDataForModel(studioModel *studiomodel.StudioModel, lodIdx int) ([][]float32, [][]float32, [][]float32, error) {
 	vertices := make([][]float32, 0)
 	normals := make([][]float32, 0)
@@ -22,7 +23,7 @@ func VertexDataForModel(studioModel *studiomodel.StudioModel, lodIdx int) ([][]f
 					continue
 				}
 
-				v, n, uv,err := vertexDataForMesh(indices, studioModel.Vvd)
+				v, n, uv, err := vertexDataForMesh(indices, studioModel.Vvd)
 				if err != nil {
 					return nil, nil, nil, err
 				}
@@ -36,6 +37,7 @@ func VertexDataForModel(studioModel *studiomodel.StudioModel, lodIdx int) ([][]f
 	return vertices, normals, textureCoordinates, nil
 }
 
+// indicesForMesh get indices for mesh
 func indicesForMesh(mesh *vtx.Mesh) []uint16 {
 	if len(mesh.StripGroups) > 1 {
 		return make([]uint16, 0)

@@ -7,9 +7,9 @@ import (
 )
 
 type Sky struct {
-	geometry  *model.Bsp
-	clusterLeafs    []*model.ClusterLeaf
-	transform entity.Transform
+	geometry     *model.Bsp
+	clusterLeafs []*model.ClusterLeaf
+	transform    entity.Transform
 }
 
 func (sky *Sky) GetVisibleBsp() *model.Bsp {
@@ -26,7 +26,7 @@ func (sky *Sky) Transform() *entity.Transform {
 
 func NewSky(model *model.Bsp, clusterLeafs []*model.ClusterLeaf, position mgl32.Vec3, scale float32) *Sky {
 	s := Sky{
-		geometry: model,
+		geometry:     model,
 		clusterLeafs: clusterLeafs,
 	}
 
@@ -37,7 +37,7 @@ func NewSky(model *model.Bsp, clusterLeafs []*model.ClusterLeaf, position mgl32.
 	s.transform.Scale = skyCameraScale
 
 	// remap prop transform to real world
-	for _,l := range s.clusterLeafs{
+	for _, l := range s.clusterLeafs {
 		for _, prop := range l.StaticProps {
 			prop.Transform().Position = prop.Transform().Position.Add(skyCameraPosition)
 			prop.Transform().Position = prop.Transform().Position.Mul(scale)

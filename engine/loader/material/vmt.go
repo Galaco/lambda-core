@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+// @TODO This implementation is not great. It'll do until more parameters are supported,
+// but its fragile and awkward to use.
+
+// Vmt file format properties
+// @TODO This could probably be replaced with the KeyValues implementation
+// @TODO This does not support recursive 'include' parameter
 type Vmt struct {
 	Filename    string
 	ShaderName  string
@@ -15,10 +21,12 @@ type Vmt struct {
 	BaseTexture string
 }
 
+// GetFilePath returns Vmt filepath on disk
 func (vmt *Vmt) GetFilePath() string {
 	return vmt.Filename
 }
 
+// GetProperty returns a vmt property
 func (vmt *Vmt) GetProperty(name string) VmtProperty {
 	if _, ok := vmt.properties[strings.ToLower(name)]; ok {
 		return vmt.properties[strings.ToLower(name)]
@@ -29,26 +37,36 @@ func (vmt *Vmt) GetProperty(name string) VmtProperty {
 	}
 }
 
+// VmtProperty is a single vmt property.
+// It allows for reading a property as any supported type, but its up to
+// a calling function to know the expected type, as it should already know
+// what the property is.
 type VmtProperty struct {
 	value string
 }
 
+// AsInt returns property as int64
 func (property VmtProperty) AsInt() (int64, error) {
 	return strconv.ParseInt(property.value, 10, 32)
 }
 
+// AsBool returns property as boolean
 func (property VmtProperty) AsBool() (bool, error) {
 	return strconv.ParseBool(property.value)
 }
 
+// AsFloat returns property as float64
 func (property VmtProperty) AsFloat() (float64, error) {
 	return strconv.ParseFloat(property.value, 32)
 }
 
+// AsString returns property as it was read
 func (property VmtProperty) AsString() string {
 	return property.value
 }
 
+// ParseVmt reads a vmt file stream and returns a Vmt
+// struct with the parsed properties
 func ParseVmt(filename string, stream io.Reader) (*Vmt, error) {
 	reader := bufio.NewReader(stream)
 	vmt := &Vmt{

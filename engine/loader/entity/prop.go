@@ -9,10 +9,13 @@ import (
 	"strings"
 )
 
+// DoesEntityReferenceStudioModel tests if an entity is
+// tied to a model (normally prop_* classnames, but not exclusively)
 func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 	return strings.HasSuffix(ent.KeyValues().ValueForKey("model"), ".mdl")
 }
 
+// AssignStudioModelToEntity sets a renderable entity's model
 func AssignStudioModelToEntity(entity entity.IEntity) {
 	modelName := entity.KeyValues().ValueForKey("model")
 	if !filesystem.Manager().Has(modelName) {

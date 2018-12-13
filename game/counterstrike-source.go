@@ -6,9 +6,9 @@ import (
 )
 
 type CounterstrikeSource struct {
-
 }
 
+// RegisterEntityClasses loads all Game entity classes into the engine.
 func (target *CounterstrikeSource) RegisterEntityClasses() {
 	loader.RegisterClass(&common.PropDoorRotating{})
 	loader.RegisterClass(&common.PropDynamic{})

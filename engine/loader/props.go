@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+// LoadStaticProps Load all staticprops referenced in a
+// bsp's game lump
 func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 	ResourceManager := filesystem.Manager()
 	prop.LoadProp(ResourceManager.ErrorModelName())
@@ -50,7 +52,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 	return staticPropList
 }
 
-// Build a list of all different prop files.
+// buildUniquePropList Build a list of all different prop files.
 // Removes duplications
 func buildUniquePropList(propList []string) []string {
 	retList := make([]string, 0)

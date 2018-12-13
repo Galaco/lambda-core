@@ -6,11 +6,14 @@ import (
 	"github.com/galaco/source-tools-common/texdatastringtable"
 )
 
+// GetTable returns a new StringTable
 func GetTable(stringData *lumps.TexdataStringData, stringTable *lumps.TexDataStringTable) *texdatastringtable.TexDataStringTable {
 	// Prepare texture lookup table
 	return texdatastringtable.NewTable(stringData.GetData(), stringTable.GetData())
 }
 
+// SortUnique builds a unique list of materials in a StringTable
+// referenced by BSP TexInfo lump data.
 func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos *[]texinfo.TexInfo) []string {
 	materialList := make([]string, 0)
 	for _, ti := range *texInfos {
@@ -29,4 +32,3 @@ func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos *[]
 
 	return materialList
 }
-

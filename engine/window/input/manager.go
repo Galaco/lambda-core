@@ -10,12 +10,15 @@ import (
 	"github.com/go-gl/mathgl/mgl64"
 )
 
+// Manager handles user input from mouse and keyboard
+// in a specific window
 type Manager struct {
 	MouseCoordinates mgl64.Vec2
 	window           *glfw.Window
 	lockMouse        bool
 }
 
+// Register prepares this manager to listen for events from a window
 func (manager *Manager) Register(window *glfw.Window) {
 	manager.window = window
 	window.SetKeyCallback(manager.KeyCallback)
@@ -26,6 +29,8 @@ func (manager *Manager) Register(window *glfw.Window) {
 	event.GetEventManager().Listen(messagetype.MouseMove, input.GetMouse())
 }
 
+// Update prepares data constructs that represent mouse & keyboard state with
+// updated information on the current input state.
 func (manager *Manager) Update(dt float64) {
 	// Get window size
 	x, y := manager.window.GetSize()
@@ -42,10 +47,12 @@ func (manager *Manager) Update(dt float64) {
 	glfw.PollEvents()
 }
 
+// Unregister
 func (manager *Manager) Unregister() {
 
 }
 
+// KeyCallback called whenever a key event occurs
 func (manager *Manager) KeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	switch action {
 	case glfw.Press:
@@ -57,6 +64,7 @@ func (manager *Manager) KeyCallback(window *glfw.Window, key glfw.Key, scancode 
 	}
 }
 
+// MouseCallback called whenever a mouse event occurs
 func (manager *Manager) MouseCallback(window *glfw.Window, xpos float64, ypos float64) {
 	if manager.lockMouse == true {
 		manager.MouseCoordinates[0], manager.MouseCoordinates[1] = window.GetCursorPos()

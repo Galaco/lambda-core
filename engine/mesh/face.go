@@ -3,8 +3,8 @@ package mesh
 import "github.com/galaco/Gource-Engine/engine/material"
 
 type Face struct {
-	offset int32
-	length int32
+	offset   int32
+	length   int32
 	material material.IMaterial
 	lightmap *material.Lightmap
 }
@@ -39,8 +39,8 @@ func (face *Face) Lightmap() *material.Lightmap {
 
 func NewFace(offset int32, length int32, mat material.IMaterial, lightmap *material.Lightmap) Face {
 	return Face{
-		offset: offset,
-		length: length,
+		offset:   offset,
+		length:   length,
 		material: mat,
 		lightmap: lightmap,
 	}

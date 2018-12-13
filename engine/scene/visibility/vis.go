@@ -51,7 +51,7 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 		if !vis.clusterVisible(&clusterList, l.Cluster) {
 			continue
 		}
-		if l.Flags() & leaf.LEAF_FLAGS_SKY > 0 {
+		if l.Flags()&leaf.LEAF_FLAGS_SKY > 0 {
 			skyVisible = true
 		}
 		leafs = append(leafs, uint16(idx))
@@ -59,9 +59,9 @@ func (vis *Vis) cachePVSForCluster(clusterId int16) *Cache {
 	}
 
 	cache := Cache{
-		ClusterId: clusterId,
-		Faces:     faces,
-		Leafs:     leafs,
+		ClusterId:  clusterId,
+		Faces:      faces,
+		Leafs:      leafs,
 		SkyVisible: skyVisible,
 	}
 

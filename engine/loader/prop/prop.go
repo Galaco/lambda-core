@@ -16,6 +16,11 @@ import (
 	"strings"
 )
 
+// @TODO This is SUPER incomplete
+// Right now it does the bare minimum, and many models seem to have
+// some corruption.
+
+// LoadProp loads a single prop/model of known filepath
 func LoadProp(path string) (*model.Model, error) {
 	ResourceManager := filesystem.Manager()
 	if ResourceManager.Has(path) {

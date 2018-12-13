@@ -44,11 +44,12 @@ func main() {
 	Application.Run()
 }
 
-// Simple object to control engine shutdown utilising the internal event manager
+// Closeable Simple struct to control engine shutdown utilising the internal event manager
 type Closeable struct {
 	target *engine.Engine
 }
 
+// ReceiveMessage function will shutdown the engine
 func (closer Closeable) ReceiveMessage(message message.IMessage) {
 	if message.GetType() == messagetype.KeyDown {
 		if message.(*messages.KeyDown).Key == keyboard.KeyEscape {
