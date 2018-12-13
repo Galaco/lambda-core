@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Load all materials referenced in the map
+// LoadMaterialList Load all materials referenced in the map
 // NOTE: There is a priority:
 // 1. BSP pakfile
 // 2. Game directory
@@ -18,6 +18,7 @@ func LoadMaterialList(materialList []string) {
 	loadMaterials(materialList...)
 }
 
+// loadMaterials "private" function that actually does the loading
 func loadMaterials(materialList ...string) (missingList []string) {
 	ResourceManager := filesystem.Manager()
 
@@ -61,6 +62,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	return missingList
 }
 
+// LoadSingleMaterial loads a single material with known file path
 func LoadSingleMaterial(filePath string) material.IMaterial {
 	result := loadMaterials(filePath)
 	if len(result) > 0 {
@@ -70,7 +72,7 @@ func LoadSingleMaterial(filePath string) material.IMaterial {
 
 	vmt := filesystem.Manager().Get("materials/" + filePath).(*Vmt)
 	vtfPath := vmt.GetProperty("basetexture").AsString() + ".vtf"
-	if len(vtfPath) < 11 || !filesystem.Manager().Has("materials/" + vtfPath) { // 11 because len("materials/<>")
+	if len(vtfPath) < 11 || !filesystem.Manager().Has("materials/"+vtfPath) { // 11 because len("materials/<>")
 		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
 	}
 	return filesystem.Manager().Get("materials/" + vtfPath).(material.IMaterial)

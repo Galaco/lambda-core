@@ -8,8 +8,8 @@ import (
 // Very generic filesystem storage.
 // If the struct came from a filesystem, it should be obtainable from here
 type manager struct {
-	resources map[string]IFile
-	errorModelName string
+	resources        map[string]IFile
+	errorModelName   string
 	errorTextureName string
 
 	readMutex sync.Mutex

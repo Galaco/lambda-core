@@ -5,6 +5,7 @@ import (
 	"runtime"
 )
 
+// Create constructs a new GLFW Window
 func Create(width int, height int, name string) *glfw.Window {
 	runtime.LockOSThread()
 	err := glfw.Init()

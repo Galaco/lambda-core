@@ -1,15 +1,6 @@
-
 \.DS_Store
 vendor
 \.idea/
 
-
-data/cstrike/
-
-data/maps/
-
-out\.png
-
 config\.json
-
 example_game/

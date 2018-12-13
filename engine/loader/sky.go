@@ -7,6 +7,8 @@ import (
 	"github.com/galaco/Gource-Engine/engine/model"
 )
 
+// LoadSky loads the skymaterial cubemap.
+// The materialname is normally obtained from the worldspawn entity
 func LoadSky(materialName string) *model.Model {
 	sky := model.NewModel(materialName)
 

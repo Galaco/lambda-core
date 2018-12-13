@@ -38,6 +38,12 @@ type bspstructs struct {
 	lightmap   []common.ColorRGBExponent32
 }
 
+// LoadMap is the gateway into loading the core static level. Entities are loaded
+// elsewhere
+// It loads in the following order:
+// BSP Geometry
+// BSP Materials
+// StaticProps (materials loaded as required)
 func LoadMap(file *bsp.Bsp) *world.World {
 	ResourceManager := filesystem.Manager()
 	bspStructure := bspstructs{
@@ -52,7 +58,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		pakFile:    file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
 		visibility: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
 		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
-		lightmap:	file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
+		lightmap:   file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
 	}
 
 	//MATERIALS
@@ -79,8 +85,8 @@ func LoadMap(file *bsp.Bsp) *world.World {
 			continue
 		}
 		bspFaces[idx].AddLightmap(material.LightmapFromColorRGBExp32(
-			int(f.LightmapTextureSizeInLuxels[0] + 1),
-			int(f.LightmapTextureSizeInLuxels[1] + 1),
+			int(f.LightmapTextureSizeInLuxels[0]+1),
+			int(f.LightmapTextureSizeInLuxels[1]+1),
 			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
 		bspFaces[idx].Lightmap().Finish()
 	}
@@ -128,8 +134,8 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Optimise face data by cluster
 	visData := sceneVisibility.NewVisFromBSP(file)
 	bspClusters := make([]model.ClusterLeaf, bspStructure.visibility.NumClusters)
-	for _,bspLeaf := range visData.Leafs {
-		for _,leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace:bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
+	for _, bspLeaf := range visData.Leafs {
+		for _, leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace : bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
 			if bspLeaf.Cluster == -1 {
 				continue
 			}
@@ -139,7 +145,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	}
 
 	// Assign staticprops to clusters
-	for idx,prop := range staticProps {
+	for idx, prop := range staticProps {
 		for _, leafId := range prop.LeafList() {
 			clusterId := visData.Leafs[leafId].Cluster
 			if clusterId == -1 {
@@ -154,7 +160,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	return world.NewWorld(*bspObject, staticProps, visData)
 }
 
-// Create primitives from face data in the bsp
+// generateBspFace Create primitives from face data in the bsp
 func generateBspFace(f *face.Face, bspStructure *bspstructs, bspMesh mesh.IMesh) mesh.Face {
 	offset := int32(len(bspMesh.Vertices())) / 3
 	length := int32(0)
@@ -193,7 +199,7 @@ func generateBspFace(f *face.Face, bspStructure *bspstructs, bspMesh mesh.IMesh)
 	return mesh.NewFace(offset, length, nil, nil)
 }
 
-// Create Primitive from Displacement face
+// generateDisplacementFace Create Primitive from Displacement face
 // This is based on:
 // https://github.com/Metapyziks/VBspViewer/blob/master/Assets/VBspViewer/Scripts/Importing/VBsp/VBspFile.cs
 func generateDisplacementFace(f *face.Face, bspStructure *bspstructs, bspMesh mesh.IMesh) mesh.Face {
@@ -246,6 +252,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs, bspMesh me
 	return mesh.NewFace(offset, length, nil, nil)
 }
 
+// generateDispVert Create a displacement vertex
 func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {
 	vert := (*dispVerts)[offset+x+y*(size+1)]
 
@@ -264,7 +271,7 @@ func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, 
 	return origin.Add(vert.Vec.Mul(vert.Dist))
 }
 
-// Generate texturecoordinates for face data
+// texCoordsForFaceFromTexInfo Generate texturecoordinates for face data
 func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
 	for idx := 0; idx < len(vertexes); idx += 3 {
 		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
@@ -285,6 +292,7 @@ func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width 
 	return uvs
 }
 
+// lightmapCoordsForFaceFromTexInfo create lightmap coordinates from TexInfo
 func lightmapCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
 	for idx := 0; idx < len(vertexes); idx += 3 {
 		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
@@ -305,10 +313,11 @@ func lightmapCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, w
 	return uvs
 }
 
+// lightmapSamplesFromFace create a lightmap rectangle for a face
 func lightmapSamplesFromFace(f *face.Face, samples *[]common.ColorRGBExponent32) []common.ColorRGBExponent32 {
 	sampleSize := int32(unsafe.Sizeof((*samples)[0]))
 	numLuxels := (f.LightmapTextureSizeInLuxels[0] + 1) * (f.LightmapTextureSizeInLuxels[1] + 1)
 	firstSampleIdx := f.Lightofs / sampleSize
 
-	return (*samples)[firstSampleIdx:firstSampleIdx + numLuxels]
+	return (*samples)[firstSampleIdx : firstSampleIdx+numLuxels]
 }

@@ -12,16 +12,16 @@ import (
 
 type World struct {
 	entity.Base
-	staticModel  model.Bsp
+	staticModel model.Bsp
 
-	staticProps  []model.StaticProp
-	sky          Sky
+	staticProps []model.StaticProp
+	sky         Sky
 
 	visibleClusterLeafs []*model.ClusterLeaf
 
-	visData      *visibility.Vis
-	LeafCache    *visibility.Cache
-	currentLeaf  *leaf.Leaf
+	visData     *visibility.Vis
+	LeafCache   *visibility.Cache
+	currentLeaf *leaf.Leaf
 
 	rebuildMutex sync.Mutex
 }
@@ -93,7 +93,7 @@ func (entity *World) AsyncRebuildVisibleWorld() {
 				visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[idx])
 			}
 		} else {
-			for _,clusterId := range visibleClusterIds {
+			for _, clusterId := range visibleClusterIds {
 				visibleWorld = append(visibleWorld, &entity.staticModel.ClusterLeafs()[clusterId])
 			}
 		}
@@ -130,9 +130,9 @@ func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale fl
 
 func NewWorld(world model.Bsp, staticProps []model.StaticProp, visData *visibility.Vis) *World {
 	c := World{
-		staticModel:  world,
-		staticProps:  staticProps,
-		visData:      visData,
+		staticModel: world,
+		staticProps: staticProps,
+		visData:     visData,
 	}
 
 	c.TestVisibility(mgl32.Vec3{0, 0, 0})

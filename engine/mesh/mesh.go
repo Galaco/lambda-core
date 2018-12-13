@@ -6,9 +6,9 @@ import (
 )
 
 type Mesh struct {
-	vertices           []float32
-	normals            []float32
-	textureCoordinates []float32
+	vertices            []float32
+	normals             []float32
+	textureCoordinates  []float32
 	lightmapCoordinates []float32
 
 	gpuInfo  buffer
@@ -63,7 +63,7 @@ func (mesh *Mesh) Finish() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, mesh.gpuInfo.LightmapUvBuffer)
 	// @TODO Find a better solution
 	if len(mesh.lightmapCoordinates) < 2 {
-		mesh.lightmapCoordinates = []float32{0,1}
+		mesh.lightmapCoordinates = []float32{0, 1}
 	}
 	gl.BufferData(gl.ARRAY_BUFFER, len(mesh.lightmapCoordinates)*4, gl.Ptr(mesh.lightmapCoordinates), gl.STATIC_DRAW)
 

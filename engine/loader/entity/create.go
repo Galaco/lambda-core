@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// Parse Base block.
+// ParseEntities Parse Base block.
 // Vmf lib is actually capable of doing this;
 // contents are loaded into Vmf.Unclassified
 func ParseEntities(data string) (vmf.Vmf, error) {
@@ -19,6 +19,8 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 	return reader.Read()
 }
 
+// CreateEntity creates a new entity with common properties
+// e.g. origin and angles
 func CreateEntity(ent *entity.Entity) entity3.IEntity {
 	localEdict := loader.New(ent.ValueForKey("classname"))
 	if localEdict == nil {
@@ -37,6 +39,9 @@ func CreateEntity(ent *entity.Entity) entity3.IEntity {
 	return localEdict
 }
 
+// AssignProperties assigns type specific properties.
+// @TODO This is probably going to grow massively as more common types get implemented.
+// It should probably be refactored.
 func AssignProperties(ent entity3.IEntity) {
 	if DoesEntityReferenceStudioModel(ent) {
 		AssignStudioModelToEntity(ent)

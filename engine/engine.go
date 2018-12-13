@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-// Game engine
-// Only 1 can be initialised
+// Engine Game engine
+// Only 1 should be initialised
 type Engine struct {
 	EventManager    event.Manager
 	Managers        []core.IManager
@@ -61,16 +61,18 @@ func (engine *Engine) Run() {
 	}
 }
 
-// Add a new manager to the engine
+// AddManager Adds a new manager to the engine
 func (engine *Engine) AddManager(manager core.IManager) {
 	engine.Managers = append(engine.Managers, manager)
 	manager.Register()
 }
 
+// Close marks the engine to exit at the end of the current loop
 func (engine *Engine) Close() {
 	engine.running = false
 }
 
+// SetSimulationSpeed allows for speeding up and slowing down the game clock
 func (engine *Engine) SetSimulationSpeed(multiplier float64) {
 	if multiplier < 0 {
 		return
@@ -86,6 +88,7 @@ func (engine *Engine) loadConfig() {
 	gameinfo.LoadConfig(cfg.GameDirectory)
 }
 
+// NewEngine returns a new engine instance
 func NewEngine() *Engine {
 	runtime.LockOSThread()
 	return &Engine{
