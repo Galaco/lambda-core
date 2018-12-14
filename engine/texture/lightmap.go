@@ -1,4 +1,4 @@
-package material
+package texture
 
 import (
 	"github.com/galaco/bsp/primitives/common"
@@ -7,7 +7,7 @@ import (
 
 // Lightmap is a material used for lighting a face
 type Lightmap struct {
-	Color
+	Colour2D
 }
 
 // Bind this material to the GPU

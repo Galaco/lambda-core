@@ -4,7 +4,7 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	material2 "github.com/galaco/Gource-Engine/engine/loader/material"
-	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/texture"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
 	studiomodellib "github.com/galaco/Gource-Engine/lib/studiomodel"
@@ -117,8 +117,8 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel)
 	return outModel
 }
 
-func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
-	materials := make([]material.IMaterial, 0)
+func materialsForStudioModel(mdlData *mdl.Mdl) []texture.ITexture {
+	materials := make([]texture.ITexture, 0)
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
 			path := strings.Replace(dir, "\\", "/", -1) + name + ".vmt"

@@ -1,7 +1,7 @@
 package mesh
 
 import (
-	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/texture"
 )
 
 // Generic Mesh object
@@ -19,10 +19,10 @@ type IMesh interface {
 	TextureCoordinates() []float32
 	LightmapCoordinates() []float32
 
-	GetMaterial() material.IMaterial
-	SetMaterial(material.IMaterial)
-	GetLightmap() material.IMaterial
-	SetLightmap(material.IMaterial)
+	GetMaterial() texture.ITexture
+	SetMaterial(texture.ITexture)
+	GetLightmap() texture.ITexture
+	SetLightmap(texture.ITexture)
 
 	Bind()
 }

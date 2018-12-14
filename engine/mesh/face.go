@@ -1,12 +1,12 @@
 package mesh
 
-import "github.com/galaco/Gource-Engine/engine/material"
+import "github.com/galaco/Gource-Engine/engine/texture"
 
 type Face struct {
 	offset   int32
 	length   int32
-	material material.IMaterial
-	lightmap *material.Lightmap
+	material texture.ITexture
+	lightmap *texture.Lightmap
 }
 
 func (face *Face) Offset() int32 {
@@ -21,23 +21,23 @@ func (face *Face) IsLightmapped() bool {
 	return face.Lightmap() != nil
 }
 
-func (face *Face) AddMaterial(mat material.IMaterial) {
+func (face *Face) AddMaterial(mat texture.ITexture) {
 	face.material = mat
 }
 
-func (face *Face) AddLightmap(lightmap *material.Lightmap) {
+func (face *Face) AddLightmap(lightmap *texture.Lightmap) {
 	face.lightmap = lightmap
 }
 
-func (face *Face) Material() material.IMaterial {
+func (face *Face) Material() texture.ITexture {
 	return face.material
 }
 
-func (face *Face) Lightmap() *material.Lightmap {
+func (face *Face) Lightmap() *texture.Lightmap {
 	return face.lightmap
 }
 
-func NewFace(offset int32, length int32, mat material.IMaterial, lightmap *material.Lightmap) Face {
+func NewFace(offset int32, length int32, mat texture.ITexture, lightmap *texture.Lightmap) Face {
 	return Face{
 		offset:   offset,
 		length:   length,

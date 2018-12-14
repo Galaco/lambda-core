@@ -2,14 +2,14 @@ package scene
 
 import (
 	"github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/texture"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
 )
 
 type Scene struct {
 	world    world.World
 	entities []entity.IEntity
-	sky      *material.Cubemap
+	sky      *texture.Cubemap
 
 	cameras       []entity.Camera
 	currentCamera *entity.Camera
@@ -54,7 +54,7 @@ func (s *Scene) GetWorld() *world.World {
 	return &s.world
 }
 
-func (s *Scene) GetSky() *material.Cubemap {
+func (s *Scene) GetSky() *texture.Cubemap {
 	return s.sky
 }
 

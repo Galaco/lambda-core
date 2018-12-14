@@ -3,7 +3,7 @@ package material
 import (
 	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/texture"
 	"github.com/galaco/Gource-Engine/lib/vtf"
 	"strings"
 )
@@ -23,7 +23,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	ResourceManager := filesystem.Manager()
 
 	// Ensure that error texture is available
-	ResourceManager.Add(material.NewError(ResourceManager.ErrorTextureName()))
+	ResourceManager.Add(texture.NewError(ResourceManager.ErrorTextureName()))
 
 	materialBasePath := "materials/"
 
@@ -57,32 +57,32 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	}
 
 	// @TODO
-	// All missing textures should be replaced with Color texture
+	// All missing textures should be replaced with Colour2D texture
 
 	return missingList
 }
 
 // LoadSingleMaterial loads a single material with known file path
-func LoadSingleMaterial(filePath string) material.IMaterial {
+func LoadSingleMaterial(filePath string) texture.ITexture {
 	result := loadMaterials(filePath)
 	if len(result) > 0 {
-		// Color
-		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
+		// Colour2D
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(texture.ITexture)
 	}
 
 	vmt := filesystem.Manager().Get("materials/" + filePath).(*Vmt)
 	vtfPath := vmt.GetProperty("basetexture").AsString() + ".vtf"
 	if len(vtfPath) < 11 || !filesystem.Manager().Has("materials/"+vtfPath) { // 11 because len("materials/<>")
-		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	return filesystem.Manager().Get("materials/" + vtfPath).(material.IMaterial)
+	return filesystem.Manager().Get("materials/" + vtfPath).(texture.ITexture)
 }
 
-func LoadSingleVtf(filePath string) material.IMaterial {
+func LoadSingleVtf(filePath string) texture.ITexture {
 	if !readVtf("materials/", filePath) {
-		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
+		return filesystem.Manager().Get(filesystem.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	return filesystem.Manager().Get("materials/" + filePath).(material.IMaterial)
+	return filesystem.Manager().Get("materials/" + filePath).(texture.ITexture)
 }
 
 func readVmt(basePath string, filePath string) bool {
@@ -113,20 +113,20 @@ func readVtf(basePath string, filePath string) bool {
 
 	// Attempt to parse the vtf into color data we can use,
 	// if this fails (it shouldn't) we can treat it like it was missing
-	texture, err := vtf.ReadFromStream(stream)
+	read, err := vtf.ReadFromStream(stream)
 	if err != nil {
 		debug.Error(err)
 		return false
 	}
 	// Store filesystem containing raw data in memory
 	ResourceManager.Add(
-		material.NewMaterial(
+		texture.NewMaterial(
 			basePath+filePath,
-			texture,
-			int(texture.GetHeader().Width),
-			int(texture.GetHeader().Height)))
+			read,
+			int(read.GetHeader().Width),
+			int(read.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	ResourceManager.Get(basePath + filePath).(material.IMaterial).Finish()
+	ResourceManager.Get(basePath + filePath).(texture.ITexture).Finish()
 	return true
 }

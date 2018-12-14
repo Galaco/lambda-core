@@ -1,7 +1,7 @@
-package material
+package texture
 
-// IMaterial Interface for a GPU texture
-type IMaterial interface {
+// ITexture Interface for a GPU texture
+type ITexture interface {
 	Bind()
 	Width() int
 	Height() int

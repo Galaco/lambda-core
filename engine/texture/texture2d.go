@@ -1,4 +1,4 @@
-package material
+package texture
 
 import (
 	"github.com/galaco/vtf"
@@ -6,48 +6,47 @@ import (
 )
 
 // Generic GPU material struct
-type Material struct {
+type Texture2D struct {
 	filePath      string
 	Buffer        uint32
 	width         int
 	height        int
-	rawColourData []uint8
 	vtf           *vtf.Vtf
 }
 
 // Bind this material to the GPU
-func (material *Material) Bind() {
+func (material *Texture2D) Bind() {
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
 }
 
 // GetFilePath Get the filepath this data was loaded from
-func (material *Material) GetFilePath() string {
+func (material *Texture2D) GetFilePath() string {
 	return material.filePath
 }
 
 // Width returns materials width
-func (material *Material) Width() int {
+func (material *Texture2D) Width() int {
 	return material.width
 }
 
 // Height returns materials height
-func (material *Material) Height() int {
+func (material *Texture2D) Height() int {
 	return material.height
 }
 
 // Format returns this materials colour format
-func (material *Material) Format() uint32 {
+func (material *Texture2D) Format() uint32 {
 	return material.vtf.GetHeader().HighResImageFormat
 }
 
 // PixelDataForFrame get raw colour data for this frame
-func (material *Material) PixelDataForFrame(frame int) []byte {
+func (material *Texture2D) PixelDataForFrame(frame int) []byte {
 	return material.vtf.GetHighestResolutionImageForFrame(frame)
 }
 
 // Finish Generate the GPU buffer for this material
-func (material *Material) Finish() {
+func (material *Texture2D) Finish() {
 	gl.GenTextures(1, &material.Buffer)
 	gl.ActiveTexture(gl.TEXTURE0)
 	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
@@ -82,8 +81,8 @@ func (material *Material) Finish() {
 }
 
 // NewMaterial returns a new material from Vtf
-func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material {
-	return &Material{
+func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Texture2D {
+	return &Texture2D{
 		filePath: filePath,
 		width:    width,
 		height:   height,

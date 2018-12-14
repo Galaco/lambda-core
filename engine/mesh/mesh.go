@@ -1,7 +1,7 @@
 package mesh
 
 import (
-	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/texture"
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
@@ -12,8 +12,8 @@ type Mesh struct {
 	lightmapCoordinates []float32
 
 	gpuInfo  buffer
-	material material.IMaterial
-	lightmap material.IMaterial
+	material texture.ITexture
+	lightmap texture.ITexture
 }
 
 func (mesh *Mesh) AddVertex(vertex ...float32) {
@@ -88,19 +88,19 @@ func (mesh *Mesh) LightmapCoordinates() []float32 {
 	return mesh.lightmapCoordinates
 }
 
-func (mesh *Mesh) GetMaterial() material.IMaterial {
+func (mesh *Mesh) GetMaterial() texture.ITexture {
 	return mesh.material
 }
 
-func (mesh *Mesh) SetMaterial(mat material.IMaterial) {
+func (mesh *Mesh) SetMaterial(mat texture.ITexture) {
 	mesh.material = mat
 }
 
-func (mesh *Mesh) GetLightmap() material.IMaterial {
+func (mesh *Mesh) GetLightmap() texture.ITexture {
 	return mesh.lightmap
 }
 
-func (mesh *Mesh) SetLightmap(mat material.IMaterial) {
+func (mesh *Mesh) SetLightmap(mat texture.ITexture) {
 	mesh.lightmap = mat
 }
 

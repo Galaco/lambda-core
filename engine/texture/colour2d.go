@@ -1,35 +1,36 @@
-package material
+package texture
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
-// Color is a material defined by raw/computed colour data,
+// Colour2D is a material defined by raw/computed colour data,
 // rather than loaded vtf data
-type Color struct {
-	Material
+type Colour2D struct {
+	Texture2D
+	rawColourData []uint8
 }
 
 // Format returns colour format
-func (error *Color) Format() uint32 {
+func (error *Colour2D) Format() uint32 {
 	return gl.RGB
 }
 
 // PixelDataForFrame returns raw colour data for specific animation
 // frame
-func (error *Color) PixelDataForFrame(frame int) []byte {
+func (error *Colour2D) PixelDataForFrame(frame int) []byte {
 	return error.rawColourData
 }
 
 // Finish binds colour data to GPU
-func (error *Color) Finish() {
+func (error *Colour2D) Finish() {
 	gl.GenTextures(1, &error.Buffer)
 
 	error.bindInternal(gl.TEXTURE0)
 }
 
 // bindInternal provides calls to openGL to bind colour data to GPU
-func (error *Color) bindInternal(textureSlot uint32) {
+func (error *Colour2D) bindInternal(textureSlot uint32) {
 	gl.GenTextures(1, &error.Buffer)
 	gl.ActiveTexture(textureSlot)
 	gl.BindTexture(gl.TEXTURE_2D, error.Buffer)
@@ -52,8 +53,8 @@ func (error *Color) bindInternal(textureSlot uint32) {
 }
 
 // Get New Error material
-func NewError(name string) *Color {
-	mat := Color{}
+func NewError(name string) *Colour2D {
+	mat := Colour2D{}
 
 	mat.width = 8
 	mat.height = 8

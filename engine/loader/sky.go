@@ -2,7 +2,7 @@ package loader
 
 import (
 	material2 "github.com/galaco/Gource-Engine/engine/loader/material"
-	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/texture"
 	"github.com/galaco/Gource-Engine/engine/mesh/primitive"
 	"github.com/galaco/Gource-Engine/engine/model"
 )
@@ -12,7 +12,7 @@ import (
 func LoadSky(materialName string) *model.Model {
 	sky := model.NewModel(materialName)
 
-	mats := make([]material.IMaterial, 6)
+	mats := make([]texture.ITexture, 6)
 
 	mats[0] = material2.LoadSingleVtf(materialName + "up")
 	mats[1] = material2.LoadSingleVtf(materialName + "dn")
@@ -23,7 +23,7 @@ func LoadSky(materialName string) *model.Model {
 
 	sky.AddMesh(primitive.NewCube())
 
-	sky.GetMeshes()[0].SetMaterial(material.NewCubemap(mats))
+	sky.GetMeshes()[0].SetMaterial(texture.NewCubemap(mats))
 
 	return sky
 }
