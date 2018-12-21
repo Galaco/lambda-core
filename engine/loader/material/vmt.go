@@ -37,6 +37,10 @@ func (vmt *Vmt) GetProperty(name string) VmtProperty {
 	}
 }
 
+func (vmt *Vmt) Destroy() {
+
+}
+
 // VmtProperty is a single vmt property.
 // It allows for reading a property as any supported type, but its up to
 // a calling function to know the expected type, as it should already know

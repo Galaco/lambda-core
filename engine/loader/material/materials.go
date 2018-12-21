@@ -13,7 +13,7 @@ import (
 // materials are loaded mostly ad-hoc.
 func LoadMaterials(stringData *lumps.TexdataStringData, stringTable *lumps.TexDataStringTable, texInfos *[]texinfo.TexInfo) *texdatastringtable.TexDataStringTable {
 	materialStringTable := stringtable.GetTable(stringData, stringTable)
-
+	LoadErrorMaterial()
 	LoadMaterialList(stringtable.SortUnique(materialStringTable, texInfos))
 
 	return materialStringTable

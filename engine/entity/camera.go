@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/engine/config"
+	"github.com/galaco/Gource-Engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/galaco/Gource-Engine/engine/input/keyboard"

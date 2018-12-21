@@ -1,7 +1,7 @@
 package filesystem
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core/debug"
+	"github.com/galaco/Gource-Engine/engine/core/logger"
 	"github.com/galaco/Gource-Engine/lib/vpk"
 	"github.com/galaco/KeyValues"
 	"path/filepath"
@@ -12,17 +12,17 @@ import (
 // Read game resource data paths from gameinfo.txt
 // All games should ship with a gameinfo.txt, but it isn't actually mandatory
 func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
-	gameInfoNode,_ := gameInfo.Find("GameInfo")
-	fsNode,_ := gameInfoNode.Find("FileSystem")
+	gameInfoNode, _ := gameInfo.Find("GameInfo")
+	fsNode, _ := gameInfoNode.Find("FileSystem")
 
-	searchPathsNode,_ := fsNode.Find("SearchPaths")
-	searchPaths,_ := searchPathsNode.Children()
+	searchPathsNode, _ := fsNode.Find("SearchPaths")
+	searchPaths, _ := searchPathsNode.Children()
 	basePath, _ = filepath.Abs(basePath)
 	basePath = strings.Replace(basePath, "\\", "/", -1)
 
 	for _, searchPath := range searchPaths {
 		kv := searchPath
-		path,_ := kv.AsString()
+		path, _ := kv.AsString()
 
 		// Current directory
 		gameInfoPathRegex := regexp.MustCompile(`(?i)\|gameinfo_path\|`)
@@ -44,18 +44,18 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 			path = strings.Replace(path, ".vpk", "", 1)
 			vpkHandle, err := vpk.OpenVPK(path)
 			if err != nil {
-				debug.Error(err)
+				logger.Error(err)
 				continue
 			}
-			AddVpk(vpkHandle)
-			debug.Notice("Registered vpk: " + path)
+			RegisterVpk(vpkHandle)
+			logger.Notice("Registered vpk: " + path)
 		} else {
 			// wildcard suffixes not useful
 			if strings.HasSuffix(path, "/*") {
 				path = strings.Replace(path, "/*", "", -1)
 			}
-			AddSearchDirectory(path)
-			debug.Notice("Registered path: " + path)
+			RegisterLocalDirectory(path)
+			logger.Notice("Registered path: " + path)
 		}
 
 	}

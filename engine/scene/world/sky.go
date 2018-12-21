@@ -34,7 +34,7 @@ func NewSky(bsp *model.Bsp, clusterLeafs []*model.ClusterLeaf, position mgl32.Ve
 	s := Sky{
 		geometry:     bsp,
 		clusterLeafs: clusterLeafs,
-		cubemap: skyCube,
+		cubemap:      skyCube,
 	}
 
 	skyCameraPosition := (mgl32.Vec3{0, 0, 0}).Sub(position)

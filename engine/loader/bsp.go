@@ -1,13 +1,14 @@
 package loader
 
 import (
-	"github.com/galaco/Gource-Engine/engine/filesystem"
 	matloader "github.com/galaco/Gource-Engine/engine/loader/material"
 	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
+	"github.com/galaco/Gource-Engine/engine/texture"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/common"
@@ -45,7 +46,7 @@ type bspstructs struct {
 // BSP Materials
 // StaticProps (materials loaded as required)
 func LoadMap(file *bsp.Bsp) *world.World {
-	ResourceManager := filesystem.Manager()
+	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
 		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
@@ -84,7 +85,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		if len(bspStructure.lightmap) < 1 {
 			continue
 		}
-		bspFaces[idx].AddLightmap(material.LightmapFromColorRGBExp32(
+		bspFaces[idx].AddLightmap(texture.LightmapFromColorRGBExp32(
 			int(f.LightmapTextureSizeInLuxels[0]+1),
 			int(f.LightmapTextureSizeInLuxels[1]+1),
 			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
@@ -98,16 +99,20 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		//	continue
 		//}
 		vmtPath := "materials/" + faceVmt + ".vmt"
-		baseTexturePath := "-1"
-		if ResourceManager.Has(vmtPath) {
-			baseTexturePath = "materials/" + ResourceManager.Get(vmtPath).(*matloader.Vmt).GetProperty("basetexture").AsString() + ".vtf"
-		}
+		//baseTexturePath := "-1"
 		var mat material.IMaterial
-		if ResourceManager.Has(baseTexturePath) {
-			mat = ResourceManager.Get(baseTexturePath).(material.IMaterial)
+		if ResourceManager.HasMaterial(vmtPath) {
+			mat = ResourceManager.GetMaterial(vmtPath).(material.IMaterial)
+			//baseTexturePath = "materials/" + ResourceManager.GetMaterial(vmtPath).(*material.Material).BaseTextureName + ".vtf"
+			//log.Println(baseTexturePath)
 		} else {
-			mat = ResourceManager.Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
+			mat = ResourceManager.GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
 		}
+		//if ResourceManager.HasTexture(baseTexturePath) {
+		//	mat = ResourceManager.GetMaterial(baseTexturePath).(material.IMaterial)
+		//} else {
+		//	mat = ResourceManager.GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
+		//}
 		lightMat := bspFaces[idx].Lightmap()
 		bspFaces[idx].AddMaterial(mat)
 		// Generate texture coordinates
@@ -118,6 +123,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		bspMesh.AddLightmapCoordinate(
 			lightmapCoordsForFaceFromTexInfo(
 				bspMesh.Vertices()[bspFace.Offset()*3:(bspFace.Offset()*3)+(bspFace.Length()*3)],
+				&bspStructure.faces[idx],
 				&bspStructure.texInfos[bspStructure.faces[idx].TexInfo], lightMat.Width(), lightMat.Height())...)
 
 		if strings.HasPrefix(faceVmt, "TOOLS/") {
@@ -128,7 +134,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Finish the bsp object.
 	bspMesh.Finish()
 
-	// Load static props
+	// GetFile static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	// Optimise face data by cluster
@@ -293,19 +299,30 @@ func texCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width 
 }
 
 // lightmapCoordsForFaceFromTexInfo create lightmap coordinates from TexInfo
-func lightmapCoordsForFaceFromTexInfo(vertexes []float32, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
+func lightmapCoordsForFaceFromTexInfo(vertexes []float32, faceInfo *face.Face, tx *texinfo.TexInfo, width int, height int) (uvs []float32) {
 	for idx := 0; idx < len(vertexes); idx += 3 {
-		//u = tv0,0 * x + tv0,1 * y + tv0,2 * z + tv0,3
-		u := ((tx.LightmapVecsLuxelsPerWorldUnits[0][0] * vertexes[idx]) +
-			(tx.LightmapVecsLuxelsPerWorldUnits[0][1] * vertexes[idx+1]) +
-			(tx.LightmapVecsLuxelsPerWorldUnits[0][2] * vertexes[idx+2]) +
-			tx.LightmapVecsLuxelsPerWorldUnits[0][3]) / float32(width)
+		u := (mgl32.Vec3{vertexes[idx], vertexes[idx+1], vertexes[idx+2]}).Dot(
+			mgl32.Vec3{
+				tx.LightmapVecsLuxelsPerWorldUnits[0][0],
+				tx.LightmapVecsLuxelsPerWorldUnits[0][1],
+				tx.LightmapVecsLuxelsPerWorldUnits[0][2],
+			}) + tx.LightmapVecsLuxelsPerWorldUnits[0][3]
+		v := (mgl32.Vec3{vertexes[idx], vertexes[idx+1], vertexes[idx+2]}).Dot(
+			mgl32.Vec3{
+				tx.LightmapVecsLuxelsPerWorldUnits[1][0],
+				tx.LightmapVecsLuxelsPerWorldUnits[1][1],
+				tx.LightmapVecsLuxelsPerWorldUnits[1][2],
+			}) + tx.LightmapVecsLuxelsPerWorldUnits[1][3]
 
-		//v = tv1,0 * x + tv1,1 * y + tv1,2 * z + tv1,3
-		v := ((tx.LightmapVecsLuxelsPerWorldUnits[1][0] * vertexes[idx]) +
-			(tx.LightmapVecsLuxelsPerWorldUnits[1][1] * vertexes[idx+1]) +
-			(tx.LightmapVecsLuxelsPerWorldUnits[1][2] * vertexes[idx+2]) +
-			tx.LightmapVecsLuxelsPerWorldUnits[1][3]) / float32(height)
+		u -= float32(faceInfo.LightmapTextureMinsInLuxels[0]) - .5
+		v -= float32(faceInfo.LightmapTextureMinsInLuxels[1]) - .5
+		u /= float32(faceInfo.LightmapTextureSizeInLuxels[0]) + 1
+		v /= float32(faceInfo.LightmapTextureSizeInLuxels[1]) + 1
+
+		//u *= float32(width) // lightmapRect.width
+		//v *= float32(height) //lightmapRect.height
+		//u += lightmapRect.x
+		//v += lightmapRect.y
 
 		uvs = append(uvs, u, v)
 	}

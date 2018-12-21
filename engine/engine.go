@@ -1,13 +1,8 @@
 package engine
 
 import (
-	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core"
-	"github.com/galaco/Gource-Engine/engine/core/debug"
 	"github.com/galaco/Gource-Engine/engine/core/event"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/lib/gameinfo"
-	"runtime"
 	"time"
 )
 
@@ -22,11 +17,6 @@ type Engine struct {
 
 // Initialise the engine, and attached managers
 func (engine *Engine) Initialise() {
-	// Load engine configuration
-	engine.loadConfig()
-
-	// Derive and register game resource paths
-	filesystem.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
 }
 
 // Run the engine
@@ -80,17 +70,8 @@ func (engine *Engine) SetSimulationSpeed(multiplier float64) {
 	engine.simulationSpeed = multiplier
 }
 
-func (engine *Engine) loadConfig() {
-	cfg, err := config.Load("./")
-	if err != nil {
-		debug.Error(err)
-	}
-	gameinfo.LoadConfig(cfg.GameDirectory)
-}
-
 // NewEngine returns a new engine instance
 func NewEngine() *Engine {
-	runtime.LockOSThread()
 	return &Engine{
 		simulationSpeed: 1.0,
 	}

@@ -1,47 +1,70 @@
 package main
 
 import (
+	"github.com/galaco/Gource-Engine/config"
 	"github.com/galaco/Gource-Engine/engine"
-	"github.com/galaco/Gource-Engine/engine/config"
 	"github.com/galaco/Gource-Engine/engine/core/event"
 	"github.com/galaco/Gource-Engine/engine/core/event/message"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
 	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
+	"github.com/galaco/Gource-Engine/engine/core/logger"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/input/keyboard"
-	"github.com/galaco/Gource-Engine/engine/renderer"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/Gource-Engine/engine/scene"
-	"github.com/galaco/Gource-Engine/engine/window"
 	"github.com/galaco/Gource-Engine/game"
+	"github.com/galaco/Gource-Engine/lib/gameinfo"
+	"github.com/galaco/Gource-Engine/renderer"
+	"github.com/galaco/Gource-Engine/window"
+	"runtime"
 )
 
 func main() {
-	// Build our engine setup
-	Application := engine.NewEngine()
+	runtime.LockOSThread()
 
-	// Initialise current setup. Note this doesn't start any loop, but
-	// allows for configuration of systems by the engine
+	// Load GameInfo.txt
+	// GameInfo.txt includes fundamental properties about the game
+	// and its resources locations
+	cfg, err := config.Load("./")
+	if err != nil {
+		logger.Fatal(err)
+	}
+	_, err = gameinfo.LoadConfig(cfg.GameDirectory)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	// Register GameInfo.txt referenced resource paths
+	// Filesystem module needs to know about all the possible resource
+	// locations it can search.
+	filesystem.RegisterGameResourcePaths(config.Get().GameDirectory, gameinfo.Get())
+
+	// Explicity define fallbacks for missing resources
+	// Defaults are defined, but if HL2 assets are not readable, then
+	// the default may not be readable
+	resource.Manager().SetErrorModelName("models/props/de_dust/du_antenna_A.mdl")
+	resource.Manager().SetErrorTextureName("materials/error.vtf")
+
+	// General engine setup
+	Application := engine.NewEngine()
 	Application.Initialise()
 
 	Application.AddManager(&window.Manager{})
 	Application.AddManager(&renderer.Manager{})
 
+	// Game specific setup
 	Game := game.CounterstrikeSource{}
 	Game.RegisterEntityClasses()
-
-	filesystem.Manager().SetErrorModelName("models/props/de_dust/du_antenna_A.mdl")
-	filesystem.Manager().SetErrorTextureName("materials/error.vtf")
-
-	// Load a map!
-	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
 
-	Application.SetSimulationSpeed(10)
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
 
-	// Run the engine
+	// Start
 	Application.Run()
+
+	Application.SetSimulationSpeed(10)
 }
 
 // Closeable Simple struct to control engine shutdown utilising the internal event manager
