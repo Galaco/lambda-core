@@ -1,4 +1,4 @@
-package material
+package texture
 
 import (
 	"github.com/go-gl/gl/v4.1-core/gl"
@@ -16,8 +16,8 @@ var cubeMapImageType = [6]uint32{
 // Cubemap is a 6-sided edgeless texture that can be mapped to a cube,
 // Used mainly for pre-computed reflections
 type Cubemap struct {
-	Material
-	Faces []IMaterial
+	Texture2D
+	Faces []ITexture
 }
 
 // Bind this material to the GPU
@@ -92,12 +92,12 @@ func (material *Cubemap) Finish() {
 	}
 }
 
-func (material *Cubemap) Unload() {
+func (material *Cubemap) Destroy() {
 
 }
 
 // NewCubemap returns a new cubemap material
-func NewCubemap(materials []IMaterial) *Cubemap {
+func NewCubemap(materials []ITexture) *Cubemap {
 	return &Cubemap{
 		Faces: materials,
 	}

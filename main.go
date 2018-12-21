@@ -16,9 +16,12 @@ import (
 	"github.com/galaco/Gource-Engine/lib/gameinfo"
 	"github.com/galaco/Gource-Engine/renderer"
 	"github.com/galaco/Gource-Engine/window"
+	"runtime"
 )
 
 func main() {
+	runtime.LockOSThread()
+
 	// Load GameInfo.txt
 	// GameInfo.txt includes fundamental properties about the game
 	// and its resources locations

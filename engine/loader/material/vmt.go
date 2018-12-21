@@ -37,7 +37,7 @@ func (vmt *Vmt) GetProperty(name string) VmtProperty {
 	}
 }
 
-func (vmt *Vmt) Unload() {
+func (vmt *Vmt) Destroy() {
 
 }
 

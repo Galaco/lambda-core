@@ -30,7 +30,7 @@ func (model *Model) GetFilePath() string {
 	return model.fileName
 }
 
-func (model *Model) Unload() {
+func (model *Model) Destroy() {
 
 }
 

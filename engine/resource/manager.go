@@ -13,6 +13,8 @@ type manager struct {
 
 	materials         map[string]IResource
 	materialReadMutex sync.Mutex
+	textures          map[string]IResource
+	textureReadMutex  sync.Mutex
 	models            map[string]IResource
 	modelReadMutex    sync.Mutex
 }
@@ -22,6 +24,13 @@ func (m *manager) AddMaterial(file IResource) {
 	m.materialReadMutex.Lock()
 	m.materials[strings.ToLower(file.GetFilePath())] = file
 	m.materialReadMutex.Unlock()
+}
+
+// Add a new material
+func (m *manager) AddTexture(file IResource) {
+	m.textureReadMutex.Lock()
+	m.textures[strings.ToLower(file.GetFilePath())] = file
+	m.textureReadMutex.Unlock()
 }
 
 // Add a new model
@@ -34,6 +43,10 @@ func (m *manager) AddModel(file IResource) {
 // Get Find a specific filesystem
 func (m *manager) GetMaterial(filePath string) IResource {
 	return m.materials[strings.ToLower(filePath)]
+}
+
+func (m *manager) GetTexture(filePath string) IResource {
+	return m.textures[strings.ToLower(filePath)]
 }
 
 func (m *manager) GetModel(filePath string) IResource {
@@ -73,6 +86,16 @@ func (m *manager) HasMaterial(filePath string) bool {
 	return false
 }
 
+func (m *manager) HasTexture(filePath string) bool {
+	m.textureReadMutex.Lock()
+	if m.textures[strings.ToLower(filePath)] != nil {
+		m.textureReadMutex.Unlock()
+		return true
+	}
+	m.textureReadMutex.Unlock()
+	return false
+}
+
 // Has the specified model been loaded
 func (m *manager) HasModel(filePath string) bool {
 	m.modelReadMutex.Lock()
@@ -86,10 +109,10 @@ func (m *manager) HasModel(filePath string) bool {
 
 func (m *manager) Cleanup() {
 	for _, mat := range m.materials {
-		mat.Unload()
+		mat.Destroy()
 	}
 	for _, model := range m.models {
-		model.Unload()
+		model.Destroy()
 	}
 }
 
@@ -102,6 +125,7 @@ func Manager() *manager {
 		resourceManager.errorTextureName = "materials/error.vtf"
 		resourceManager.materials = map[string]IResource{}
 		resourceManager.models = map[string]IResource{}
+		resourceManager.textures = map[string]IResource{}
 	}
 
 	return &resourceManager
