@@ -10,6 +10,10 @@ type Context struct {
 	context uint32
 }
 
+func (ctx *Context) Id() uint32 {
+	return ctx.context
+}
+
 func (context *Context) AddShader(source string, shaderType uint32) {
 	shader, err := context.compileShader(source, shaderType)
 	if err != nil {

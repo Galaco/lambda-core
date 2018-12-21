@@ -17,7 +17,7 @@ var Vertex = `
 	out vec2 LightmapUV;
 
     void main() {
-        gl_Position = projection * view * model * vec4(vertexPosition, 1.0);
+		gl_Position = projection * view * model * vec4(vertexPosition, 1.0);
 
     	// UV of the vertex. No special space for this one.
     	UV = vertexUV;

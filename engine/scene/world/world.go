@@ -125,7 +125,7 @@ func (entity *World) BuildSkybox(sky *model.Model, position mgl32.Vec3, scale fl
 		}
 	}
 
-	entity.sky = *NewSky(visibleModel, visibleWorld, position, scale)
+	entity.sky = *NewSky(visibleModel, visibleWorld, position, scale, sky)
 }
 
 func NewWorld(world model.Bsp, staticProps []model.StaticProp, visData *visibility.Vis) *World {

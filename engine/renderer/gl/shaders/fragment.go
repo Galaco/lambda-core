@@ -4,6 +4,7 @@ var Fragment = `
     #version 410
 
 	uniform int useLightmap;
+
 	uniform sampler2D baseTextureSampler;
 	uniform sampler2D lightmapTextureSampler;
 
@@ -34,7 +35,6 @@ var Fragment = `
     void main() 
 	{
 		GetBasetexture(frag_colour, baseTextureSampler, UV);
-		
 		ApplyLightmap(frag_colour, lightmapTextureSampler, LightmapUV);
     }
 ` + "\x00"

@@ -10,6 +10,8 @@ type Sky struct {
 	geometry     *model.Bsp
 	clusterLeafs []*model.ClusterLeaf
 	transform    entity.Transform
+
+	cubemap *model.Model
 }
 
 func (sky *Sky) GetVisibleBsp() *model.Bsp {
@@ -20,14 +22,19 @@ func (sky *Sky) GetClusterLeafs() []*model.ClusterLeaf {
 	return sky.clusterLeafs
 }
 
+func (sky *Sky) GetCubemap() *model.Model {
+	return sky.cubemap
+}
+
 func (sky *Sky) Transform() *entity.Transform {
 	return &sky.transform
 }
 
-func NewSky(model *model.Bsp, clusterLeafs []*model.ClusterLeaf, position mgl32.Vec3, scale float32) *Sky {
+func NewSky(bsp *model.Bsp, clusterLeafs []*model.ClusterLeaf, position mgl32.Vec3, scale float32, skyCube *model.Model) *Sky {
 	s := Sky{
-		geometry:     model,
+		geometry:     bsp,
 		clusterLeafs: clusterLeafs,
+		cubemap: skyCube,
 	}
 
 	skyCameraPosition := (mgl32.Vec3{0, 0, 0}).Sub(position)

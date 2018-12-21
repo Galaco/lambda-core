@@ -12,13 +12,17 @@ import (
 // Read game resource data paths from gameinfo.txt
 // All games should ship with a gameinfo.txt, but it isn't actually mandatory
 func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
-	searchPaths := gameInfo.FindByKey("GameInfo").FindByKey("FileSystem").FindByKey("SearchPaths")
+	gameInfoNode,_ := gameInfo.Find("GameInfo")
+	fsNode,_ := gameInfoNode.Find("FileSystem")
+
+	searchPathsNode,_ := fsNode.Find("SearchPaths")
+	searchPaths,_ := searchPathsNode.Children()
 	basePath, _ = filepath.Abs(basePath)
 	basePath = strings.Replace(basePath, "\\", "/", -1)
 
-	for _, searchPath := range *searchPaths.GetAllValues() {
-		kv := searchPath.(keyvalues.KeyValue)
-		path := (*kv.GetAllValues())[0].(string)
+	for _, searchPath := range searchPaths {
+		kv := searchPath
+		path,_ := kv.AsString()
 
 		// Current directory
 		gameInfoPathRegex := regexp.MustCompile(`(?i)\|gameinfo_path\|`)
@@ -31,7 +35,7 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 		if allSourceEnginePathsRegex.MatchString(path) {
 			path = allSourceEnginePathsRegex.ReplaceAllString(path, basePath+"/../")
 		}
-		if strings.Contains(strings.ToLower(*kv.GetKey()), "mod") && !strings.HasPrefix(path, basePath) {
+		if strings.Contains(strings.ToLower(kv.Key()), "mod") && !strings.HasPrefix(path, basePath) {
 			path = basePath + "/../" + path
 		}
 

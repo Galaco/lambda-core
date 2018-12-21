@@ -45,6 +45,9 @@ func (manager *Manager) Update(dt float64) {
 	// Begin actual rendering
 	manager.renderer.StartFrame(currentScene.CurrentCamera())
 
+	// Start with sky
+	manager.renderer.DrawSkybox(renderableWorld.Sky())
+
 	// Draw static world first
 	manager.renderer.DrawBsp(renderableWorld)
 
@@ -54,9 +57,6 @@ func (manager *Manager) Update(dt float64) {
 		manager.renderer.DrawModel(entry.Model, entry.Transform.GetTransformationMatrix())
 	}
 	cacheMutex.Unlock()
-
-	// Finish up with the skybox
-	manager.renderer.DrawSkybox(renderableWorld.Sky())
 
 	manager.renderer.EndFrame()
 }

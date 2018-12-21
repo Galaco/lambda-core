@@ -9,9 +9,8 @@ var Vertex = `
 
     layout(location = 0) in vec3 vertexPosition;
 	layout(location = 1) in vec2 vertexUV;
-	layout(location = 1) in vec2 vertexNormal;
+	layout(location = 2) in vec2 vertexNormal;
 
-	// Output data ; will be interpolated for each fragment.
 	out vec3 UV;
 
     void main() {

@@ -29,7 +29,7 @@ func main() {
 	Game := game.CounterstrikeSource{}
 	Game.RegisterEntityClasses()
 
-	filesystem.Manager().SetErrorModelName("models/error.mdl")
+	filesystem.Manager().SetErrorModelName("models/props/de_dust/du_antenna_A.mdl")
 	filesystem.Manager().SetErrorTextureName("materials/error.vtf")
 
 	// Load a map!

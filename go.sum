@@ -1,5 +1,11 @@
 github.com/galaco/KeyValues v0.0.0-20181011193740-ba236c98cfc2 h1:QtnlQIhMWX26TEeE5Tek6AQJjgv5oW1ZE/NYRFB4+rw=
 github.com/galaco/KeyValues v0.0.0-20181011193740-ba236c98cfc2/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v0.0.0-20181221123550-834ca79bad8a h1:cBCa3SUjpoRMLet6i0b6F1bQfbMBvriLvB/KwWFla9M=
+github.com/galaco/KeyValues v0.0.0-20181221123550-834ca79bad8a/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.0.1 h1:bbaR8xJAk0vFfEvPsgyFaoKYC5m3GkKiv4MtFk1PXh8=
+github.com/galaco/KeyValues v1.0.1/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.0.2 h1:6Wk8Tnsgu+Ey/aPIVXh5dQY0hFY1i8dY1bkV69LYwFc=
+github.com/galaco/KeyValues v1.0.2/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af h1:WvaI49oII83yG2LCseuOuIIbo/f5k5iCDvFwe8W5HPI=
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af/go.mod h1:TyLwCRckWSsaQhePyfTOwfSXlEUJ411MwYaVkbPwOMo=
 github.com/galaco/bsp v0.0.0-20181206122338-5c49a9094ff9 h1:31PuOdqnRSsbDpqdouUqP/OtHoOBA2udNMOW8wsogzw=
@@ -16,6 +22,8 @@ github.com/go-gl/gl v0.0.0-20181026044259-55b76b7df9d2 h1:78Hza2KHn2PX1jdydQnffa
 github.com/go-gl/gl v0.0.0-20181026044259-55b76b7df9d2/go.mod h1:482civXOzJJCPzJ4ZOX/pwvXBWSnzD4OKMdH4ClKGbk=
 github.com/go-gl/glfw v0.0.0-20181014061658-691ee1b84c51 h1:elGSwayRx7uAsfA5PnVKeTHh+AVsUTmas0CkHOw/DSk=
 github.com/go-gl/glfw v0.0.0-20181014061658-691ee1b84c51/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
+github.com/go-gl/glfw v0.0.0-20181213070059-819e8ce5125f h1:7MsFMbSn8Lcw0blK4+NEOf8DuHoOBDhJsHz04yh13pM=
+github.com/go-gl/glfw v0.0.0-20181213070059-819e8ce5125f/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/mathgl v0.0.0-20180804195959-cdf14b6b8f8a h1:2n5w2v3knlspzjJWyQPC0j88Mwvq0SZV0Jdws34GJwc=
 github.com/go-gl/mathgl v0.0.0-20180804195959-cdf14b6b8f8a/go.mod h1:dvrdneKbyWbK2skTda0nM4B9zSlS2GZSnjX7itr/skQ=
 github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e h1:9MlwzLdW7QSDrhDjFlsEYmxpFyIoXmYRon3dt0io31k=
