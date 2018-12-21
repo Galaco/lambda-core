@@ -30,6 +30,10 @@ func (model *Model) GetFilePath() string {
 	return model.fileName
 }
 
+func (model *Model) Unload() {
+
+}
+
 // NewModel returns a new Model
 func NewModel(filename string, meshes ...mesh.IMesh) *Model {
 	return &Model{

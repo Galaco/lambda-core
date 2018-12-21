@@ -2,9 +2,9 @@ package entity
 
 import (
 	"github.com/galaco/Gource-Engine/engine/entity"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/loader/prop"
 	"github.com/galaco/Gource-Engine/engine/model"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	entity2 "github.com/galaco/Gource-Engine/entity"
 	"strings"
 )
@@ -18,10 +18,10 @@ func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 // AssignStudioModelToEntity sets a renderable entity's model
 func AssignStudioModelToEntity(entity entity.IEntity) {
 	modelName := entity.KeyValues().ValueForKey("model")
-	if !filesystem.Manager().Has(modelName) {
+	if !resource.Manager().HasModel(modelName) {
 		m, _ := prop.LoadProp(modelName)
 		entity.(entity2.IProp).SetModel(m)
 	} else {
-		entity.(entity2.IProp).SetModel(filesystem.Manager().Get(modelName).(*model.Model))
+		entity.(entity2.IProp).SetModel(resource.Manager().GetModel(modelName).(*model.Model))
 	}
 }

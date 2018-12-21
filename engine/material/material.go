@@ -81,6 +81,10 @@ func (material *Material) Finish() {
 	}
 }
 
+func (material *Material) Unload() {
+
+}
+
 // NewMaterial returns a new material from Vtf
 func NewMaterial(filePath string, vtf *vtf.Vtf, width int, height int) *Material {
 	return &Material{

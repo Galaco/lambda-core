@@ -1,11 +1,11 @@
 package loader
 
 import (
-	"github.com/galaco/Gource-Engine/engine/filesystem"
 	matloader "github.com/galaco/Gource-Engine/engine/loader/material"
 	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	sceneVisibility "github.com/galaco/Gource-Engine/engine/scene/visibility"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
 	"github.com/galaco/bsp"
@@ -45,7 +45,7 @@ type bspstructs struct {
 // BSP Materials
 // StaticProps (materials loaded as required)
 func LoadMap(file *bsp.Bsp) *world.World {
-	ResourceManager := filesystem.Manager()
+	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
 		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
@@ -99,14 +99,14 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		//}
 		vmtPath := "materials/" + faceVmt + ".vmt"
 		baseTexturePath := "-1"
-		if ResourceManager.Has(vmtPath) {
-			baseTexturePath = "materials/" + ResourceManager.Get(vmtPath).(*matloader.Vmt).GetProperty("basetexture").AsString() + ".vtf"
+		if ResourceManager.HasMaterial(vmtPath) {
+			baseTexturePath = "materials/" + ResourceManager.GetMaterial(vmtPath).(*matloader.Vmt).GetProperty("basetexture").AsString() + ".vtf"
 		}
 		var mat material.IMaterial
-		if ResourceManager.Has(baseTexturePath) {
-			mat = ResourceManager.Get(baseTexturePath).(material.IMaterial)
+		if ResourceManager.HasMaterial(baseTexturePath) {
+			mat = ResourceManager.GetMaterial(baseTexturePath).(material.IMaterial)
 		} else {
-			mat = ResourceManager.Get(filesystem.Manager().ErrorTextureName()).(material.IMaterial)
+			mat = ResourceManager.GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
 		}
 		lightMat := bspFaces[idx].Lightmap()
 		bspFaces[idx].AddMaterial(mat)
@@ -128,7 +128,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Finish the bsp object.
 	bspMesh.Finish()
 
-	// Load static props
+	// GetFile static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
 	// Optimise face data by cluster

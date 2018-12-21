@@ -92,6 +92,10 @@ func (material *Cubemap) Finish() {
 	}
 }
 
+func (material *Cubemap) Unload() {
+
+}
+
 // NewCubemap returns a new cubemap material
 func NewCubemap(materials []IMaterial) *Cubemap {
 	return &Cubemap{

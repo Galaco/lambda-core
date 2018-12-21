@@ -1,19 +1,19 @@
 package loader
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core/debug"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/core/logger"
 	"github.com/galaco/Gource-Engine/engine/loader/prop"
 	"github.com/galaco/Gource-Engine/engine/model"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	"github.com/galaco/bsp/primitives/game"
 	"log"
 	"strings"
 )
 
-// LoadStaticProps Load all staticprops referenced in a
+// LoadStaticProps GetFile all staticprops referenced in a
 // bsp's game lump
 func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
-	ResourceManager := filesystem.Manager()
+	ResourceManager := resource.Manager()
 	prop.LoadProp(ResourceManager.ErrorModelName())
 
 	log.Println("Loading static props")
@@ -23,7 +23,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 	}
 
 	propPaths = buildUniquePropList(propPaths)
-	debug.Notice("Found %d staticprops", len(propPaths))
+	logger.Notice("Found %d staticprops", len(propPaths))
 
 	numLoaded := 0
 	for _, path := range propPaths {
@@ -33,19 +33,19 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 		prop.LoadProp(path)
 	}
 
-	debug.Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
+	logger.Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
 
 	staticPropList := make([]model.StaticProp, 0)
 
 	for _, propEntry := range propLump.PropLumps {
 		modelName := propLump.DictLump.Name[propEntry.GetPropType()]
-		m := ResourceManager.Get(modelName)
+		m := ResourceManager.GetModel(modelName)
 		if m != nil {
 			staticPropList = append(staticPropList, *createStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
 			continue
 		}
 		// Model missing, use error model
-		m = ResourceManager.Get(ResourceManager.ErrorModelName())
+		m = ResourceManager.GetModel(ResourceManager.ErrorModelName())
 		staticPropList = append(staticPropList, *createStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
 	}
 

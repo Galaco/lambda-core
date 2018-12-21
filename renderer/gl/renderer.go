@@ -4,9 +4,9 @@ import (
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
-	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders"
-	"github.com/galaco/Gource-Engine/engine/renderer/gl/shaders/sky"
 	"github.com/galaco/Gource-Engine/engine/scene/world"
+	"github.com/galaco/Gource-Engine/renderer/gl/shaders"
+	"github.com/galaco/Gource-Engine/renderer/gl/shaders/sky"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
@@ -23,7 +23,7 @@ type Renderer struct {
 	vertexDrawMode uint32
 
 	matrixes struct {
-		view mgl32.Mat4
+		view       mgl32.Mat4
 		projection mgl32.Mat4
 	}
 }
@@ -48,8 +48,6 @@ func (manager *Renderer) LoadShaders() {
 	skyShaderMap["cubemapTexture"] = manager.lightmappedGenericShader.GetUniform("cubemapTexture")
 	manager.uniformMap[manager.skyShader.Id()] = skyShaderMap
 
-
-
 	manager.lightmappedGenericShader.UseProgram()
 	lightmappedGenericShaderMap := map[string]int32{}
 	lightmappedGenericShaderMap["model"] = manager.lightmappedGenericShader.GetUniform("model")
@@ -60,7 +58,6 @@ func (manager *Renderer) LoadShaders() {
 	lightmappedGenericShaderMap["useLightmap"] = manager.lightmappedGenericShader.GetUniform("useLightmap")
 	lightmappedGenericShaderMap["lightmapTextureSampler"] = manager.lightmappedGenericShader.GetUniform("lightmapTextureSampler")
 	manager.uniformMap[manager.lightmappedGenericShader.Id()] = lightmappedGenericShaderMap
-
 
 	opengl.Enable(opengl.BLEND)
 	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
@@ -86,7 +83,6 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	manager.setShader(manager.skyShader.Id())
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.skyShader.Id()]["projection"], 1, false, &manager.matrixes.projection[0])
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.skyShader.Id()]["view"], 1, false, &manager.matrixes.view[0])
-
 
 	manager.lightmappedGenericShader.UseProgram()
 	manager.setShader(manager.lightmappedGenericShader.Id())

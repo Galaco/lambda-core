@@ -4,9 +4,9 @@ import (
 	"github.com/galaco/Gource-Engine/engine/core"
 	"github.com/galaco/Gource-Engine/engine/input"
 	"github.com/galaco/Gource-Engine/engine/input/keyboard"
-	"github.com/galaco/Gource-Engine/engine/renderer/cache"
-	"github.com/galaco/Gource-Engine/engine/renderer/gl"
 	"github.com/galaco/Gource-Engine/engine/scene"
+	"github.com/galaco/Gource-Engine/renderer/cache"
+	"github.com/galaco/Gource-Engine/renderer/gl"
 	"strings"
 	"sync"
 )

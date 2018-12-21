@@ -1,12 +1,13 @@
 package prop
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core/debug"
+	"github.com/galaco/Gource-Engine/engine/core/logger"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	material2 "github.com/galaco/Gource-Engine/engine/loader/material"
 	"github.com/galaco/Gource-Engine/engine/material"
 	"github.com/galaco/Gource-Engine/engine/mesh"
 	"github.com/galaco/Gource-Engine/engine/model"
+	"github.com/galaco/Gource-Engine/engine/resource"
 	studiomodellib "github.com/galaco/Gource-Engine/lib/studiomodel"
 	"github.com/galaco/StudioModel"
 	"github.com/galaco/StudioModel/mdl"
@@ -22,30 +23,30 @@ import (
 
 // LoadProp loads a single prop/model of known filepath
 func LoadProp(path string) (*model.Model, error) {
-	ResourceManager := filesystem.Manager()
-	if ResourceManager.Has(path) {
-		return ResourceManager.Get(path).(*model.Model), nil
+	ResourceManager := resource.Manager()
+	if ResourceManager.HasModel(path) {
+		return ResourceManager.GetModel(path).(*model.Model), nil
 	}
 	prop, err := loadProp(strings.Split(path, ".mdl")[0])
 	if prop != nil {
 		m := modelFromStudioModel(path, prop)
 		if m != nil {
-			ResourceManager.Add(m)
+			ResourceManager.AddModel(m)
 		} else {
-			return ResourceManager.Get(ResourceManager.ErrorModelName()).(*model.Model), err
+			return ResourceManager.GetModel(ResourceManager.ErrorModelName()).(*model.Model), err
 		}
 	} else {
-		return ResourceManager.Get(ResourceManager.ErrorModelName()).(*model.Model), err
+		return ResourceManager.GetModel(ResourceManager.ErrorModelName()).(*model.Model), err
 	}
 
-	return ResourceManager.Get(path).(*model.Model), err
+	return ResourceManager.GetModel(path).(*model.Model), err
 }
 
 func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop := studiomodel.NewStudioModel(filePath)
 
 	// MDL
-	f, err := filesystem.Load(filePath + ".mdl")
+	f, err := filesystem.GetFile(filePath + ".mdl")
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +57,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddMdl(mdlFile)
 
 	// VVD
-	f, err = filesystem.Load(filePath + ".vvd")
+	f, err = filesystem.GetFile(filePath + ".vvd")
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +68,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddVvd(vvdFile)
 
 	// VTX
-	f, err = filesystem.Load(filePath + ".dx90.vtx")
+	f, err = filesystem.GetFile(filePath + ".dx90.vtx")
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +80,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddVtx(vtxFile)
 
 	// PHY
-	f, err = filesystem.Load(filePath + ".phy")
+	f, err = filesystem.GetFile(filePath + ".phy")
 	if err != nil {
 		return prop, err
 	}
@@ -96,7 +97,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel) *model.Model {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
-		debug.Error(err)
+		logger.Error(err)
 		return nil
 	}
 	outModel := model.NewModel(filename)

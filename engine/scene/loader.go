@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"github.com/galaco/Gource-Engine/engine/core/debug"
+	"github.com/galaco/Gource-Engine/engine/core/logger"
 	"github.com/galaco/Gource-Engine/engine/entity"
 	"github.com/galaco/Gource-Engine/engine/filesystem"
 	"github.com/galaco/Gource-Engine/engine/loader"
@@ -14,14 +14,14 @@ import (
 func LoadFromFile(fileName string) {
 	bspData, err := bsplib.ReadFromFile(fileName)
 	if err != nil {
-		debug.Fatal(err)
+		logger.Fatal(err)
 	}
 	if bspData.GetHeader().Version < 20 {
-		debug.Fatal("Unsupported BSP Version. Exiting...")
+		logger.Fatal("Unsupported BSP Version. Exiting...")
 	}
 
 	//Set pakfile for filesystem
-	filesystem.SetPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
+	filesystem.RegisterPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
 
 	loadWorld(bspData)
 
@@ -39,10 +39,10 @@ func loadWorld(file *bsplib.Bsp) {
 func loadEntities(entdata *lumps.EntData) {
 	vmfEntityTree, err := entity2.ParseEntities(entdata.GetData())
 	if err != nil {
-		debug.Fatal(err)
+		logger.Fatal(err)
 	}
 	entityList := entitylib.FromVmfNodeTree(vmfEntityTree.Unclassified)
-	debug.Notice("Found %d entities\n", entityList.Length())
+	logger.Notice("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
 		currentScene.AddEntity(entity2.CreateEntity(entityList.Get(i)))
 	}
