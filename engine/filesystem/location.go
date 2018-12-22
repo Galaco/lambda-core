@@ -54,7 +54,7 @@ func UnregisterPakfile() {
 }
 
 // GetFile attempts to get stream for filename.
-// Search order is Pak->VPK->FileSystem
+// Search order is Pak->FileSystem->VPK
 func GetFile(filename string) (io.Reader, error) {
 	// sanitise file
 	searchPath := strings.ToLower(filename)
@@ -64,14 +64,6 @@ func GetFile(filename string) (io.Reader, error) {
 		f, err := pakFile.GetFile(searchPath)
 		if err == nil && f != nil && len(f) != 0 {
 			return bytes.NewReader(f), nil
-		}
-	}
-
-	// Fall back to game vpk
-	for _, fs := range gameVPKs {
-		entry := fs.Entry(searchPath)
-		if entry != nil {
-			return entry.Open()
 		}
 	}
 
@@ -85,6 +77,14 @@ func GetFile(filename string) (io.Reader, error) {
 			return nil, err
 		}
 		return bytes.NewBuffer(file), nil
+	}
+
+	// Fall back to game vpk
+	for _, fs := range gameVPKs {
+		entry := fs.Entry(searchPath)
+		if entry != nil {
+			return entry.Open()
+		}
 	}
 
 	return nil, errors.New("Could not find: " + searchPath)

@@ -23,6 +23,7 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 	for _, searchPath := range searchPaths {
 		kv := searchPath
 		path, _ := kv.AsString()
+		path = strings.Trim(path, " ")
 
 		// Current directory
 		gameInfoPathRegex := regexp.MustCompile(`(?i)\|gameinfo_path\|`)
@@ -40,6 +41,7 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 		}
 
 		// Strip vpk extension, then load it
+		path = strings.Trim(strings.Trim(path, " "), "\"")
 		if strings.HasSuffix(path, ".vpk") {
 			path = strings.Replace(path, ".vpk", "", 1)
 			vpkHandle, err := vpk.OpenVPK(path)

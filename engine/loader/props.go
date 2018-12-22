@@ -30,7 +30,11 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 		if !strings.HasSuffix(path, ".mdl") {
 			path += ".mdl"
 		}
-		prop.LoadProp(path)
+		_,err := prop.LoadProp(path)
+		if err != nil {
+			continue
+		}
+		numLoaded++
 	}
 
 	logger.Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
