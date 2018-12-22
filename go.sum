@@ -10,6 +10,7 @@ github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af h1:WvaI49oII83y
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af/go.mod h1:TyLwCRckWSsaQhePyfTOwfSXlEUJ411MwYaVkbPwOMo=
 github.com/galaco/bsp v0.0.0-20181206122338-5c49a9094ff9 h1:31PuOdqnRSsbDpqdouUqP/OtHoOBA2udNMOW8wsogzw=
 github.com/galaco/bsp v0.0.0-20181206122338-5c49a9094ff9/go.mod h1:RcrH7F/FezUOMXKWuYyWYwrHdamdvFxZqD2lg8LFcnc=
+github.com/galaco/bsp v0.1.1/go.mod h1:RcrH7F/FezUOMXKWuYyWYwrHdamdvFxZqD2lg8LFcnc=
 github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546 h1:zWNJVV0bFq+/O7nMK+AJfCXCD4V5vhwukgt/F9TeBa0=
 github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546/go.mod h1:vcKoSJ6VLGuLDPp2ptTTb1J7D51w5+t02EqlNtwMDLI=
 github.com/galaco/vmf v0.0.0-20180309175744-7a9ccb6e8abb h1:15XPqvxG/llf53op1m6Dy4CDiZ+DUvnqc1IEqHdxxN4=
