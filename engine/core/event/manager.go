@@ -93,7 +93,7 @@ var eventManager Manager
 // GetEventManager return static eventmanager
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[message.Id]map[core.Handle]IEventListenable)
+		eventManager.listenerMap = make(map[message.Id]map[core.Handle]IEventListenable, 512)
 	}
 	return &eventManager
 }

@@ -7,6 +7,8 @@ import (
 	"github.com/galaco/source-tools-common/texdatastringtable"
 )
 
+const materialRootPath = "materials/"
+
 // LoadMaterials is the base bsp material loader function.
 // All bsp materials should be loaded by this function.
 // Note that this covers bsp referenced materials only, model & entity

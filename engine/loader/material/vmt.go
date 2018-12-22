@@ -1,193 +1,117 @@
 package material
 
 import (
-	"bufio"
-	"errors"
-	"io"
-	"strconv"
+	"github.com/galaco/Gource-Engine/engine/core/logger"
+	"github.com/galaco/Gource-Engine/engine/filesystem"
+	"github.com/galaco/Gource-Engine/engine/material"
+	"github.com/galaco/Gource-Engine/engine/resource"
+	"github.com/galaco/Gource-Engine/engine/texture"
+	"github.com/galaco/KeyValues"
 	"strings"
 )
 
-// @TODO This implementation is not great. It'll do until more parameters are supported,
-// but its fragile and awkward to use.
-
-// Vmt file format properties
-// @TODO This could probably be replaced with the KeyValues implementation
-// @TODO This does not support recursive 'include' parameter
-type Vmt struct {
-	Filename    string
-	ShaderName  string
-	properties  map[string]VmtProperty
-	BaseTexture string
+// LoadMaterialList GetFile all materials referenced in the map
+// NOTE: There is a priority:
+// 1. BSP pakfile
+// 2. Game directory
+// 3. Game VPK
+// 4. Other game shared VPK
+func LoadMaterialList(materialList []string) {
+	loadMaterials(materialList...)
 }
 
-// GetFilePath returns Vmt filepath on disk
-func (vmt *Vmt) GetFilePath() string {
-	return vmt.Filename
-}
+// LoadErrorMaterial ensures that the error material has been loaded
+func LoadErrorMaterial() {
+	ResourceManager := resource.Manager()
+	name := ResourceManager.ErrorTextureName()
 
-// GetProperty returns a vmt property
-func (vmt *Vmt) GetProperty(name string) VmtProperty {
-	if _, ok := vmt.properties[strings.ToLower(name)]; ok {
-		return vmt.properties[strings.ToLower(name)]
+	if ResourceManager.GetMaterial(name) != nil {
+		return
 	}
 
-	return VmtProperty{
-		value: "",
+	// Ensure that error texture is available
+	ResourceManager.AddTexture(texture.NewError(name))
+	errorMat := &material.Material{
+		FilePath: name,
 	}
+	errorMat.Textures.BaseTexture = ResourceManager.GetTexture(name).(texture.ITexture)
+	ResourceManager.AddMaterial(errorMat)
 }
 
-func (vmt *Vmt) Destroy() {
+// loadMaterials "private" function that actually does the loading
+func loadMaterials(materialList ...string) (missingList []string) {
+	ResourceManager := resource.Manager()
 
-}
+	for _, materialPath := range materialList {
+		vtfTexturePath := ""
 
-// VmtProperty is a single vmt property.
-// It allows for reading a property as any supported type, but its up to
-// a calling function to know the expected type, as it should already know
-// what the property is.
-type VmtProperty struct {
-	value string
-}
-
-// AsInt returns property as int64
-func (property VmtProperty) AsInt() (int64, error) {
-	return strconv.ParseInt(property.value, 10, 32)
-}
-
-// AsBool returns property as boolean
-func (property VmtProperty) AsBool() (bool, error) {
-	return strconv.ParseBool(property.value)
-}
-
-// AsFloat returns property as float64
-func (property VmtProperty) AsFloat() (float64, error) {
-	return strconv.ParseFloat(property.value, 32)
-}
-
-// AsString returns property as it was read
-func (property VmtProperty) AsString() string {
-	return property.value
-}
-
-// ParseVmt reads a vmt file stream and returns a Vmt
-// struct with the parsed properties
-func ParseVmt(filename string, stream io.Reader) (*Vmt, error) {
-	reader := bufio.NewReader(stream)
-	vmt := &Vmt{
-		Filename: filename,
-		properties: map[string]VmtProperty{
-			"basetexture": {value: ""},
-		},
-	}
-
-	shaderName, err := reader.ReadString([]byte("{")[0])
-	if err != nil {
-		return nil, err
-	}
-	vmt.ShaderName = sanitise(shaderName)
-
-	depth := 1
-
-	for depth > 0 {
-		l, err := reader.ReadString([]byte("\n")[0])
-		if err != nil {
-			if err != io.EOF {
-				return nil, errors.New("invalid vmt filesystem")
-			} else {
-				line := string(l)
-				// Remove any comments
-				line = sanitise(strings.Split(line, "//")[0])
-				if isEndOfScope(line) || len(line) == 0 {
-					depth = 0
-					break
-				}
-			}
+		if !strings.HasSuffix(materialPath, ".vmt") {
+			materialPath += ".vmt"
 		}
-		line := string(l)
-
-		// Remove any comments
-		line = sanitise(strings.Split(line, "//")[0])
-
-		// Are we changing scope (end of vmt/new complex property)
-		if isNewScope(line) {
-			depth++
-		} else if isEndOfScope(line) {
-			depth--
-		}
-
-		if len(line) == 0 {
-			continue
-		}
-
-		// Read the key value
-		splitSet := strings.Split(line, " ")
-		kv := [2]string{}
-		for _, s := range splitSet {
-			s := sanitise(s)
-			if len(s) < 1 || s == " " {
+		// Only load the filesystem once
+		if ResourceManager.GetMaterial(materialRootPath+materialPath) == nil {
+			if readVmt(materialRootPath + materialPath) != nil {
+				logger.Warn("Unable to parse: " + materialRootPath + materialPath)
+				missingList = append(missingList, materialPath)
 				continue
 			}
-			if isPropertyName(s) {
-				kv[0] = trimPropertyName(s)
-			} else {
-				kv[1] = s
+			vmt := ResourceManager.GetMaterial(materialRootPath + materialPath).(*material.Material)
+
+			// NOTE: in patch vmts include is not supported
+			if vmt.BaseTextureName != "" {
+				vtfTexturePath = vmt.BaseTextureName + ".vtf"
 			}
+
+			vmt.Textures.BaseTexture = LoadSingleTexture(vtfTexturePath)
 		}
-		if len(kv[0]) > 1 {
-			vmt.properties[strings.ToLower(kv[0])] = VmtProperty{value: kv[1]}
-		}
 	}
-
-	return vmt, nil
+	return missingList
 }
 
-func isNewScope(line string) bool {
-	return strings.Contains(line, "{")
+// LoadSingleMaterial loads a single material with known file path
+func LoadSingleMaterial(filePath string) material.IMaterial {
+	if resource.Manager().GetMaterial(materialRootPath + filePath) != nil {
+		return resource.Manager().GetMaterial(materialRootPath + filePath).(material.IMaterial)
+	}
+	result := loadMaterials(filePath)
+	if len(result) > 0 {
+		return resource.Manager().GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
+	}
+	return resource.Manager().GetMaterial("materials/" + filePath).(material.IMaterial)
 }
 
-func isEndOfScope(line string) bool {
-	return strings.Contains(line, "}")
-}
+func readVmt(path string) error {
+	ResourceManager := resource.Manager()
 
-func isPropertyName(property string) bool {
-	return strings.Contains(property, "$")
-}
-
-func trimPropertyName(property string) string {
-	return strings.TrimLeft(property, "$")
-}
-
-func sanitise(property string) string {
-	property = strings.Replace(property, "\t", " ", -1)
-
-	// Remove tabs
-	//if strings.Contains(property, "\t") {
-	//	set := strings.Split(property, "\t")
-	//	for _,s := range set {
-	//		if len(s) > 1 {
-	//			property = s
-	//		}
-	//	}
-	//}
-
-	if strings.Contains(property, "\r") {
-		property = strings.Replace(property, "\r", " ", -1)
+	stream, err := filesystem.GetFile(path)
+	if err != nil {
+		return err
 	}
 
-	if strings.Contains(property, "\n") {
-		property = strings.Replace(property, "\n", " ", -1)
+	reader := keyvalues.NewReader(stream)
+	kvs,err := reader.Read()
+	if err != nil {
+		return err
+	}
+	roots,err := kvs.Children()
+	if err != nil {
+		return err
+	}
+	root := roots[0]
+
+	baseTextureKV,err := root.Find("$basetexture")
+	if err != nil {
+		return err
+	}
+	baseTexture,err := baseTextureKV.AsString()
+	if err != nil {
+		return err
 	}
 
-	// Remove " escapes
-	if strings.Contains(property, "\"") {
-		property = strings.Replace(property, "\"", " ", -1)
+	mat := &material.Material{
+		FilePath:        path,
+		BaseTextureName: baseTexture,
 	}
-	// Remove ' escapes
-	if strings.Contains(property, "'") {
-		property = strings.Replace(property, "'", " ", -1)
-	}
-
-	property = strings.Replace(property, "\\", "/", -1)
-
-	return strings.Trim(property, " ")
+	ResourceManager.AddMaterial(mat)
+	return nil
 }
