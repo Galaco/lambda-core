@@ -49,7 +49,7 @@ func RegisterPakfile(pakfile *lumps.Pakfile) {
 	pakFile = pakfile
 }
 
-func UnregisterPackfile() {
+func UnregisterPakfile() {
 	pakFile = nil
 }
 

@@ -249,6 +249,11 @@ func (manager *Renderer) setShader(shader uint32) {
 	}
 }
 
+func (manager *Renderer) Unregister() {
+	manager.skyShader.Destroy()
+	manager.lightmappedGenericShader.Destroy()
+}
+
 func NewRenderer() *Renderer {
 	r := Renderer{}
 	r.SetWireframeMode(false)

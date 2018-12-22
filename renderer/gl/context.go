@@ -58,6 +58,10 @@ func (context *Context) compileShader(source string, shaderType uint32) (uint32,
 	return shader, nil
 }
 
+func (context *Context) Destroy() {
+	opengl.DeleteShader(context.Id())
+}
+
 func NewContext() Context {
 	if err := opengl.Init(); err != nil {
 		panic(err)

@@ -125,6 +125,15 @@ func (mesh *Mesh) Bind() {
 	gl.VertexAttribPointer(3, 2, gl.FLOAT, false, 0, nil)
 }
 
+func (mesh *Mesh) Destroy() {
+	gl.DeleteBuffers(1, &mesh.gpuInfo.Vbo)
+	gl.DeleteBuffers(1, &mesh.gpuInfo.IndicesBuffer)
+	gl.DeleteBuffers(1, &mesh.gpuInfo.UvBuffer)
+	gl.DeleteBuffers(1, &mesh.gpuInfo.LightmapUvBuffer)
+	gl.DeleteBuffers(1, &mesh.gpuInfo.NormalBuffer)
+	gl.DeleteVertexArrays(1, &mesh.gpuInfo.Vao)
+}
+
 func NewMesh() *Mesh {
 	return &Mesh{}
 }

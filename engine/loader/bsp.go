@@ -120,11 +120,13 @@ func LoadMap(file *bsp.Bsp) *world.World {
 			texCoordsForFaceFromTexInfo(
 				bspMesh.Vertices()[bspFace.Offset()*3:(bspFace.Offset()*3)+(bspFace.Length()*3)],
 				&bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)
-		bspMesh.AddLightmapCoordinate(
-			lightmapCoordsForFaceFromTexInfo(
-				bspMesh.Vertices()[bspFace.Offset()*3:(bspFace.Offset()*3)+(bspFace.Length()*3)],
-				&bspStructure.faces[idx],
-				&bspStructure.texInfos[bspStructure.faces[idx].TexInfo], lightMat.Width(), lightMat.Height())...)
+		if lightMat != nil {
+			bspMesh.AddLightmapCoordinate(
+				lightmapCoordsForFaceFromTexInfo(
+					bspMesh.Vertices()[bspFace.Offset()*3:(bspFace.Offset()*3)+(bspFace.Length()*3)],
+					&bspStructure.faces[idx],
+					&bspStructure.texInfos[bspStructure.faces[idx].TexInfo], lightMat.Width(), lightMat.Height())...)
+		}
 
 		if strings.HasPrefix(faceVmt, "TOOLS/") {
 			bspFaces[idx].AddMaterial(nil)
