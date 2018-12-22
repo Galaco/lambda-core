@@ -95,24 +95,14 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Add MATERIALS TO FACES
 	for idx, bspFace := range bspFaces {
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		//if strings.HasPrefix(faceVmt, "TOOLS/") {
-		//	continue
-		//}
 		vmtPath := "materials/" + faceVmt + ".vmt"
-		//baseTexturePath := "-1"
 		var mat material.IMaterial
 		if ResourceManager.HasMaterial(vmtPath) {
 			mat = ResourceManager.GetMaterial(vmtPath).(material.IMaterial)
-			//baseTexturePath = "materials/" + ResourceManager.GetMaterial(vmtPath).(*material.Material).BaseTextureName + ".vtf"
-			//log.Println(baseTexturePath)
 		} else {
 			mat = ResourceManager.GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
 		}
-		//if ResourceManager.HasTexture(baseTexturePath) {
-		//	mat = ResourceManager.GetMaterial(baseTexturePath).(material.IMaterial)
-		//} else {
-		//	mat = ResourceManager.GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
-		//}
+
 		lightMat := bspFaces[idx].Lightmap()
 		bspFaces[idx].AddMaterial(mat)
 		// Generate texture coordinates

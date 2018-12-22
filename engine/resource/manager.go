@@ -129,9 +129,9 @@ func Manager() *manager {
 	if resourceManager.materials == nil {
 		resourceManager.errorModelName = "models/error.mdl"
 		resourceManager.errorTextureName = "materials/error.vtf"
-		resourceManager.materials = map[string]IResource{}
-		resourceManager.models = map[string]IResource{}
-		resourceManager.textures = map[string]IResource{}
+		resourceManager.materials = make(map[string]IResource, 1024)
+		resourceManager.models = make(map[string]IResource, 256)
+		resourceManager.textures = make(map[string]IResource, 256)
 	}
 
 	return &resourceManager
