@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const materialRootPath = "materials/"
+
 // LoadMaterialList GetFile all materials referenced in the map
 // NOTE: There is a priority:
 // 1. BSP pakfile
@@ -37,8 +39,6 @@ func LoadErrorMaterial() {
 func loadMaterials(materialList ...string) (missingList []string) {
 	ResourceManager := resource.Manager()
 
-	materialBasePath := "materials/"
-
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
 
@@ -46,27 +46,20 @@ func loadMaterials(materialList ...string) (missingList []string) {
 			materialPath += ".vmt"
 		}
 		// Only load the filesystem once
-		if ResourceManager.GetMaterial(materialBasePath+materialPath) == nil {
-			if !readVmt(materialBasePath, materialPath) {
-				logger.Warn("Unable to parse: " + materialBasePath + materialPath)
+		if ResourceManager.GetMaterial(materialRootPath+materialPath) == nil {
+			if !readVmt(materialRootPath + materialPath) {
+				logger.Warn("Unable to parse: " + materialRootPath + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
-			vmt := ResourceManager.GetMaterial(materialBasePath + materialPath).(*material.Material)
+			vmt := ResourceManager.GetMaterial(materialRootPath + materialPath).(*material.Material)
 
 			// NOTE: in patch vmts include is not supported
 			if vmt.BaseTextureName != "" {
 				vtfTexturePath = vmt.BaseTextureName + ".vtf"
 			}
 
-			if vtfTexturePath != "" && !ResourceManager.HasTexture(vtfTexturePath) {
-				if !readVtf(materialBasePath, vtfTexturePath) {
-					logger.Warn("Could not find: " + materialBasePath + materialPath)
-					missingList = append(missingList, vtfTexturePath)
-					continue
-				}
-				vmt.Textures.BaseTexture = ResourceManager.GetTexture(materialBasePath + vtfTexturePath).(texture.ITexture)
-			}
+			vmt.Textures.BaseTexture = LoadSingleTexture(vtfTexturePath)
 		}
 	}
 	return missingList
@@ -82,18 +75,18 @@ func LoadSingleMaterial(filePath string) material.IMaterial {
 }
 
 func LoadSingleTexture(filePath string) texture.ITexture {
-	if !readVtf("materials/", filePath) {
+	if filePath == "" || !readVtf(materialRootPath + filePath) {
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	return resource.Manager().GetTexture("materials/" + filePath).(texture.ITexture)
+	return resource.Manager().GetTexture(materialRootPath + filePath).(texture.ITexture)
 }
 
-func readVmt(basePath string, filePath string) bool {
+func readVmt(path string) bool {
 	ResourceManager := resource.Manager()
-	path := basePath + filePath
 
 	stream, err := filesystem.GetFile(path)
 	if err != nil {
+		logger.Error(err)
 		return false
 	}
 
@@ -111,9 +104,9 @@ func readVmt(basePath string, filePath string) bool {
 	return true
 }
 
-func readVtf(basePath string, filePath string) bool {
+func readVtf(path string) bool {
 	ResourceManager := resource.Manager()
-	stream, err := filesystem.GetFile(basePath + filePath)
+	stream, err := filesystem.GetFile(path)
 	if err != nil {
 		return false
 	}
@@ -128,12 +121,12 @@ func readVtf(basePath string, filePath string) bool {
 	// Store filesystem containing raw data in memory
 	ResourceManager.AddTexture(
 		texture.NewTexture2D(
-			basePath+filePath,
+			path,
 			read,
 			int(read.GetHeader().Width),
 			int(read.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	ResourceManager.GetTexture(basePath + filePath).(texture.ITexture).Finish()
+	ResourceManager.GetTexture(path).(texture.ITexture).Finish()
 	return true
 }

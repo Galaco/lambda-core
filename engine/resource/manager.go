@@ -108,11 +108,17 @@ func (m *manager) HasModel(filePath string) bool {
 }
 
 func (m *manager) Cleanup() {
-	for _, mat := range m.materials {
+	for idx, mat := range m.materials {
 		mat.Destroy()
+		delete(m.materials, idx)
 	}
-	for _, model := range m.models {
+	for idx, model := range m.models {
 		model.Destroy()
+		delete(m.models, idx)
+	}
+	for idx, tex := range m.textures {
+		tex.Destroy()
+		delete(m.textures, idx)
 	}
 }
 

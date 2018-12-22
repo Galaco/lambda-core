@@ -81,7 +81,7 @@ func (tex *Texture2D) Finish() {
 }
 
 func (tex *Texture2D) Destroy() {
-
+	gl.DeleteTextures(1, &tex.Buffer)
 }
 
 // NewMaterial returns a new material from Vtf

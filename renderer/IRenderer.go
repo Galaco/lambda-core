@@ -16,4 +16,5 @@ type IRenderer interface {
 	DrawSkyMaterial(*model.Model)
 	SetWireframeMode(bool)
 	EndFrame()
+	Unregister()
 }

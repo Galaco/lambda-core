@@ -26,4 +26,5 @@ type IMesh interface {
 	SetLightmap(texture.ITexture)
 
 	Bind()
+	Destroy()
 }

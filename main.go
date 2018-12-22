@@ -59,12 +59,14 @@ func main() {
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
 
-	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
+	//scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
+	scene.LoadFromFile(config.Get().GameDirectory + "/maps/ze_illya_b3.bsp")
 
 	// Start
+	Application.SetSimulationSpeed(10)
 	Application.Run()
 
-	Application.SetSimulationSpeed(10)
+	resource.Manager().Cleanup()
 }
 
 // Closeable Simple struct to control engine shutdown utilising the internal event manager
