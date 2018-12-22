@@ -8,7 +8,7 @@ import (
 func TestNewGenericEntity(t *testing.T) {
 	sut := NewGenericEntity(nil)
 
-	if reflect.TypeOf(sut) != reflect.TypeOf(GenericEntity{}) {
-		t.Errorf("Expected: %s, but received: %s", reflect.TypeOf(GenericEntity{}), reflect.TypeOf(sut))
+	if reflect.TypeOf(sut) != reflect.TypeOf(&GenericEntity{}) {
+		t.Errorf("Expected: %s, but received: %s", reflect.TypeOf(&GenericEntity{}), reflect.TypeOf(sut))
 	}
 }

@@ -47,7 +47,18 @@ func main() {
 	Application := core.NewEngine()
 	Application.Initialise()
 
-	Application.AddManager(&window.Manager{})
+	windowName := "Gource"
+	gameInfoNode, _ := gameinfo.Get().Find("GameInfo")
+	if gameInfoNode == nil {
+		logger.Fatal("gameinfo was not found.")
+	}
+	gameNode,_ := gameInfoNode.Find("game")
+	if gameNode != nil {
+		windowName,_ = gameNode.AsString()
+	}
+	Application.AddManager(&window.Manager{
+		Name: windowName,
+	})
 	Application.AddManager(&renderer.Manager{})
 
 	// Game specific setup

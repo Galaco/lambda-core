@@ -12,7 +12,7 @@ import (
 type Manager struct {
 	listenerMap map[MessageType]map[EventHandle]IEventListenable
 	mu          sync.Mutex
-	eventQueue  []*QueueItem
+	eventQueue  []*queueItem
 	runAsync    bool
 }
 
@@ -71,7 +71,7 @@ func (manager *Manager) Unlisten(eventName MessageType, handle EventHandle) {
 // Dispatch Fires an event to all listening objects
 func (manager *Manager) Dispatch(eventName MessageType, message IMessage) {
 	message.SetType(eventName)
-	queueItem := &QueueItem{
+	queueItem := &queueItem{
 		EventName: eventName,
 		Message:   message,
 	}
@@ -94,4 +94,11 @@ func GetEventManager() *Manager {
 		eventManager.listenerMap = make(map[MessageType]map[EventHandle]IEventListenable, 512)
 	}
 	return &eventManager
+}
+
+// queueItem Event Queue item.
+// Contains the event name, and a message
+type queueItem struct {
+	EventName MessageType
+	Message   IMessage
 }

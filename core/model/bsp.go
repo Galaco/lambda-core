@@ -8,6 +8,7 @@ import "github.com/galaco/Gource-Engine/core/mesh"
 type Bsp struct {
 	internalMesh mesh.IMesh
 
+	defaultClusterLeaf  ClusterLeaf
 	clusterLeafs        []ClusterLeaf
 	visibleClusterLeafs []*ClusterLeaf
 }
@@ -36,6 +37,14 @@ func (bsp *Bsp) SetClusterLeafs(clusterLeafs []ClusterLeaf) {
 // SetVisibleClusters update the visible ClusterLeafs
 func (bsp *Bsp) SetVisibleClusters(clusterLeafs []*ClusterLeaf) {
 	bsp.visibleClusterLeafs = clusterLeafs
+}
+
+func (bsp *Bsp) SetDefaultCluster(dispFaces ClusterLeaf) {
+	bsp.defaultClusterLeaf = dispFaces
+}
+
+func (bsp *Bsp) DefaultCluster() *ClusterLeaf {
+	return &bsp.defaultClusterLeaf
 }
 
 // NewBsp returns a new bsp

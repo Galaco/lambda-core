@@ -72,11 +72,13 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	bspMesh := mesh.NewMesh()
 	bspObject := model.NewBsp(bspMesh)
 	bspFaces := make([]mesh.Face, len(bspStructure.faces))
+	dispFaces := make([]int, 0)
 
 	for idx, f := range bspStructure.faces {
 		if f.DispInfo > -1 {
 			// This face is a displacement
 			bspFaces[idx] = generateDisplacementFace(&f, &bspStructure, bspMesh)
+			dispFaces = append(dispFaces, idx)
 		} else {
 			bspFaces[idx] = generateBspFace(&f, &bspStructure, bspMesh)
 		}
@@ -132,9 +134,13 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Optimise face data by cluster
 	visData := sceneVisibility.NewVisFromBSP(file)
 	bspClusters := make([]model.ClusterLeaf, bspStructure.visibility.NumClusters)
+	defaultCluster := model.ClusterLeaf{
+		Id: 32767,
+	}
 	for _, bspLeaf := range visData.Leafs {
 		for _, leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace : bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
 			if bspLeaf.Cluster == -1 {
+				//defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[leafFace])
 				continue
 			}
 			bspClusters[bspLeaf.Cluster].Id = bspLeaf.Cluster
@@ -147,13 +153,19 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		for _, leafId := range prop.LeafList() {
 			clusterId := visData.Leafs[leafId].Cluster
 			if clusterId == -1 {
+				//defaultCluster.StaticProps = append(defaultCluster.StaticProps, &staticProps[idx])
 				continue
 			}
 			bspClusters[clusterId].StaticProps = append(bspClusters[clusterId].StaticProps, &staticProps[idx])
 		}
 	}
 
+	for _,idx := range dispFaces {
+		defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[idx])
+	}
+
 	bspObject.SetClusterLeafs(bspClusters)
+	bspObject.SetDefaultCluster(defaultCluster)
 
 	return world.NewWorld(*bspObject, staticProps, visData)
 }

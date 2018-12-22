@@ -68,7 +68,7 @@ func (manager *Renderer) LoadShaders() {
 	opengl.CullFace(opengl.BACK)
 	opengl.FrontFace(opengl.CW)
 
-	opengl.ClearColor(1, 1, 1, 1)
+	opengl.ClearColor(0, 0, 0, 1)
 }
 
 var numCalls = 0
@@ -97,9 +97,9 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 // Called at the end of a frame
 func (manager *Renderer) EndFrame() {
 	//if glError := opengl.GetError(); glError != opengl.NO_ERROR {
-	//	debug.Error("error: %d\n", glError)
+	//	logger.Error("error: %d\n", glError)
 	//}
-	//debug.Logf("Calls: %d", numCalls)
+	//logger.Notice("Calls: %d", numCalls)
 	numCalls = 0
 }
 
@@ -113,10 +113,16 @@ func (manager *Renderer) DrawBsp(world *world.World) {
 			manager.DrawFace(&face)
 		}
 	}
+	for _, face := range world.Bsp().DefaultCluster().Faces {
+		manager.DrawFace(&face)
+	}
 	for _, cluster := range world.VisibleClusters() {
 		for _, prop := range cluster.StaticProps {
 			manager.DrawModel(prop.GetModel(), prop.Transform().GetTransformationMatrix())
 		}
+	}
+	for _, prop := range world.Bsp().DefaultCluster().StaticProps {
+		manager.DrawModel(prop.GetModel(), prop.Transform().GetTransformationMatrix())
 	}
 }
 

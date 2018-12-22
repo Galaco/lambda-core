@@ -16,11 +16,13 @@ type Manager struct {
 	core.Manager
 	window *glfw.Window
 	input  input.Manager
+
+	Name string
 }
 
 // Register will create a new Window
 func (manager *Manager) Register() {
-	manager.window = window.Create(config.Get().Video.Width, config.Get().Video.Height, "test_window")
+	manager.window = window.Create(config.Get().Video.Width, config.Get().Video.Height, manager.Name)
 	manager.input.Register(manager.window)
 }
 
