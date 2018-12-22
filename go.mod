@@ -1,7 +1,7 @@
 module github.com/galaco/Gource-Engine
 
 require (
-	github.com/galaco/KeyValues v1.1.0
+	github.com/galaco/KeyValues v1.1.1
 	github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af
 	github.com/galaco/bsp v0.1.2
 	github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546
