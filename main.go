@@ -1,21 +1,19 @@
 package main
 
 import (
-	"github.com/galaco/Gource-Engine/config"
-	"github.com/galaco/Gource-Engine/engine"
-	"github.com/galaco/Gource-Engine/engine/core/event"
-	"github.com/galaco/Gource-Engine/engine/core/event/message"
-	"github.com/galaco/Gource-Engine/engine/core/event/message/messages"
-	"github.com/galaco/Gource-Engine/engine/core/event/message/messagetype"
-	"github.com/galaco/Gource-Engine/engine/core/logger"
-	"github.com/galaco/Gource-Engine/engine/filesystem"
-	"github.com/galaco/Gource-Engine/engine/input/keyboard"
-	"github.com/galaco/Gource-Engine/engine/resource"
-	"github.com/galaco/Gource-Engine/engine/scene"
+	"github.com/galaco/Gource-Engine/client/config"
+	"github.com/galaco/Gource-Engine/client/input/keyboard"
+	"github.com/galaco/Gource-Engine/client/messages"
+	"github.com/galaco/Gource-Engine/client/renderer"
+	"github.com/galaco/Gource-Engine/client/scene"
+	"github.com/galaco/Gource-Engine/client/window"
+	"github.com/galaco/Gource-Engine/core"
+	"github.com/galaco/Gource-Engine/core/event"
+	"github.com/galaco/Gource-Engine/core/filesystem"
+	"github.com/galaco/Gource-Engine/core/logger"
+	"github.com/galaco/Gource-Engine/core/resource"
 	"github.com/galaco/Gource-Engine/game"
 	"github.com/galaco/Gource-Engine/lib/gameinfo"
-	"github.com/galaco/Gource-Engine/renderer"
-	"github.com/galaco/Gource-Engine/window"
 	"runtime"
 )
 
@@ -46,7 +44,7 @@ func main() {
 	resource.Manager().SetErrorTextureName("materials/error.vtf")
 
 	// General engine setup
-	Application := engine.NewEngine()
+	Application := core.NewEngine()
 	Application.Initialise()
 
 	Application.AddManager(&window.Manager{})
@@ -71,12 +69,12 @@ func main() {
 
 // Closeable Simple struct to control engine shutdown utilising the internal event manager
 type Closeable struct {
-	target *engine.Engine
+	target *core.Engine
 }
 
 // ReceiveMessage function will shutdown the engine
-func (closer Closeable) ReceiveMessage(message message.IMessage) {
-	if message.GetType() == messagetype.KeyDown {
+func (closer Closeable) ReceiveMessage(message event.IMessage) {
+	if message.GetType() == messages.TypeKeyDown {
 		if message.(*messages.KeyDown).Key == keyboard.KeyEscape {
 			// Will shutdown the engine at the end of the current loop
 			closer.target.Close()
@@ -85,6 +83,6 @@ func (closer Closeable) ReceiveMessage(message message.IMessage) {
 }
 
 //Implement a way of shutting down the engine
-func RegisterShutdownMethod(app *engine.Engine) {
-	event.GetEventManager().Listen(messagetype.KeyDown, Closeable{app})
+func RegisterShutdownMethod(app *core.Engine) {
+	event.GetEventManager().Listen(messages.TypeKeyDown, Closeable{app})
 }
