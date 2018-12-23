@@ -266,10 +266,10 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs, bspMesh me
 func generateDispVert(offset int, x int, y int, size int, corners []mgl32.Vec3, firstCorner int32, dispVerts *[]dispvert.DispVert) mgl32.Vec3 {
 	vert := (*dispVerts)[offset+x+y*(size+1)]
 
-	tx := float32(x / size)
-	ty := float32(y / size)
-	sx := 1 - tx
-	sy := 1 - ty
+	tx := float32(x) / float32(size)
+	ty := float32(y) / float32(size)
+	sx := 1.0 - tx
+	sy := 1.0 - ty
 
 	cornerA := corners[(0+firstCorner)&3]
 	cornerB := corners[(1+firstCorner)&3]
