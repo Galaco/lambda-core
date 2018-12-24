@@ -7,6 +7,8 @@ import (
 	"github.com/galaco/Gource-Engine/core/texture"
 )
 
+const skyboxRootDir = "skybox/"
+
 // LoadSky loads the skymaterial cubemap.
 // The materialname is normally obtained from the worldspawn entity
 func LoadSky(materialName string) *model.Model {
@@ -14,12 +16,12 @@ func LoadSky(materialName string) *model.Model {
 
 	mats := make([]texture.ITexture, 6)
 
-	mats[0] = material2.LoadSingleTexture(materialName + "up")
-	mats[1] = material2.LoadSingleTexture(materialName + "dn")
-	mats[2] = material2.LoadSingleTexture(materialName + "lf")
-	mats[3] = material2.LoadSingleTexture(materialName + "rt")
-	mats[4] = material2.LoadSingleTexture(materialName + "ft")
-	mats[5] = material2.LoadSingleTexture(materialName + "bk")
+	mats[0] = material2.LoadSingleTexture(skyboxRootDir + materialName + "up")
+	mats[1] = material2.LoadSingleTexture(skyboxRootDir + materialName + "dn")
+	mats[2] = material2.LoadSingleTexture(skyboxRootDir + materialName + "lf")
+	mats[3] = material2.LoadSingleTexture(skyboxRootDir + materialName + "rt")
+	mats[4] = material2.LoadSingleTexture(skyboxRootDir + materialName + "ft")
+	mats[5] = material2.LoadSingleTexture(skyboxRootDir + materialName + "bk")
 
 	sky.AddMesh(primitive.NewCube())
 

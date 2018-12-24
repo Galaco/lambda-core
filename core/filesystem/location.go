@@ -57,7 +57,7 @@ func UnregisterPakfile() {
 // Search order is Pak->FileSystem->VPK
 func GetFile(filename string) (io.Reader, error) {
 	// sanitise file
-	searchPath := strings.ToLower(filename)
+	searchPath := NormalisePath(strings.ToLower(filename))
 
 	// try to read from pakfile first
 	if pakFile != nil {
@@ -87,5 +87,5 @@ func GetFile(filename string) (io.Reader, error) {
 		}
 	}
 
-	return nil, errors.New("Could not find: " + searchPath)
+	return nil, errors.New("could not find file")
 }

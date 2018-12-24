@@ -10,6 +10,14 @@ github.com/galaco/KeyValues v1.1.0 h1:n5pwi0j63bpWZsr8OmOjKjSpnvPus/Sqjb3HJuWj7O
 github.com/galaco/KeyValues v1.1.0/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
 github.com/galaco/KeyValues v1.1.1 h1:I4M0vP4zDLufuelPvykf0zzc/nh6+DXbaml+HLUIF8w=
 github.com/galaco/KeyValues v1.1.1/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.2.0 h1:IJi/YqtfORod5E3oB2Z0FttgpDke7jMWlrSR9bLPxXA=
+github.com/galaco/KeyValues v1.2.0/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.2.1 h1:EA0yL6d8fraInS+/4+5IEpyFnbRqXegzlsDHRwBKAEw=
+github.com/galaco/KeyValues v1.2.1/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.2.2 h1:i6pBFnvKLEeTFNGdSICW6dC6ubg4Ib2TgD7T3OSBS6U=
+github.com/galaco/KeyValues v1.2.2/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.2.3 h1:WT7P+Djq+7903zLnnw/yyjSxVORwm8NBeI6gYHfzwxE=
+github.com/galaco/KeyValues v1.2.3/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af h1:WvaI49oII83yG2LCseuOuIIbo/f5k5iCDvFwe8W5HPI=
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af/go.mod h1:TyLwCRckWSsaQhePyfTOwfSXlEUJ411MwYaVkbPwOMo=
 github.com/galaco/bsp v0.0.0-20181206122338-5c49a9094ff9 h1:31PuOdqnRSsbDpqdouUqP/OtHoOBA2udNMOW8wsogzw=

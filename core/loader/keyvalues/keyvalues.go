@@ -1,0 +1,18 @@
+package keyvalues
+
+import (
+	"github.com/galaco/Gource-Engine/core/filesystem"
+	"github.com/galaco/KeyValues"
+)
+
+func ReadKeyValues(filePath string) (*keyvalues.KeyValue, error) {
+	stream, err := filesystem.GetFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	reader := keyvalues.NewReader(stream)
+	kvs, err := reader.Read()
+
+	return &kvs, err
+}

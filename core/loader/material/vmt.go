@@ -1,7 +1,8 @@
 package material
 
 import (
-	"github.com/galaco/Gource-Engine/core/filesystem"
+	"errors"
+	keyvalues2 "github.com/galaco/Gource-Engine/core/loader/keyvalues"
 	"github.com/galaco/Gource-Engine/core/logger"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/resource"
@@ -50,10 +51,9 @@ func loadMaterials(materialList ...string) (missingList []string) {
 		}
 		// Only load the filesystem once
 		if ResourceManager.GetMaterial(materialRootPath+materialPath) == nil {
-			mat,err :=  readVmt(materialRootPath+materialPath)
+			mat, err := readVmt(materialRootPath + materialPath)
 			if err != nil {
-				logger.Error(err)
-				logger.Warn("Unable to parse: " + materialRootPath + materialPath)
+				logger.Warn("Failed to load material: %s. Reason: %s", materialRootPath+materialPath, err)
 				missingList = append(missingList, materialPath)
 				continue
 			}
@@ -85,29 +85,33 @@ func LoadSingleMaterial(filePath string) material.IMaterial {
 func readVmt(path string) (material.IMaterial, error) {
 	ResourceManager := resource.Manager()
 
-	stream, err := filesystem.GetFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	reader := keyvalues.NewReader(stream)
-	kvs, err := reader.Read()
+	kvs, err := keyvalues2.ReadKeyValues(path)
 	if err != nil {
 		return nil, err
 	}
 	roots, err := kvs.Children()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	root := roots[0]
 
+	include, err := root.Find("include")
+	if err == nil {
+		includePath, _ := include.AsString()
+		root, err = mergeIncludedVmtRecursive(root, includePath)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// @NOTE this will be replaced with a proper kv->material builder
 	baseTextureKV, err := root.Find("$basetexture")
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	baseTexture, err := baseTextureKV.AsString()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	mat := &material.Material{
@@ -115,5 +119,26 @@ func readVmt(path string) (material.IMaterial, error) {
 		BaseTextureName: baseTexture,
 	}
 	ResourceManager.AddMaterial(mat)
-	return mat,nil
+	return mat, nil
+}
+
+func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string) (*keyvalues.KeyValue, error) {
+	parent, err := keyvalues2.ReadKeyValues(includePath)
+	if err != nil {
+		return base, errors.New("failed to read included vmt")
+	}
+	result, err := base.MergeInto(parent)
+	if err != nil {
+		return base, errors.New("failed to merge included vmt")
+	}
+	include, err := result.Find("include")
+	if err == nil {
+		newIncludePath, _ := include.AsString()
+		if newIncludePath == includePath {
+			err = result.RemoveChild("include")
+			return &result, err
+		}
+		return mergeIncludedVmtRecursive(&result, newIncludePath)
+	}
+	return &result, nil
 }
