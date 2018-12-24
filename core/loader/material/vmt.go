@@ -50,12 +50,14 @@ func loadMaterials(materialList ...string) (missingList []string) {
 		}
 		// Only load the filesystem once
 		if ResourceManager.GetMaterial(materialRootPath+materialPath) == nil {
-			if readVmt(materialRootPath+materialPath) != nil {
+			mat,err :=  readVmt(materialRootPath+materialPath)
+			if err != nil {
+				logger.Error(err)
 				logger.Warn("Unable to parse: " + materialRootPath + materialPath)
 				missingList = append(missingList, materialPath)
 				continue
 			}
-			vmt := ResourceManager.GetMaterial(materialRootPath + materialPath).(*material.Material)
+			vmt := mat.(*material.Material)
 
 			// NOTE: in patch vmts include is not supported
 			if vmt.BaseTextureName != "" {
@@ -80,32 +82,32 @@ func LoadSingleMaterial(filePath string) material.IMaterial {
 	return resource.Manager().GetMaterial("materials/" + filePath).(material.IMaterial)
 }
 
-func readVmt(path string) error {
+func readVmt(path string) (material.IMaterial, error) {
 	ResourceManager := resource.Manager()
 
 	stream, err := filesystem.GetFile(path)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	reader := keyvalues.NewReader(stream)
 	kvs, err := reader.Read()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	roots, err := kvs.Children()
 	if err != nil {
-		return err
+		return nil,err
 	}
 	root := roots[0]
 
 	baseTextureKV, err := root.Find("$basetexture")
 	if err != nil {
-		return err
+		return nil,err
 	}
 	baseTexture, err := baseTextureKV.AsString()
 	if err != nil {
-		return err
+		return nil,err
 	}
 
 	mat := &material.Material{
@@ -113,5 +115,5 @@ func readVmt(path string) error {
 		BaseTextureName: baseTexture,
 	}
 	ResourceManager.AddMaterial(mat)
-	return nil
+	return mat,nil
 }

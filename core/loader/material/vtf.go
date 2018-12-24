@@ -13,25 +13,29 @@ func LoadSingleTexture(filePath string) texture.ITexture {
 	if resource.Manager().GetTexture(materialRootPath+filePath) != nil {
 		return resource.Manager().GetTexture(materialRootPath + filePath).(texture.ITexture)
 	}
-	if filePath == "" || !readVtf(materialRootPath+filePath) {
+	if filePath == "" {
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	return resource.Manager().GetTexture(materialRootPath + filePath).(texture.ITexture)
+	mat,err := readVtf(materialRootPath+filePath)
+	if err != nil {
+		logger.Error(err)
+		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
+	}
+	return mat
 }
 
-func readVtf(path string) bool {
+func readVtf(path string) (texture.ITexture,error) {
 	ResourceManager := resource.Manager()
 	stream, err := filesystem.GetFile(path)
 	if err != nil {
-		return false
+		return nil,err
 	}
 
 	// Attempt to parse the vtf into color data we can use,
 	// if this fails (it shouldn't) we can treat it like it was missing
 	read, err := vtf.ReadFromStream(stream)
 	if err != nil {
-		logger.Error(err)
-		return false
+		return nil,err
 	}
 	// Store filesystem containing raw data in memory
 	ResourceManager.AddTexture(
@@ -43,5 +47,5 @@ func readVtf(path string) bool {
 
 	// Finally generate the gpu buffer for the material
 	ResourceManager.GetTexture(path).(texture.ITexture).Finish()
-	return true
+	return ResourceManager.GetTexture(path).(texture.ITexture),nil
 }
