@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"github.com/galaco/Gource-Engine/core/filesystem"
 	"strings"
 	"sync"
 )
@@ -128,7 +129,7 @@ var resourceManager manager
 func Manager() *manager {
 	if resourceManager.materials == nil {
 		resourceManager.errorModelName = "models/error.mdl"
-		resourceManager.errorTextureName = "materials/error.vtf"
+		resourceManager.errorTextureName = filesystem.BasePathMaterial + "error" + filesystem.ExtensionVtf
 		resourceManager.materials = make(map[string]IResource, 1024)
 		resourceManager.models = make(map[string]IResource, 256)
 		resourceManager.textures = make(map[string]IResource, 256)

@@ -2,6 +2,7 @@ package material
 
 import (
 	"errors"
+	"github.com/galaco/Gource-Engine/core/filesystem"
 	keyvalues2 "github.com/galaco/Gource-Engine/core/loader/keyvalues"
 	"github.com/galaco/Gource-Engine/core/logger"
 	"github.com/galaco/Gource-Engine/core/material"
@@ -46,25 +47,36 @@ func loadMaterials(materialList ...string) (missingList []string) {
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
 
-		if !strings.HasSuffix(materialPath, ".vmt") {
-			materialPath += ".vmt"
+		if !strings.HasSuffix(materialPath, filesystem.ExtensionVmt) {
+			materialPath += filesystem.ExtensionVmt
 		}
-		// Only load the filesystem once
-		if ResourceManager.GetMaterial(materialRootPath+materialPath) == nil {
-			mat, err := readVmt(materialRootPath + materialPath)
-			if err != nil {
-				logger.Warn("Failed to load material: %s. Reason: %s", materialRootPath+materialPath, err)
-				missingList = append(missingList, materialPath)
-				continue
-			}
-			vmt := mat.(*material.Material)
+		if ResourceManager.HasMaterial(filesystem.BasePathMaterial+materialPath) == true {
+			continue
+		}
 
-			// NOTE: in patch vmts include is not supported
-			if vmt.BaseTextureName != "" {
-				vtfTexturePath = vmt.BaseTextureName + ".vtf"
-			}
+		mat, err := readVmt(filesystem.BasePathMaterial + materialPath)
+		if err != nil {
+			logger.Warn("Failed to load material: %s. Reason: %s", filesystem.BasePathMaterial+materialPath, err)
+			missingList = append(missingList, materialPath)
+			continue
+		}
+		vmt := mat.(*material.Material)
 
-			vmt.Textures.BaseTexture = LoadSingleTexture(vtfTexturePath)
+		if vmt.BaseTextureName == "" {
+			missingList = append(missingList, materialPath)
+			continue
+		}
+
+		// NOTE: in patch vmts include is not supported
+		vtfTexturePath = vmt.BaseTextureName
+		if !strings.HasSuffix(vtfTexturePath, filesystem.ExtensionVtf) {
+			vtfTexturePath = vtfTexturePath + filesystem.ExtensionVtf
+		}
+
+		vmt.Textures.BaseTexture = LoadSingleTexture(vtfTexturePath)
+		if vmt.Textures.BaseTexture == nil {
+			missingList = append(missingList, materialPath)
+			continue
 		}
 	}
 	return missingList
@@ -72,14 +84,16 @@ func loadMaterials(materialList ...string) (missingList []string) {
 
 // LoadSingleMaterial loads a single material with known file path
 func LoadSingleMaterial(filePath string) material.IMaterial {
-	if resource.Manager().GetMaterial(materialRootPath+filePath) != nil {
-		return resource.Manager().GetMaterial(materialRootPath + filePath).(material.IMaterial)
+	if resource.Manager().HasMaterial(filesystem.BasePathMaterial+filePath) {
+		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 	}
+
 	result := loadMaterials(filePath)
-	if len(result) > 0 {
-		return resource.Manager().GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
+	if len(result) == 0 {
+		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+
 	}
-	return resource.Manager().GetMaterial("materials/" + filePath).(material.IMaterial)
+	return resource.Manager().GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
 }
 
 func readVmt(path string) (material.IMaterial, error) {

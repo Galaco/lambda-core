@@ -52,9 +52,9 @@ func main() {
 	if gameInfoNode == nil {
 		logger.Fatal("gameinfo was not found.")
 	}
-	gameNode,_ := gameInfoNode.Find("game")
+	gameNode, _ := gameInfoNode.Find("game")
 	if gameNode != nil {
-		windowName,_ = gameNode.AsString()
+		windowName, _ = gameNode.AsString()
 	}
 	Application.AddManager(&window.Manager{
 		Name: windowName,
@@ -69,7 +69,7 @@ func main() {
 	RegisterShutdownMethod(Application)
 
 	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
-	//scene.LoadFromFile(config.Get().GameDirectory + "/maps/ze_illya_b3.bsp")
+	//scene.LoadFromFile(config.Get().GameDirectory + "/maps/ze_FFVII_Mako_Reactor_v5_3.bsp")
 
 	// Start
 	Application.SetSimulationSpeed(10)

@@ -3,6 +3,7 @@ package loader
 import (
 	sceneVisibility "github.com/galaco/Gource-Engine/client/scene/visibility"
 	"github.com/galaco/Gource-Engine/client/scene/world"
+	"github.com/galaco/Gource-Engine/core/filesystem"
 	matloader "github.com/galaco/Gource-Engine/core/loader/material"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
@@ -97,7 +98,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Add MATERIALS TO FACES
 	for idx, bspFace := range bspFaces {
 		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		vmtPath := "materials/" + faceVmt + ".vmt"
+		vmtPath := filesystem.BasePathMaterial + faceVmt + filesystem.ExtensionVmt
 		var mat material.IMaterial
 		if ResourceManager.HasMaterial(vmtPath) {
 			mat = ResourceManager.GetMaterial(vmtPath).(material.IMaterial)
@@ -160,7 +161,7 @@ func LoadMap(file *bsp.Bsp) *world.World {
 		}
 	}
 
-	for _,idx := range dispFaces {
+	for _, idx := range dispFaces {
 		defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[idx])
 	}
 

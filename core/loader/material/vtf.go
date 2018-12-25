@@ -12,18 +12,18 @@ import (
 // LoadSingleTexture
 func LoadSingleTexture(filePath string) texture.ITexture {
 	filePath = filesystem.NormalisePath(filePath)
-	if !strings.HasSuffix(filePath, ".vtf") {
-		filePath = filePath + ".vtf"
+	if !strings.HasSuffix(filePath, filesystem.ExtensionVtf) {
+		filePath = filePath + filesystem.ExtensionVtf
 	}
-	if resource.Manager().GetTexture(materialRootPath+filePath) != nil {
-		return resource.Manager().GetTexture(materialRootPath + filePath).(texture.ITexture)
+	if resource.Manager().GetTexture(filesystem.BasePathMaterial+filePath) != nil {
+		return resource.Manager().GetTexture(filesystem.BasePathMaterial + filePath).(texture.ITexture)
 	}
 	if filePath == "" {
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	mat, err := readVtf(materialRootPath + filePath)
+	mat, err := readVtf(filesystem.BasePathMaterial + filePath)
 	if err != nil {
-		logger.Warn("Failed to load texture: %s. Reason: %s", materialRootPath+filePath, err)
+		logger.Warn("Failed to load texture: %s. Reason: %s", filesystem.BasePathMaterial+filePath, err)
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
 	return mat

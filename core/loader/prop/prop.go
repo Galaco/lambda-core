@@ -122,7 +122,7 @@ func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
 	materials := make([]material.IMaterial, 0)
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
-			path := strings.Replace(dir, "\\", "/", -1) + name + ".vmt"
+			path := strings.Replace(dir, "\\", "/", -1) + name + filesystem.ExtensionVmt
 			materials = append(materials, material2.LoadSingleMaterial(path))
 		}
 	}
