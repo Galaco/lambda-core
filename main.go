@@ -69,7 +69,6 @@ func main() {
 	RegisterShutdownMethod(Application)
 
 	scene.LoadFromFile(config.Get().GameDirectory + "/maps/de_dust2.bsp")
-	//scene.LoadFromFile(config.Get().GameDirectory + "/maps/ze_FFVII_Mako_Reactor_v5_3.bsp")
 
 	// Start
 	Application.SetSimulationSpeed(10)

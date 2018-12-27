@@ -108,9 +108,10 @@ func readVmt(path string) (material.IMaterial, error) {
 		return nil, err
 	}
 	root := roots[0]
+	shaderName := root.Key()
 
 	include, err := root.Find("include")
-	if err == nil {
+	if include != nil && err == nil {
 		includePath, _ := include.AsString()
 		root, err = mergeIncludedVmtRecursive(root, includePath)
 		if err != nil {
@@ -130,6 +131,7 @@ func readVmt(path string) (material.IMaterial, error) {
 
 	mat := &material.Material{
 		FilePath:        path,
+		ShaderName: 	 shaderName,
 		BaseTextureName: baseTexture,
 	}
 	ResourceManager.AddMaterial(mat)
