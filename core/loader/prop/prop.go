@@ -18,7 +18,7 @@ import (
 )
 
 // @TODO This is SUPER incomplete
-// Right now it does the bare minimum, and many models seem to have
+// right now it does the bare minimum, and many models seem to have
 // some corruption.
 
 // LoadProp loads a single prop/model of known filepath

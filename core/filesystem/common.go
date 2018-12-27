@@ -3,6 +3,7 @@ package filesystem
 // File Extensions
 // ExtensionVmt Material file extension
 const ExtensionVmt = ".vmt"
+
 // ExtensionVtf Texture file extension
 const ExtensionVtf = ".vtf"
 

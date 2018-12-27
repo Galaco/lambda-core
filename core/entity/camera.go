@@ -1,51 +1,47 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/client/config"
-	"github.com/galaco/Gource-Engine/client/input"
-	"github.com/galaco/Gource-Engine/client/input/keyboard"
-	"github.com/galaco/Gource-Engine/core/event"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 )
 
 const cameraSpeed = float64(320)
-const sensitivity = float64(0.03)
+const sensitivity = float32(0.03)
 
 var minVerticalRotation = mgl32.DegToRad(90)
 var maxVerticalRotation = mgl32.DegToRad(270)
 
 type Camera struct {
 	*Base
-	Up        mgl32.Vec3
-	Right     mgl32.Vec3
-	Direction mgl32.Vec3
-	worldUp   mgl32.Vec3
-	frameTime float64
+	fov         float32
+	aspectRatio float32
+	up          mgl32.Vec3
+	right       mgl32.Vec3
+	direction   mgl32.Vec3
+	worldUp     mgl32.Vec3
+	dt          float64
 }
 
-func (camera *Camera) ReceiveMessage(message event.IMessage) {
-
+func (camera *Camera) Forwards() {
+	camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * camera.dt)))
 }
 
-// Update updates the camera position
-func (camera *Camera) Update(dt float64) {
-	vel := cameraSpeed * dt
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyW) {
-		camera.Transform().Position = camera.Transform().Position.Add(camera.Direction.Mul(float32(vel)))
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyA) {
-		camera.Transform().Position = camera.Transform().Position.Sub(camera.Right.Mul(float32(vel)))
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyS) {
-		camera.Transform().Position = camera.Transform().Position.Sub(camera.Direction.Mul(float32(vel)))
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyD) {
-		camera.Transform().Position = camera.Transform().Position.Add(camera.Right.Mul(float32(vel)))
-	}
+func (camera *Camera) Backwards() {
+	camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * camera.dt)))
+}
 
-	camera.Transform().Rotation[0] -= float32(input.GetMouse().GetCoordinates()[0] * sensitivity)
-	camera.Transform().Rotation[2] -= float32(input.GetMouse().GetCoordinates()[1] * sensitivity)
+func (camera *Camera) Left() {
+	camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Mul(float32(cameraSpeed * camera.dt)))
+}
+
+func (camera *Camera) Right() {
+	camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * camera.dt)))
+}
+
+func (camera *Camera) Rotate(x, y, z float32) {
+	camera.Transform().Rotation[0] -= float32(x * sensitivity)
+	camera.Transform().Rotation[1] -= float32(y * sensitivity)
+	camera.Transform().Rotation[2] -= float32(z * sensitivity)
 
 	// Lock vertical rotation
 	if camera.Transform().Rotation[2] > maxVerticalRotation {
@@ -54,6 +50,11 @@ func (camera *Camera) Update(dt float64) {
 	if camera.Transform().Rotation[2] < minVerticalRotation {
 		camera.Transform().Rotation[2] = minVerticalRotation
 	}
+}
+
+// Update updates the camera position
+func (camera *Camera) Update(dt float64) {
+	camera.dt = dt
 
 	camera.updateVectors()
 }
@@ -63,18 +64,18 @@ func (camera *Camera) updateVectors() {
 	rot := camera.Transform().Rotation
 
 	// Calculate the new Front vector
-	camera.Direction = mgl32.Vec3{
+	camera.direction = mgl32.Vec3{
 		float32(math.Cos(float64(rot[2])) * math.Sin(float64(rot[0]))),
 		float32(math.Cos(float64(rot[2])) * math.Cos(float64(rot[0]))),
 		float32(math.Sin(float64(rot[2]))),
 	}
-	// Also re-calculate the Right and Up vector
-	camera.Right = mgl32.Vec3{
+	// Also re-calculate the right and up vector
+	camera.right = mgl32.Vec3{
 		float32(math.Sin(float64(rot[0]) - math.Pi/2)),
 		float32(math.Cos(float64(rot[0]) - math.Pi/2)),
 		0,
 	}
-	camera.Up = camera.Right.Cross(camera.Direction)
+	camera.up = camera.right.Cross(camera.direction)
 }
 
 // ModelMatrix returns identity matrix (camera model is our position!)
@@ -86,22 +87,25 @@ func (camera *Camera) ModelMatrix() mgl32.Mat4 {
 func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 	return mgl32.LookAtV(
 		camera.Transform().Position,
-		camera.Transform().Position.Add(camera.Direction),
-		camera.Up)
+		camera.Transform().Position.Add(camera.direction),
+		camera.up)
 }
 
 // ProjectionMatrix calculates projection matrix.
 // This is unlikely to change throughout program lifetime, but could do
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
-	return mgl32.Perspective(mgl32.DegToRad(70), float32(config.Get().Video.Width)/float32(config.Get().Video.Height), 0.1, 16384)
+	return mgl32.Perspective(camera.fov, camera.aspectRatio, 0.1, 16384)
 }
 
-// NewCamera returns new camera
-func NewCamera() *Camera {
+// NewCamera returns a new camera
+// fov should be provided in radians
+func NewCamera(fov float32, aspectRatio float32) *Camera {
 	return &Camera{
-		Base:      &Base{},
-		Up:        mgl32.Vec3{0, 1, 0},
-		worldUp:   mgl32.Vec3{0, 1, 0},
-		Direction: mgl32.Vec3{0, 0, -1},
+		Base:        &Base{},
+		fov:         fov,
+		aspectRatio: aspectRatio,
+		up:          mgl32.Vec3{0, 1, 0},
+		worldUp:     mgl32.Vec3{0, 1, 0},
+		direction:   mgl32.Vec3{0, 0, -1},
 	}
 }

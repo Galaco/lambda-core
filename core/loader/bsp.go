@@ -129,8 +129,8 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 	bspMesh.Finish()
 
 	cl := model.ClusterLeaf{
-		Id: 0,
-		Faces: bspFaces,
+		Id:        0,
+		Faces:     bspFaces,
 		DispFaces: dispFaces,
 	}
 	bspObject.SetClusterLeafs([]model.ClusterLeaf{cl})

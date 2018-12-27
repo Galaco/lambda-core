@@ -24,7 +24,6 @@ func LoadSky(materialName string) *model.Model {
 	mats[4] = material2.LoadSingleMaterial(skyboxRootDir + materialName + "ft.vmt")
 	mats[5] = material2.LoadSingleMaterial(skyboxRootDir + materialName + "bk.vmt")
 
-
 	texs := make([]texture.ITexture, 6)
 	for i := 0; i < 6; i++ {
 		texs[i] = mats[i].(*material.Material).Textures.BaseTexture

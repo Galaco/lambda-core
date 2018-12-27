@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"github.com/galaco/Gource-Engine/client/config"
 	"github.com/galaco/Gource-Engine/client/scene/visibility"
 	"github.com/galaco/Gource-Engine/client/scene/world"
 	"github.com/galaco/Gource-Engine/core/entity"
@@ -12,6 +13,7 @@ import (
 	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	entitylib "github.com/galaco/source-tools-common/entity"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 func LoadFromFile(fileName string) {
@@ -78,7 +80,6 @@ func loadWorld(file *bsplib.Bsp) {
 	baseWorldBsp.SetClusterLeafs(bspClusters)
 	baseWorldBsp.SetDefaultCluster(defaultCluster)
 
-
 	currentScene.SetWorld(world.NewWorld(*baseWorld.Bsp(), baseWorld.StaticProps(), visData))
 }
 
@@ -110,5 +111,5 @@ func loadEntities(entdata *lumps.EntData) {
 }
 
 func loadCamera() {
-	currentScene.AddCamera(entity.NewCamera())
+	currentScene.AddCamera(entity.NewCamera(mgl32.DegToRad(70), float32(config.Get().Video.Width)/float32(config.Get().Video.Height)))
 }

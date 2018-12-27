@@ -1,9 +1,9 @@
 package primitive
 
 import (
+	"github.com/go-gl/gl/v4.1-core/gl"
 	"reflect"
 	"testing"
-	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 func TestNewCube(t *testing.T) {

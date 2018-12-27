@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/galaco/Gource-Engine/client/config"
+	"github.com/galaco/Gource-Engine/client/input"
 	"github.com/galaco/Gource-Engine/client/input/keyboard"
 	"github.com/galaco/Gource-Engine/client/messages"
 	"github.com/galaco/Gource-Engine/client/renderer"
@@ -60,6 +61,7 @@ func main() {
 		Name: windowName,
 	})
 	Application.AddManager(&renderer.Manager{})
+	Application.AddManager(&CameraController{})
 
 	// Game specific setup
 	Game := game.CounterstrikeSource{}
@@ -95,4 +97,29 @@ func (closer Closeable) ReceiveMessage(message event.IMessage) {
 //Implement a way of shutting down the engine
 func RegisterShutdownMethod(app *core.Engine) {
 	event.GetEventManager().Listen(messages.TypeKeyDown, Closeable{app})
+}
+
+type CameraController struct {
+	core.Manager
+}
+
+func (controller *CameraController) Update(dt float64) {
+	cam := scene.Get().CurrentCamera()
+	if cam == nil {
+		return
+	}
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyW) {
+		cam.Forwards()
+	}
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyA) {
+		cam.Left()
+	}
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyS) {
+		cam.Backwards()
+	}
+	if input.GetKeyboard().IsKeyDown(keyboard.KeyD) {
+		cam.Right()
+	}
+
+	cam.Rotate(input.GetMouse().GetCoordinates()[0], 0, input.GetMouse().GetCoordinates()[1])
 }

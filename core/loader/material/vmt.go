@@ -84,7 +84,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 
 // LoadSingleMaterial loads a single material with known file path
 func LoadSingleMaterial(filePath string) material.IMaterial {
-	if resource.Manager().HasMaterial(filesystem.BasePathMaterial+filePath) {
+	if resource.Manager().HasMaterial(filesystem.BasePathMaterial + filePath) {
 		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 	}
 
@@ -131,7 +131,7 @@ func readVmt(path string) (material.IMaterial, error) {
 
 	mat := &material.Material{
 		FilePath:        path,
-		ShaderName: 	 shaderName,
+		ShaderName:      shaderName,
 		BaseTextureName: baseTexture,
 	}
 	ResourceManager.AddMaterial(mat)

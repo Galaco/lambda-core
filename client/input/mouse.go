@@ -3,18 +3,18 @@ package input
 import (
 	"github.com/galaco/Gource-Engine/client/messages"
 	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/go-gl/mathgl/mgl64"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 // Mouse information, about change from previous poll.
 // Note: Mouse is a struct containing mouse information, it doesn't have
 // any direct interaction with the window
 type Mouse struct {
-	change mgl64.Vec2
+	change mgl32.Vec2
 }
 
 // GetCoordinates return current mouse position
-func (mouse *Mouse) GetCoordinates() mgl64.Vec2 {
+func (mouse *Mouse) GetCoordinates() mgl32.Vec2 {
 	return mouse.change
 }
 
@@ -23,8 +23,8 @@ func (mouse *Mouse) GetCoordinates() mgl64.Vec2 {
 func (mouse *Mouse) ReceiveMessage(message event.IMessage) {
 	if message.GetType() == messages.TypeMouseMove {
 		msg := message.(*messages.MouseMove)
-		mouse.change[0] = msg.X
-		mouse.change[1] = msg.Y
+		mouse.change[0] = float32(msg.X)
+		mouse.change[1] = float32(msg.Y)
 	}
 }
 
