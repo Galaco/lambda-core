@@ -49,6 +49,8 @@ func RegisterPakfile(pakfile *lumps.Pakfile) {
 	pakFile = pakfile
 }
 
+// UnregisterPakfile removes the current pakfile from
+// available search locations
 func UnregisterPakfile() {
 	pakFile = nil
 }

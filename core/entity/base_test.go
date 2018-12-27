@@ -6,7 +6,10 @@ import (
 )
 
 func TestBase_Classname(t *testing.T) {
-	t.Skip()
+	sut := &Base{}
+	if sut.Classname() != "generic" {
+		t.Errorf("unexpected classname. Received %s, but expected %s", sut.Classname(), "generic")
+	}
 }
 
 func TestBase_New(t *testing.T) {

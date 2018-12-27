@@ -26,7 +26,7 @@ func (entity *Base) KeyValues() *entity2.Entity {
 // Get this entitiy's classname
 func (entity *Base) Classname() string {
 	if entity.keyValues == nil {
-		return ""
+		return "generic"
 	}
 	return entity.keyValues.ValueForKey("classname")
 }
