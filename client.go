@@ -18,6 +18,10 @@ import (
 	"runtime"
 )
 
+// Client
+// Client provides a .bsp loading and rendering environment
+// It provides full bsp loading, with props and materials.
+// Visibility data is also used.
 func main() {
 	runtime.LockOSThread()
 

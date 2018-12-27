@@ -7,6 +7,10 @@ import (
 	"sort"
 )
 
+// @TODO THIS IS NOT COMPLETE. IT DOES NOT WORK
+
+// Atlas
+// A texture atlas implementation.
 type Atlas struct {
 	Colour2D
 	PackedRectangles []shape.Rect
