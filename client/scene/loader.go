@@ -1,11 +1,14 @@
 package scene
 
 import (
+	"github.com/galaco/Gource-Engine/client/scene/visibility"
+	"github.com/galaco/Gource-Engine/client/scene/world"
 	"github.com/galaco/Gource-Engine/core/entity"
 	"github.com/galaco/Gource-Engine/core/filesystem"
 	"github.com/galaco/Gource-Engine/core/loader"
 	entity2 "github.com/galaco/Gource-Engine/core/loader/entity"
 	"github.com/galaco/Gource-Engine/core/logger"
+	"github.com/galaco/Gource-Engine/core/model"
 	bsplib "github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	entitylib "github.com/galaco/source-tools-common/entity"
@@ -33,7 +36,50 @@ func LoadFromFile(fileName string) {
 }
 
 func loadWorld(file *bsplib.Bsp) {
-	currentScene.SetWorld(loader.LoadMap(file))
+	baseWorld := loader.LoadMap(file)
+
+	baseWorldBsp := baseWorld.Bsp()
+	baseWorldBspFaces := baseWorldBsp.ClusterLeafs()[0].Faces
+	baseWorldStaticProps := baseWorld.StaticProps()
+
+	visData := visibility.NewVisFromBSP(file)
+	visLump := file.GetLump(bsplib.LUMP_VISIBILITY).(*lumps.Visibility).GetData()
+	bspClusters := make([]model.ClusterLeaf, visLump.NumClusters)
+	defaultCluster := model.ClusterLeaf{
+		Id: 32767,
+	}
+	for _, bspLeaf := range visData.Leafs {
+		for _, leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace : bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
+			if bspLeaf.Cluster == -1 {
+				//defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[leafFace])
+				continue
+			}
+			bspClusters[bspLeaf.Cluster].Id = bspLeaf.Cluster
+			bspClusters[bspLeaf.Cluster].Faces = append(bspClusters[bspLeaf.Cluster].Faces, baseWorldBspFaces[leafFace])
+		}
+	}
+
+	// Assign staticprops to clusters
+	for idx, prop := range baseWorld.StaticProps() {
+		for _, leafId := range prop.LeafList() {
+			clusterId := visData.Leafs[leafId].Cluster
+			if clusterId == -1 {
+				//defaultCluster.StaticProps = append(defaultCluster.StaticProps, &staticProps[idx])
+				continue
+			}
+			bspClusters[clusterId].StaticProps = append(bspClusters[clusterId].StaticProps, &baseWorldStaticProps[idx])
+		}
+	}
+
+	for _, idx := range baseWorldBsp.ClusterLeafs()[0].DispFaces {
+		defaultCluster.Faces = append(defaultCluster.Faces, baseWorldBspFaces[idx])
+	}
+
+	baseWorldBsp.SetClusterLeafs(bspClusters)
+	baseWorldBsp.SetDefaultCluster(defaultCluster)
+
+
+	currentScene.SetWorld(world.NewWorld(*baseWorld.Bsp(), baseWorld.StaticProps(), visData))
 }
 
 func loadEntities(entdata *lumps.EntData) {

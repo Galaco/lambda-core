@@ -10,4 +10,5 @@ type ClusterLeaf struct {
 	Id          int16
 	Faces       []mesh.Face
 	StaticProps []*StaticProp
+	DispFaces   []int
 }

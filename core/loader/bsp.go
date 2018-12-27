@@ -1,14 +1,13 @@
 package loader
 
 import (
-	sceneVisibility "github.com/galaco/Gource-Engine/client/scene/visibility"
-	"github.com/galaco/Gource-Engine/client/scene/world"
 	"github.com/galaco/Gource-Engine/core/filesystem"
 	matloader "github.com/galaco/Gource-Engine/core/loader/material"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
 	"github.com/galaco/Gource-Engine/core/resource"
+	"github.com/galaco/Gource-Engine/core/scene"
 	"github.com/galaco/Gource-Engine/core/texture"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
@@ -46,7 +45,7 @@ type bspstructs struct {
 // BSP Geometry
 // BSP Materials
 // StaticProps (materials loaded as required)
-func LoadMap(file *bsp.Bsp) *world.World {
+func LoadMap(file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
@@ -129,46 +128,17 @@ func LoadMap(file *bsp.Bsp) *world.World {
 	// Finish the bsp object.
 	bspMesh.Finish()
 
-	// GetFile static props
+	cl := model.ClusterLeaf{
+		Id: 0,
+		Faces: bspFaces,
+		DispFaces: dispFaces,
+	}
+	bspObject.SetClusterLeafs([]model.ClusterLeaf{cl})
+
+	// Get static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
 
-	// Optimise face data by cluster
-	visData := sceneVisibility.NewVisFromBSP(file)
-	bspClusters := make([]model.ClusterLeaf, bspStructure.visibility.NumClusters)
-	defaultCluster := model.ClusterLeaf{
-		Id: 32767,
-	}
-	for _, bspLeaf := range visData.Leafs {
-		for _, leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace : bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
-			if bspLeaf.Cluster == -1 {
-				//defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[leafFace])
-				continue
-			}
-			bspClusters[bspLeaf.Cluster].Id = bspLeaf.Cluster
-			bspClusters[bspLeaf.Cluster].Faces = append(bspClusters[bspLeaf.Cluster].Faces, bspFaces[leafFace])
-		}
-	}
-
-	// Assign staticprops to clusters
-	for idx, prop := range staticProps {
-		for _, leafId := range prop.LeafList() {
-			clusterId := visData.Leafs[leafId].Cluster
-			if clusterId == -1 {
-				//defaultCluster.StaticProps = append(defaultCluster.StaticProps, &staticProps[idx])
-				continue
-			}
-			bspClusters[clusterId].StaticProps = append(bspClusters[clusterId].StaticProps, &staticProps[idx])
-		}
-	}
-
-	for _, idx := range dispFaces {
-		defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[idx])
-	}
-
-	bspObject.SetClusterLeafs(bspClusters)
-	bspObject.SetDefaultCluster(defaultCluster)
-
-	return world.NewWorld(*bspObject, staticProps, visData)
+	return scene.NewScene(*bspObject, staticProps)
 }
 
 // generateBspFace Create primitives from face data in the bsp
