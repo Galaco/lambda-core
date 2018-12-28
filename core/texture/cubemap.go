@@ -1,7 +1,7 @@
 package texture
 
 import (
-	"github.com/galaco/Gource-Engine/glapi"
+	"github.com/galaco/gosigl"
 )
 
 // Cubemap is a 6-sided edgeless texture that can be mapped to a cube,
@@ -13,7 +13,7 @@ type Cubemap struct {
 
 // Bind this material to the GPU
 func (material *Cubemap) Bind() {
-	glapi.BindTextureCubemap(glapi.TextureSlot(0), material.Buffer)
+	gosigl.BindTextureCubemap(gosigl.TextureSlot(0), material.Buffer)
 }
 
 // Width Get material width.
@@ -36,7 +36,7 @@ func (material *Cubemap) Height() int {
 
 // Format get material format
 // Same format for all faces assumed
-func (material *Cubemap) Format() glapi.PixelFormat {
+func (material *Cubemap) Format() gosigl.PixelFormat {
 	if len(material.Faces) != 6 {
 		return 0
 	}
@@ -51,7 +51,7 @@ func (material *Cubemap) Finish() {
 	}
 
 	firstFace := material.Faces[0]
-	material.Buffer = glapi.CreateTextureCubemap(glapi.TextureSlot(0), firstFace.Width(), firstFace.Height(), pixelData, firstFace.Format(), true)
+	material.Buffer = gosigl.CreateTextureCubemap(gosigl.TextureSlot(0), firstFace.Width(), firstFace.Height(), pixelData, firstFace.Format(), true)
 }
 
 func (material *Cubemap) Destroy() {

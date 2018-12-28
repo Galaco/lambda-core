@@ -24,16 +24,16 @@ import (
 )
 
 type bspstructs struct {
-	faces      []face.Face
-	planes     []plane.Plane
-	vertexes   []mgl32.Vec3
-	surfEdges  []int32
-	edges      [][2]uint16
-	texInfos   []texinfo.TexInfo
-	dispInfos  []dispinfo.DispInfo
-	dispVerts  []dispvert.DispVert
-	game       *lumps.Game
-	lightmap   []common.ColorRGBExponent32
+	faces     []face.Face
+	planes    []plane.Plane
+	vertexes  []mgl32.Vec3
+	surfEdges []int32
+	edges     [][2]uint16
+	texInfos  []texinfo.TexInfo
+	dispInfos []dispinfo.DispInfo
+	dispVerts []dispvert.DispVert
+	game      *lumps.Game
+	lightmap  []common.ColorRGBExponent32
 }
 
 // LoadMap is the gateway into loading the core static level. Entities are loaded
@@ -45,16 +45,16 @@ type bspstructs struct {
 func LoadMap(file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
-		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
-		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
-		vertexes:   file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
-		surfEdges:  file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
-		edges:      file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
-		texInfos:   file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
-		dispInfos:  file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
-		dispVerts:  file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
-		lightmap:   file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
+		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
+		planes:    file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
+		vertexes:  file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
+		surfEdges: file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
+		edges:     file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
+		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
+		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
+		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
+		game:      file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
+		lightmap:  file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
 	}
 
 	//MATERIALS

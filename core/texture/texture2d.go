@@ -1,14 +1,14 @@
 package texture
 
 import (
-	"github.com/galaco/Gource-Engine/glapi"
+	"github.com/galaco/gosigl"
 	"github.com/galaco/vtf"
 )
 
 // Generic GPU material struct
 type Texture2D struct {
 	filePath string
-	Buffer   glapi.TextureBindingId
+	Buffer   gosigl.TextureBindingId
 	width    int
 	height   int
 	vtf      *vtf.Vtf
@@ -16,7 +16,7 @@ type Texture2D struct {
 
 // Bind this material to the GPU
 func (tex *Texture2D) Bind() {
-	glapi.BindTexture2D(glapi.TextureSlot(0), tex.Buffer)
+	gosigl.BindTexture2D(gosigl.TextureSlot(0), tex.Buffer)
 }
 
 // GetFilePath Get the filepath this data was loaded from
@@ -35,7 +35,7 @@ func (tex *Texture2D) Height() int {
 }
 
 // Format returns this materials colour format
-func (tex *Texture2D) Format() glapi.PixelFormat {
+func (tex *Texture2D) Format() gosigl.PixelFormat {
 	return getGLTextureFormat(tex.vtf.GetHeader().HighResImageFormat)
 }
 
@@ -46,8 +46,8 @@ func (tex *Texture2D) PixelDataForFrame(frame int) []byte {
 
 // Finish Generate the GPU buffer for this material
 func (tex *Texture2D) Finish() {
-	tex.Buffer = glapi.CreateTexture2D(
-		glapi.TextureSlot(0),
+	tex.Buffer = gosigl.CreateTexture2D(
+		gosigl.TextureSlot(0),
 		int(tex.vtf.GetHeader().Width),
 		int(tex.vtf.GetHeader().Height),
 		tex.vtf.GetHighestResolutionImageForFrame(0),
@@ -56,7 +56,7 @@ func (tex *Texture2D) Finish() {
 }
 
 func (tex *Texture2D) Destroy() {
-	glapi.DeleteTextures(tex.Buffer)
+	gosigl.DeleteTextures(tex.Buffer)
 }
 
 // NewMaterial returns a new material from Vtf
@@ -70,23 +70,23 @@ func NewTexture2D(filePath string, vtf *vtf.Vtf, width int, height int) *Texture
 }
 
 // getGLTextureFormat swap vtf format to openGL format
-func getGLTextureFormat(vtfFormat uint32) glapi.PixelFormat {
+func getGLTextureFormat(vtfFormat uint32) gosigl.PixelFormat {
 	switch vtfFormat {
 	case 0:
-		return glapi.RGBA
+		return gosigl.RGBA
 	case 2:
-		return glapi.RGB
+		return gosigl.RGB
 	case 3:
-		return glapi.BGR
+		return gosigl.BGR
 	case 12:
-		return glapi.BGRA
+		return gosigl.BGRA
 	case 13:
-		return glapi.DXT1
+		return gosigl.DXT1
 	case 14:
-		return glapi.DXT3
+		return gosigl.DXT3
 	case 15:
-		return glapi.DXT5
+		return gosigl.DXT5
 	default:
-		return glapi.RGB
+		return gosigl.RGB
 	}
 }

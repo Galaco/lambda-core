@@ -1,6 +1,6 @@
 package util
 
-func RemoveDuplicatesFromList(list []string) (uniqueList []string){
+func RemoveDuplicatesFromList(list []string) (uniqueList []string) {
 	for _, entry := range list {
 		found := false
 		for _, unique := range uniqueList {

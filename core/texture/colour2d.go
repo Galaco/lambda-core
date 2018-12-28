@@ -1,7 +1,7 @@
 package texture
 
 import (
-	"github.com/galaco/Gource-Engine/glapi"
+	"github.com/galaco/gosigl"
 )
 
 // Colour2D is a material defined by raw/computed colour data,
@@ -12,8 +12,8 @@ type Colour2D struct {
 }
 
 // Format returns colour format
-func (error *Colour2D) Format() glapi.PixelFormat {
-	return glapi.RGB
+func (error *Colour2D) Format() gosigl.PixelFormat {
+	return gosigl.RGB
 }
 
 // PixelDataForFrame returns raw colour data for specific animation
@@ -24,7 +24,7 @@ func (error *Colour2D) PixelDataForFrame(frame int) []byte {
 
 // Finish binds colour data to GPU
 func (error *Colour2D) Finish() {
-	error.Buffer = glapi.CreateTexture2D(glapi.TextureSlot(0), error.Width(), error.Height(), error.PixelDataForFrame(0), error.Format(), false)
+	error.Buffer = gosigl.CreateTexture2D(gosigl.TextureSlot(0), error.Width(), error.Height(), error.PixelDataForFrame(0), error.Format(), false)
 }
 
 // Get New Error material

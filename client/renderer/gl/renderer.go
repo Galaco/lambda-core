@@ -7,15 +7,15 @@ import (
 	"github.com/galaco/Gource-Engine/core/entity"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
-	"github.com/galaco/Gource-Engine/glapi"
+	"github.com/galaco/gosigl"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
 //OpenGL renderer
 type Renderer struct {
-	lightmappedGenericShader glapi.Context
-	skyShader                glapi.Context
+	lightmappedGenericShader gosigl.Context
+	skyShader                gosigl.Context
 
 	currentShaderId uint32
 
@@ -32,11 +32,11 @@ type Renderer struct {
 // Preparation function
 // Loads shaders and sets necessary constants for opengls state machine
 func (manager *Renderer) LoadShaders() {
-	manager.lightmappedGenericShader = glapi.NewShader()
-	manager.lightmappedGenericShader.AddShader(shaders.Vertex, glapi.VertexShader)
-	manager.lightmappedGenericShader.AddShader(shaders.Fragment, glapi.FragmentShader)
+	manager.lightmappedGenericShader = gosigl.NewShader()
+	manager.lightmappedGenericShader.AddShader(shaders.Vertex, gosigl.VertexShader)
+	manager.lightmappedGenericShader.AddShader(shaders.Fragment, gosigl.FragmentShader)
 	manager.lightmappedGenericShader.Finalize()
-	manager.skyShader = glapi.NewShader()
+	manager.skyShader = gosigl.NewShader()
 	manager.skyShader.AddShader(sky.Vertex, opengl.VERTEX_SHADER)
 	manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
 	manager.skyShader.Finalize()
@@ -60,12 +60,12 @@ func (manager *Renderer) LoadShaders() {
 	lightmappedGenericShaderMap["lightmapTextureSampler"] = manager.lightmappedGenericShader.GetUniform("lightmapTextureSampler")
 	manager.uniformMap[manager.lightmappedGenericShader.Id()] = lightmappedGenericShaderMap
 
-	glapi.SetLineWidth(32)
-	glapi.EnableBlend()
-	glapi.EnableDepthTest()
-	glapi.EnableCullFace(glapi.Back, glapi.WindingClockwise)
+	gosigl.SetLineWidth(32)
+	gosigl.EnableBlend()
+	gosigl.EnableDepthTest()
+	gosigl.EnableCullFace(gosigl.Back, gosigl.WindingClockwise)
 
-	glapi.ClearColour(0, 0, 0, 1)
+	gosigl.ClearColour(0, 0, 0, 1)
 }
 
 var numCalls = 0
@@ -88,7 +88,7 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.lightmappedGenericShader.Id()]["projection"], 1, false, &manager.matrixes.projection[0])
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.lightmappedGenericShader.Id()]["view"], 1, false, &manager.matrixes.view[0])
 
-	glapi.Clear(glapi.MaskColourBufferBit, glapi.MaskDepthBufferBit)
+	gosigl.Clear(gosigl.MaskColourBufferBit, gosigl.MaskDepthBufferBit)
 }
 
 // Called at the end of a frame
@@ -159,7 +159,7 @@ func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 			continue
 		}
 		manager.BindMesh(mesh)
-		opengl.DrawArrays(manager.vertexDrawMode, 0, int32(len(mesh.Vertices()))/3)
+		gosigl.DrawArray(0, len(mesh.Vertices())/3)
 
 		numCalls++
 	}
@@ -199,7 +199,7 @@ func (manager *Renderer) DrawFace(target *mesh.Face) {
 	} else {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0)
 	}
-	opengl.DrawArrays(manager.vertexDrawMode, target.Offset(), target.Length())
+	gosigl.DrawArray(int(target.Offset()), int(target.Length()))
 }
 
 // Render the sky material
@@ -240,9 +240,9 @@ func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
 // Change the draw format.
 func (manager *Renderer) SetWireframeMode(mode bool) {
 	if mode == true {
-		manager.vertexDrawMode = opengl.LINES
+		gosigl.SetVertexDrawMode(gosigl.Line)
 	} else {
-		manager.vertexDrawMode = opengl.TRIANGLES
+		gosigl.SetVertexDrawMode(gosigl.Triangles)
 	}
 }
 
