@@ -7,14 +7,15 @@ import (
 	"github.com/galaco/Gource-Engine/core/entity"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Gource-Engine/glapi"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 )
 
 //OpenGL renderer
 type Renderer struct {
-	lightmappedGenericShader Context
-	skyShader                Context
+	lightmappedGenericShader glapi.Context
+	skyShader                glapi.Context
 
 	currentShaderId uint32
 
@@ -31,11 +32,11 @@ type Renderer struct {
 // Preparation function
 // Loads shaders and sets necessary constants for opengls state machine
 func (manager *Renderer) LoadShaders() {
-	manager.lightmappedGenericShader = NewContext()
-	manager.lightmappedGenericShader.AddShader(shaders.Vertex, opengl.VERTEX_SHADER)
-	manager.lightmappedGenericShader.AddShader(shaders.Fragment, opengl.FRAGMENT_SHADER)
+	manager.lightmappedGenericShader = glapi.NewShader()
+	manager.lightmappedGenericShader.AddShader(shaders.Vertex, glapi.VertexShader)
+	manager.lightmappedGenericShader.AddShader(shaders.Fragment, glapi.FragmentShader)
 	manager.lightmappedGenericShader.Finalize()
-	manager.skyShader = NewContext()
+	manager.skyShader = glapi.NewShader()
 	manager.skyShader.AddShader(sky.Vertex, opengl.VERTEX_SHADER)
 	manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
 	manager.skyShader.Finalize()
@@ -59,16 +60,12 @@ func (manager *Renderer) LoadShaders() {
 	lightmappedGenericShaderMap["lightmapTextureSampler"] = manager.lightmappedGenericShader.GetUniform("lightmapTextureSampler")
 	manager.uniformMap[manager.lightmappedGenericShader.Id()] = lightmappedGenericShaderMap
 
-	opengl.Enable(opengl.BLEND)
-	opengl.BlendFunc(opengl.SRC_ALPHA, opengl.ONE_MINUS_SRC_ALPHA)
-	opengl.Enable(opengl.DEPTH_TEST)
-	opengl.LineWidth(32)
-	opengl.DepthFunc(opengl.LEQUAL)
-	opengl.Enable(opengl.CULL_FACE)
-	opengl.CullFace(opengl.BACK)
-	opengl.FrontFace(opengl.CW)
+	glapi.SetLineWidth(32)
+	glapi.EnableBlend()
+	glapi.EnableDepthTest()
+	glapi.EnableCullFace(glapi.Back, glapi.WindingClockwise)
 
-	opengl.ClearColor(0, 0, 0, 1)
+	glapi.ClearColour(0, 0, 0, 1)
 }
 
 var numCalls = 0
@@ -91,7 +88,7 @@ func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.lightmappedGenericShader.Id()]["projection"], 1, false, &manager.matrixes.projection[0])
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.lightmappedGenericShader.Id()]["view"], 1, false, &manager.matrixes.view[0])
 
-	opengl.Clear(opengl.COLOR_BUFFER_BIT | opengl.DEPTH_BUFFER_BIT)
+	glapi.Clear(glapi.MaskColourBufferBit, glapi.MaskDepthBufferBit)
 }
 
 // Called at the end of a frame

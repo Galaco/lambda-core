@@ -1,8 +1,8 @@
 package texture
 
 import (
+	"github.com/galaco/Gource-Engine/glapi"
 	"github.com/galaco/bsp/primitives/common"
-	"github.com/go-gl/gl/v4.1-core/gl"
 )
 
 // Lightmap is a material used for lighting a face
@@ -12,39 +12,13 @@ type Lightmap struct {
 
 // Bind this material to the GPU
 func (material *Lightmap) Bind() {
-	gl.ActiveTexture(gl.TEXTURE1)
-	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
+	glapi.BindTexture2D(glapi.TextureSlot(1), material.Buffer)
 }
 
 // Finish binds this material data to the GPU
 func (material *Lightmap) Finish() {
-	gl.GenTextures(1, &material.Buffer)
-
-	material.bindInternal(gl.TEXTURE1)
+	material.Buffer = glapi.CreateTexture2D(glapi.TextureSlot(1), material.Width(), material.Height(), material.PixelDataForFrame(0), material.Format(), true)
 }
-
-func (material *Lightmap) bindInternal(textureSlot uint32) {
-	gl.GenTextures(1, &material.Buffer)
-	gl.ActiveTexture(textureSlot)
-	gl.BindTexture(gl.TEXTURE_2D, material.Buffer)
-
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(material.width),
-		int32(material.height),
-		0,
-		material.Format(),
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(material.rawColourData))
-}
-
 // Create a lightmap from BSP stored colour data
 func LightmapFromColorRGBExp32(width int, height int, colorMaps []common.ColorRGBExponent32) *Lightmap {
 	raw := make([]uint8, len(colorMaps)*3)

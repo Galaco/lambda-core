@@ -1,8 +1,8 @@
 package texture
 
 import (
+	"github.com/galaco/Gource-Engine/glapi"
 	"github.com/galaco/Gource-Engine/lib/math/shape"
-	"github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
 	"sort"
 )
@@ -18,8 +18,8 @@ type Atlas struct {
 
 // Format returns colour format
 // For now always RGBA
-func (atlas *Atlas) Format() uint32 {
-	return gl.RGBA
+func (atlas *Atlas) Format() glapi.PixelFormat {
+	return glapi.RGBA
 }
 
 // PackTextures

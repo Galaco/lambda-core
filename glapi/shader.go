@@ -1,10 +1,15 @@
-package gl
+package glapi
 
 import (
 	"fmt"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"strings"
 )
+
+type ShaderType uint32
+
+const VertexShader = ShaderType(opengl.VERTEX_SHADER)
+const FragmentShader = ShaderType(opengl.FRAGMENT_SHADER)
 
 type Context struct {
 	context uint32
@@ -14,29 +19,31 @@ func (ctx *Context) Id() uint32 {
 	return ctx.context
 }
 
-func (context *Context) AddShader(source string, shaderType uint32) {
-	shader, err := context.compileShader(source, shaderType)
+func (ctx *Context) AddShader(source string, shaderType ShaderType) error {
+	shader, err := ctx.compileShader(source, shaderType)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	opengl.AttachShader(context.context, shader)
+	opengl.AttachShader(ctx.context, shader)
+
+	return nil
 }
 
-func (context *Context) Finalize() {
-	opengl.LinkProgram(context.context)
+func (ctx *Context) Finalize() {
+	opengl.LinkProgram(ctx.context)
 }
 
-func (context *Context) UseProgram() {
-	opengl.UseProgram(context.context)
+func (ctx *Context) UseProgram() {
+	opengl.UseProgram(ctx.context)
 }
 
-func (context *Context) GetUniform(name string) int32 {
-	return opengl.GetUniformLocation(context.context, opengl.Str(name+"\x00"))
+func (ctx *Context) GetUniform(name string) int32 {
+	return opengl.GetUniformLocation(ctx.context, opengl.Str(name+"\x00"))
 }
 
-func (context *Context) compileShader(source string, shaderType uint32) (uint32, error) {
-	shader := opengl.CreateShader(shaderType)
+func (ctx *Context) compileShader(source string, shaderType ShaderType) (uint32, error) {
+	shader := opengl.CreateShader(uint32(shaderType))
 
 	csources, free := opengl.Strs(source)
 	opengl.ShaderSource(shader, 1, csources, nil)
@@ -58,11 +65,11 @@ func (context *Context) compileShader(source string, shaderType uint32) (uint32,
 	return shader, nil
 }
 
-func (context *Context) Destroy() {
-	opengl.DeleteShader(context.Id())
+func (ctx *Context) Destroy() {
+	opengl.DeleteShader(ctx.Id())
 }
 
-func NewContext() Context {
+func NewShader() Context {
 	if err := opengl.Init(); err != nil {
 		panic(err)
 	}
@@ -73,3 +80,4 @@ func NewContext() Context {
 
 	return context
 }
+

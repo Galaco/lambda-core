@@ -1,7 +1,7 @@
 package texture
 
 import (
-	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/galaco/Gource-Engine/glapi"
 )
 
 // Colour2D is a material defined by raw/computed colour data,
@@ -12,8 +12,8 @@ type Colour2D struct {
 }
 
 // Format returns colour format
-func (error *Colour2D) Format() uint32 {
-	return gl.RGB
+func (error *Colour2D) Format() glapi.PixelFormat {
+	return glapi.RGB
 }
 
 // PixelDataForFrame returns raw colour data for specific animation
@@ -24,32 +24,7 @@ func (error *Colour2D) PixelDataForFrame(frame int) []byte {
 
 // Finish binds colour data to GPU
 func (error *Colour2D) Finish() {
-	gl.GenTextures(1, &error.Buffer)
-
-	error.bindInternal(gl.TEXTURE0)
-}
-
-// bindInternal provides calls to openGL to bind colour data to GPU
-func (error *Colour2D) bindInternal(textureSlot uint32) {
-	gl.GenTextures(1, &error.Buffer)
-	gl.ActiveTexture(textureSlot)
-	gl.BindTexture(gl.TEXTURE_2D, error.Buffer)
-
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT)
-
-	gl.TexImage2D(
-		gl.TEXTURE_2D,
-		0,
-		gl.RGBA,
-		int32(error.width),
-		int32(error.height),
-		0,
-		error.Format(),
-		gl.UNSIGNED_BYTE,
-		gl.Ptr(error.rawColourData))
+	error.Buffer = glapi.CreateTexture2D(glapi.TextureSlot(0), error.Width(), error.Height(), error.PixelDataForFrame(0), error.Format(), false)
 }
 
 // Get New Error material
