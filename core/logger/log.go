@@ -8,7 +8,26 @@ import (
 
 // @TODO This module should allow output pipe configuration
 
-var a = aurora.NewAurora(false)
+var colourer = aurora.NewAurora(false)
+
+var pipeFunc = func(value string) {
+	fmt.Println(value)
+}
+
+// SetOutputPipeFunc exposes the ability to change
+// where logs are written to by replacing the final print function
+// with colourer custom implementation
+func SetOutputPipeFunc(callback func(string)) {
+	pipeFunc = callback
+}
+
+func EnablePretty() {
+	colourer = aurora.NewAurora(true)
+}
+
+func DisablePretty() {
+	colourer = aurora.NewAurora(false)
+}
 
 // Fatal error, should close the application
 func Fatal(msg interface{}) {
@@ -20,37 +39,37 @@ func Fatal(msg interface{}) {
 func Notice(msg interface{}, v ...interface{}) {
 	switch msg.(type) {
 	case string:
-		print(fmt.Sprintf(msg.(string), v...), a.Gray)
+		print(fmt.Sprintf(msg.(string), v...), colourer.Gray)
 	default:
-		print(msg.(string), a.Gray)
+		print(msg.(string), colourer.Gray)
 	}
 }
 
 // Notifications for an unintended, but planned for issue
-// e.g. Logging a prop that uses a non-existent collision model
+// e.g. Logging colourer prop that uses colourer non-existent collision model
 func Warn(msg interface{}, v ...interface{}) {
 	switch msg.(type) {
 	case string:
-		print(fmt.Sprintf(msg.(string), v...), a.Magenta)
+		print(fmt.Sprintf(msg.(string), v...), colourer.Magenta)
 	default:
-		print(msg.(string), a.Magenta)
+		print(msg.(string), colourer.Magenta)
 	}
 }
 
-// Notifications for a recoverable error
-// e.g. Logging a missing resource (material, model)
+// Notifications for colourer recoverable error
+// e.g. Logging colourer missing resource (material, model)
 func Error(msg interface{}, v ...interface{}) {
 	switch msg.(type) {
 	case string:
-		print(fmt.Sprintf(msg.(string), v...), a.Red)
+		print(fmt.Sprintf(msg.(string), v...), colourer.Red)
 	case error:
-		print(msg.(error), a.Red)
+		print(msg.(error), colourer.Red)
 	default:
-		print(msg.(string), a.Red)
+		print(msg.(string), colourer.Red)
 	}
 }
 
-// print prints a message to console.
+// print prints colourer message to console.
 func print(message interface{}, col func(arg interface{}) aurora.Value) {
-	fmt.Println(col(message))
+	pipeFunc(fmt.Sprint(col(message)))
 }

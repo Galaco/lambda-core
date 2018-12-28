@@ -5,7 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/core/logger"
 	"github.com/galaco/Gource-Engine/core/model"
 	"github.com/galaco/Gource-Engine/core/resource"
-	"github.com/galaco/Gource-Engine/core/util"
+	"github.com/galaco/Gource-Engine/lib/util"
 	"github.com/galaco/bsp/primitives/game"
 	"log"
 	"strings"
