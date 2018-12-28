@@ -25,6 +25,7 @@ import (
 func main() {
 	runtime.LockOSThread()
 
+	logger.EnablePretty()
 	// Load GameInfo.txt
 	// GameInfo.txt includes fundamental properties about the game
 	// and its resources locations
