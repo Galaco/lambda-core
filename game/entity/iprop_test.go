@@ -6,7 +6,17 @@ import (
 )
 
 func TestPropBase_GetModel(t *testing.T) {
-	TestPropBase_SetModel(t)
+	sut := PropBase{}
+	if sut.GetModel() != nil {
+		t.Error("model was set, but should not be")
+	}
+
+	mod := &model.Model{}
+	sut.SetModel(mod)
+
+	if sut.GetModel() != mod {
+		t.Errorf("set mode l does not match expected")
+	}
 }
 
 func TestPropBase_SetModel(t *testing.T) {
