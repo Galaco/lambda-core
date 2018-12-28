@@ -17,7 +17,6 @@ import (
 	"github.com/galaco/bsp/primitives/face"
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/texinfo"
-	"github.com/galaco/bsp/primitives/visibility"
 	"github.com/go-gl/mathgl/mgl32"
 	"math"
 	"strings"
@@ -33,8 +32,6 @@ type bspstructs struct {
 	texInfos   []texinfo.TexInfo
 	dispInfos  []dispinfo.DispInfo
 	dispVerts  []dispvert.DispVert
-	pakFile    *lumps.Pakfile
-	visibility *visibility.Vis
 	game       *lumps.Game
 	lightmap   []common.ColorRGBExponent32
 }
@@ -56,8 +53,6 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 		texInfos:   file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
 		dispInfos:  file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
 		dispVerts:  file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-		pakFile:    file.GetLump(bsp.LUMP_PAKFILE).(*lumps.Pakfile),
-		visibility: file.GetLump(bsp.LUMP_VISIBILITY).(*lumps.Visibility).GetData(),
 		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
 		lightmap:   file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
 	}

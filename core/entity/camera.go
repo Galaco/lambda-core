@@ -19,23 +19,22 @@ type Camera struct {
 	right       mgl32.Vec3
 	direction   mgl32.Vec3
 	worldUp     mgl32.Vec3
-	dt          float64
 }
 
-func (camera *Camera) Forwards() {
-	camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * camera.dt)))
+func (camera *Camera) Forwards(dt float64) {
+	camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * dt)))
 }
 
-func (camera *Camera) Backwards() {
-	camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * camera.dt)))
+func (camera *Camera) Backwards(dt float64) {
+	camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * dt)))
 }
 
-func (camera *Camera) Left() {
-	camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Mul(float32(cameraSpeed * camera.dt)))
+func (camera *Camera) Left(dt float64) {
+	camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Mul(float32(cameraSpeed * dt)))
 }
 
-func (camera *Camera) Right() {
-	camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * camera.dt)))
+func (camera *Camera) Right(dt float64) {
+	camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * dt)))
 }
 
 func (camera *Camera) Rotate(x, y, z float32) {
@@ -54,8 +53,6 @@ func (camera *Camera) Rotate(x, y, z float32) {
 
 // Update updates the camera position
 func (camera *Camera) Update(dt float64) {
-	camera.dt = dt
-
 	camera.updateVectors()
 }
 

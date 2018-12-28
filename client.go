@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/galaco/Gource-Engine/client/behaviour"
+	"github.com/galaco/Gource-Engine/client/behaviour/controllers"
 	"github.com/galaco/Gource-Engine/client/config"
-	"github.com/galaco/Gource-Engine/client/input"
-	"github.com/galaco/Gource-Engine/client/input/keyboard"
 	"github.com/galaco/Gource-Engine/client/messages"
 	"github.com/galaco/Gource-Engine/client/renderer"
 	"github.com/galaco/Gource-Engine/client/scene"
@@ -52,24 +52,14 @@ func main() {
 	Application := core.NewEngine()
 	Application.Initialise()
 
-	windowName := "Gource"
-	gameInfoNode, _ := gameinfo.Get().Find("GameInfo")
-	if gameInfoNode == nil {
-		logger.Fatal("gameinfo was not found.")
-	}
-	gameNode, _ := gameInfoNode.Find("game")
-	if gameNode != nil {
-		windowName, _ = gameNode.AsString()
-	}
+	// Game specific setup
+	gameName := SetGame(&game.CounterstrikeSource{})
+
 	Application.AddManager(&window.Manager{
-		Name: windowName,
+		Name: gameName,
 	})
 	Application.AddManager(&renderer.Manager{})
-	Application.AddManager(&CameraController{})
-
-	// Game specific setup
-	Game := game.CounterstrikeSource{}
-	Game.RegisterEntityClasses()
+	Application.AddManager(&controllers.Camera{})
 
 	// Register behaviour that needs to exist outside of game simulation & control
 	RegisterShutdownMethod(Application)
@@ -80,50 +70,27 @@ func main() {
 	Application.SetSimulationSpeed(10)
 	Application.Run()
 
-	resource.Manager().Cleanup()
+	defer resource.Manager().Cleanup()
 }
 
-// Closeable Simple struct to control engine shutdown utilising the internal event manager
-type Closeable struct {
-	target *core.Engine
-}
-
-// ReceiveMessage function will shutdown the engine
-func (closer Closeable) ReceiveMessage(message event.IMessage) {
-	if message.GetType() == messages.TypeKeyDown {
-		if message.(*messages.KeyDown).Key == keyboard.KeyEscape {
-			// Will shutdown the engine at the end of the current loop
-			closer.target.Close()
-		}
+// SetGame registers game entities and returns game name
+func SetGame(proj game.IGame) string {
+	windowName := "Gource"
+	gameInfoNode, _ := gameinfo.Get().Find("GameInfo")
+	if gameInfoNode == nil {
+		logger.Fatal("gameinfo was not found.")
 	}
+	gameNode, _ := gameInfoNode.Find("game")
+	if gameNode != nil {
+		windowName, _ = gameNode.AsString()
+	}
+
+	proj.RegisterEntityClasses()
+
+	return windowName
 }
 
-//Implement a way of shutting down the engine
+// RegisterShutdownMethod Implements a way of shutting down the engine
 func RegisterShutdownMethod(app *core.Engine) {
-	event.GetEventManager().Listen(messages.TypeKeyDown, Closeable{app})
-}
-
-type CameraController struct {
-	core.Manager
-}
-
-func (controller *CameraController) Update(dt float64) {
-	cam := scene.Get().CurrentCamera()
-	if cam == nil {
-		return
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyW) {
-		cam.Forwards()
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyA) {
-		cam.Left()
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyS) {
-		cam.Backwards()
-	}
-	if input.GetKeyboard().IsKeyDown(keyboard.KeyD) {
-		cam.Right()
-	}
-
-	cam.Rotate(input.GetMouse().GetCoordinates()[0], 0, input.GetMouse().GetCoordinates()[1])
+	event.GetEventManager().Listen(messages.TypeKeyDown, behaviour.NewCloseable(app))
 }
