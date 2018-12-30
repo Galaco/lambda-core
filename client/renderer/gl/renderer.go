@@ -244,7 +244,7 @@ func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
 // Change the draw format.
 func (manager *Renderer) SetWireframeMode(mode bool) {
 	if mode == true {
-		gosigl.SetVertexDrawMode(gosigl.Line)
+		gosigl.SetVertexDrawMode(opengl.LINES)
 	} else {
 		gosigl.SetVertexDrawMode(gosigl.Triangles)
 	}

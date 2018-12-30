@@ -3,7 +3,6 @@ package entity
 import (
 	"github.com/galaco/Gource-Engine/core/entity"
 	"github.com/galaco/Gource-Engine/core/loader/prop"
-	"github.com/galaco/Gource-Engine/core/model"
 	"github.com/galaco/Gource-Engine/core/resource"
 	entity2 "github.com/galaco/Gource-Engine/game/entity"
 	"strings"
@@ -22,6 +21,6 @@ func AssignStudioModelToEntity(entity entity.IEntity) {
 		m, _ := prop.LoadProp(modelName)
 		entity.(entity2.IProp).SetModel(m)
 	} else {
-		entity.(entity2.IProp).SetModel(resource.Manager().GetModel(modelName).(*model.Model))
+		entity.(entity2.IProp).SetModel(resource.Manager().GetModel(modelName))
 	}
 }

@@ -31,7 +31,6 @@ func (manager *Manager) Register() {
 
 	cache.TextureIdMap = map[string]gosigl.TextureBindingId{}
 
-
 	event.GetEventManager().Listen(message.TypeTextureLoaded, syncTextureToGpu)
 	event.GetEventManager().Listen(message.TypeTextureUnloaded, destroyTextureOnGPU)
 }

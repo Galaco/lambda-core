@@ -70,6 +70,8 @@ func main() {
 	// Start
 	Application.SetSimulationSpeed(10)
 	Application.Run()
+
+	defer resource.Manager().Empty()
 }
 
 // SetGame registers game entities and returns game name

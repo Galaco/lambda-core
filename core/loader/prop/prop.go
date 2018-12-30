@@ -25,7 +25,7 @@ import (
 func LoadProp(path string) (*model.Model, error) {
 	ResourceManager := resource.Manager()
 	if ResourceManager.HasModel(path) {
-		return ResourceManager.GetModel(path).(*model.Model), nil
+		return ResourceManager.GetModel(path), nil
 	}
 	prop, err := loadProp(strings.Split(path, ".mdl")[0])
 	if prop != nil {
@@ -33,13 +33,13 @@ func LoadProp(path string) (*model.Model, error) {
 		if m != nil {
 			ResourceManager.AddModel(m)
 		} else {
-			return ResourceManager.GetModel(ResourceManager.ErrorModelName()).(*model.Model), err
+			return ResourceManager.GetModel(ResourceManager.ErrorModelName()), err
 		}
 	} else {
-		return ResourceManager.GetModel(ResourceManager.ErrorModelName()).(*model.Model), err
+		return ResourceManager.GetModel(ResourceManager.ErrorModelName()), err
 	}
 
-	return ResourceManager.GetModel(path).(*model.Model), err
+	return ResourceManager.GetModel(path), err
 }
 
 func loadProp(filePath string) (*studiomodel.StudioModel, error) {
