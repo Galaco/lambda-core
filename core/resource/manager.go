@@ -1,7 +1,12 @@
 package resource
 
 import (
+	"github.com/galaco/Gource-Engine/core/event"
 	"github.com/galaco/Gource-Engine/core/filesystem"
+	"github.com/galaco/Gource-Engine/core/material"
+	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Gource-Engine/core/resource/message"
+	"github.com/galaco/Gource-Engine/core/texture"
 	"strings"
 	"sync"
 )
@@ -22,23 +27,36 @@ type manager struct {
 
 // Add a new material
 func (m *manager) AddMaterial(file IResource) {
+	if m.HasMaterial(file.GetFilePath()) {
+		return
+	}
 	m.materialReadMutex.Lock()
 	m.materials[strings.ToLower(file.GetFilePath())] = file
 	m.materialReadMutex.Unlock()
+
+	event.GetEventManager().Dispatch(message.LoadedMaterial(file.(material.IMaterial)))
 }
 
 // Add a new material
 func (m *manager) AddTexture(file IResource) {
+	if m.HasTexture(file.GetFilePath()) {
+		return
+	}
 	m.textureReadMutex.Lock()
 	m.textures[strings.ToLower(file.GetFilePath())] = file
 	m.textureReadMutex.Unlock()
+	event.GetEventManager().Dispatch(message.LoadedTexture(file.(texture.ITexture)))
 }
 
 // Add a new model
 func (m *manager) AddModel(file IResource) {
+	if m.HasModel(file.GetFilePath()) {
+		return
+	}
 	m.modelReadMutex.Lock()
 	m.models[strings.ToLower(file.GetFilePath())] = file
 	m.modelReadMutex.Unlock()
+	event.GetEventManager().Dispatch(message.LoadedModel(file.(*model.Model)))
 }
 
 // Get Find a specific filesystem
@@ -52,6 +70,18 @@ func (m *manager) GetTexture(filePath string) IResource {
 
 func (m *manager) GetModel(filePath string) IResource {
 	return m.models[strings.ToLower(filePath)]
+}
+
+func (m *manager) Materials() map[string]IResource {
+	return m.materials
+}
+
+func (m *manager) Textures() map[string]IResource {
+	return m.textures
+}
+
+func (m *manager) Models() map[string]IResource {
+	return m.models
 }
 
 // ErrorModelName Get error model name
@@ -106,21 +136,6 @@ func (m *manager) HasModel(filePath string) bool {
 	}
 	m.modelReadMutex.Unlock()
 	return false
-}
-
-func (m *manager) Cleanup() {
-	for idx, mat := range m.materials {
-		mat.Destroy()
-		delete(m.materials, idx)
-	}
-	for idx, model := range m.models {
-		model.Destroy()
-		delete(m.models, idx)
-	}
-	for idx, tex := range m.textures {
-		tex.Destroy()
-		delete(m.textures, idx)
-	}
 }
 
 var resourceManager manager

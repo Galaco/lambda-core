@@ -10,20 +10,20 @@ import (
 // management etc.
 // Game entities should use their own event queue, and should not hook into this queue.
 type Manager struct {
-	listenerMap map[MessageType]map[EventHandle]IEventListenable
+	listenerMap map[MessageType]map[EventHandle]func(IMessage)
 	mu          sync.Mutex
 	eventQueue  []*queueItem
 	runAsync    bool
 }
 
 // Listen Register a new listener to listen to an event
-func (manager *Manager) Listen(eventName MessageType, listener IEventListenable) EventHandle {
+func (manager *Manager) Listen(eventName MessageType, callback func(IMessage)) EventHandle {
 	handle := newEventHandle()
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName]; !ok {
-		manager.listenerMap[eventName] = make(map[EventHandle]IEventListenable)
+		manager.listenerMap[eventName] = make(map[EventHandle]func(IMessage))
 	}
-	manager.listenerMap[eventName][handle] = listener
+	manager.listenerMap[eventName][handle] = callback
 	manager.mu.Unlock()
 
 	return handle
@@ -32,12 +32,12 @@ func (manager *Manager) Listen(eventName MessageType, listener IEventListenable)
 // RunConcurrent Runs the event queue in its own go routine
 func (manager *Manager) RunConcurrent() {
 	// Block double-running
-	if manager.runAsync == true {
-		return
-	}
-	manager.runAsync = true
-	go func() {
-		for manager.runAsync == true {
+	//if manager.runAsync == true {
+	//	return
+	//}
+	//manager.runAsync = true
+//	func() {
+//		for manager.runAsync == true {
 			manager.mu.Lock()
 			queue := manager.eventQueue
 			manager.mu.Unlock()
@@ -52,11 +52,15 @@ func (manager *Manager) RunConcurrent() {
 				listeners := manager.listenerMap[item.EventName]
 				manager.mu.Unlock()
 				for _, listener := range listeners {
-					listener.ReceiveMessage(item.Message)
+					listener(item.Message)
 				}
 			}
-		}
-	}()
+//		}
+//	}()
+}
+
+func (manager *Manager) Update() {
+	manager.RunConcurrent()
 }
 
 // Unlisten Remove a listener from listening for an event
@@ -69,10 +73,9 @@ func (manager *Manager) Unlisten(eventName MessageType, handle EventHandle) {
 }
 
 // Dispatch Fires an event to all listening objects
-func (manager *Manager) Dispatch(eventName MessageType, message IMessage) {
-	message.SetType(eventName)
+func (manager *Manager) Dispatch(message IMessage) {
 	queueItem := &queueItem{
-		EventName: eventName,
+		EventName: message.Type(),
 		Message:   message,
 	}
 	manager.mu.Lock()
@@ -91,7 +94,7 @@ var eventManager Manager
 // GetEventManager return static eventmanager
 func GetEventManager() *Manager {
 	if eventManager.listenerMap == nil {
-		eventManager.listenerMap = make(map[MessageType]map[EventHandle]IEventListenable, 512)
+		eventManager.listenerMap = make(map[MessageType]map[EventHandle]func(IMessage), 512)
 	}
 	return &eventManager
 }

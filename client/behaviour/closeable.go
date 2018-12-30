@@ -12,9 +12,9 @@ type Closeable struct {
 	target *core.Engine
 }
 
-// ReceiveMessage function will shutdown the engine
+// CallbackMouseMove function will shutdown the engine
 func (closer Closeable) ReceiveMessage(message event.IMessage) {
-	if message.GetType() == messages.TypeKeyDown {
+	if message.Type() == messages.TypeKeyDown {
 		if message.(*messages.KeyDown).Key == keyboard.KeyEscape {
 			// Will shutdown the engine at the end of the current loop
 			closer.target.Close()

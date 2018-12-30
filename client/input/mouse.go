@@ -11,6 +11,7 @@ import (
 // any direct interaction with the window
 type Mouse struct {
 	change mgl32.Vec2
+	previous mgl32.Vec2
 }
 
 // GetCoordinates return current mouse position
@@ -18,18 +19,21 @@ func (mouse *Mouse) GetCoordinates() mgl32.Vec2 {
 	return mouse.change
 }
 
-// ReceiveMessage mouse receives updated info from the event queue about
+// CallbackMouseMove mouse receives updated info from the event queue about
 // mouse interaction
-func (mouse *Mouse) ReceiveMessage(message event.IMessage) {
-	if message.GetType() == messages.TypeMouseMove {
-		msg := message.(*messages.MouseMove)
-		mouse.change[0] = float32(msg.X)
-		mouse.change[1] = float32(msg.Y)
-	}
+func (mouse *Mouse) CallbackMouseMove(message event.IMessage) {
+	msg := message.(*messages.MouseMove)
+	mouse.previous = mouse.change
+	mouse.change[0] = float32(msg.X)
+	mouse.change[1] = float32(msg.Y)
 }
 
 // Update The Mouse should be reset to screen center
 func (mouse *Mouse) Update() {
+	// input hasn't been applied yet
+	if !mouse.change.ApproxEqual(mouse.previous) {
+		return
+	}
 	mouse.change[0] = 0
 	mouse.change[1] = 0
 }

@@ -23,9 +23,9 @@ func (manager *Manager) Register(window *glfw.Window) {
 	window.SetKeyCallback(manager.KeyCallback)
 	window.SetCursorPosCallback(manager.MouseCallback)
 
-	event.GetEventManager().Listen(messages.TypeKeyDown, input.GetKeyboard())
-	event.GetEventManager().Listen(messages.TypeKeyReleased, input.GetKeyboard())
-	event.GetEventManager().Listen(messages.TypeMouseMove, input.GetMouse())
+	event.GetEventManager().Listen(messages.TypeKeyDown, input.GetKeyboard().ReceiveMessage)
+	event.GetEventManager().Listen(messages.TypeKeyReleased, input.GetKeyboard().ReceiveMessage)
+	event.GetEventManager().Listen(messages.TypeMouseMove, input.GetMouse().CallbackMouseMove)
 }
 
 // Update prepares data constructs that represent mouse & keyboard state with
@@ -55,11 +55,11 @@ func (manager *Manager) Unregister() {
 func (manager *Manager) KeyCallback(window *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 	switch action {
 	case glfw.Press:
-		event.GetEventManager().Dispatch(messages.TypeKeyDown, &messages.KeyDown{Key: keyboard.Key(key)})
+		event.GetEventManager().Dispatch(&messages.KeyDown{Key: keyboard.Key(key)})
 	case glfw.Repeat:
-		event.GetEventManager().Dispatch(messages.TypeKeyHeld, &messages.KeyHeld{Key: keyboard.Key(key)})
+		event.GetEventManager().Dispatch(&messages.KeyHeld{Key: keyboard.Key(key)})
 	case glfw.Release:
-		event.GetEventManager().Dispatch(messages.TypeKeyReleased, &messages.KeyReleased{Key: keyboard.Key(key)})
+		event.GetEventManager().Dispatch(&messages.KeyReleased{Key: keyboard.Key(key)})
 	}
 }
 
@@ -68,7 +68,7 @@ func (manager *Manager) MouseCallback(window *glfw.Window, xpos float64, ypos fl
 	if manager.lockMouse == true {
 		manager.MouseCoordinates[0], manager.MouseCoordinates[1] = window.GetCursorPos()
 		w, h := window.GetSize()
-		event.GetEventManager().Dispatch(messages.TypeMouseMove, &messages.MouseMove{
+		event.GetEventManager().Dispatch(&messages.MouseMove{
 			X: float64(float64(w/2) - manager.MouseCoordinates[0]),
 			Y: float64(float64(h/2) - manager.MouseCoordinates[1]),
 		})

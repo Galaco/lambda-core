@@ -1,7 +1,8 @@
 package material
 
 type IMaterial interface {
-	Bind()
+	//Bind()
 	Width() int
 	Height() int
+	GetFilePath() string
 }

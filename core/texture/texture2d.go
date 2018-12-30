@@ -15,9 +15,9 @@ type Texture2D struct {
 }
 
 // Bind this material to the GPU
-func (tex *Texture2D) Bind() {
-	gosigl.BindTexture2D(gosigl.TextureSlot(0), tex.Buffer)
-}
+//func (tex *Texture2D) Bind() {
+//	gosigl.BindTexture2D(gosigl.TextureSlot(0), tex.Buffer)
+//}
 
 // GetFilePath Get the filepath this data was loaded from
 func (tex *Texture2D) GetFilePath() string {
@@ -44,20 +44,9 @@ func (tex *Texture2D) PixelDataForFrame(frame int) []byte {
 	return tex.vtf.GetHighestResolutionImageForFrame(frame)
 }
 
-// Finish Generate the GPU buffer for this material
-func (tex *Texture2D) Finish() {
-	tex.Buffer = gosigl.CreateTexture2D(
-		gosigl.TextureSlot(0),
-		int(tex.vtf.GetHeader().Width),
-		int(tex.vtf.GetHeader().Height),
-		tex.vtf.GetHighestResolutionImageForFrame(0),
-		getGLTextureFormat(tex.vtf.GetHeader().HighResImageFormat),
-		false)
-}
-
-func (tex *Texture2D) Destroy() {
-	gosigl.DeleteTextures(tex.Buffer)
-}
+//func (tex *Texture2D) Destroy() {
+//	gosigl.DeleteTextures(tex.Buffer)
+//}
 
 // NewMaterial returns a new material from Vtf
 func NewTexture2D(filePath string, vtf *vtf.Vtf, width int, height int) *Texture2D {

@@ -26,7 +26,7 @@ func LoadSky(materialName string) *model.Model {
 
 	texs := make([]texture.ITexture, 6)
 	for i := 0; i < 6; i++ {
-		texs[i] = mats[i].(*material.Material).Textures.BaseTexture
+		texs[i] = mats[i].(*material.Material).Textures.Albedo
 	}
 
 	sky.AddMesh(primitive.NewCube())

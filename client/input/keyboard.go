@@ -16,10 +16,10 @@ func (keyboard *Keyboard) IsKeyDown(key keyboard.Key) bool {
 	return keyboard.keysDown[int(key)]
 }
 
-// ReceiveMessage Event manager message receiver.
+// CallbackMouseMove Event manager message receiver.
 // Used to catch key events from the window library
 func (keyboard *Keyboard) ReceiveMessage(message event.IMessage) {
-	switch message.GetType() {
+	switch message.Type() {
 	case messages.TypeKeyDown:
 		keyboard.keysDown[int(message.(*messages.KeyDown).Key)] = true
 	case messages.TypeKeyReleased:

@@ -8,7 +8,6 @@ import (
 // Engine Game engine
 // Only 1 should be initialised
 type Engine struct {
-	EventManager    event.Manager
 	Managers        []IManager
 	running         bool
 	simulationSpeed float64
@@ -23,7 +22,7 @@ func (engine *Engine) Run() {
 	engine.running = true
 
 	// Begin the event manager thread in the background
-	event.GetEventManager().RunConcurrent()
+	//event.GetEventManager().RunConcurrent()
 	// Anything that runs concurrently can start now
 	for _, manager := range engine.Managers {
 		manager.RunConcurrent()
@@ -33,6 +32,7 @@ func (engine *Engine) Run() {
 	startingTime := time.Now().UTC()
 
 	for engine.running == true {
+		event.GetEventManager().Update()
 		for _, manager := range engine.Managers {
 			manager.Update(dt)
 		}

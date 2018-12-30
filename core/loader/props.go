@@ -7,7 +7,6 @@ import (
 	"github.com/galaco/Gource-Engine/core/resource"
 	"github.com/galaco/Gource-Engine/lib/util"
 	"github.com/galaco/bsp/primitives/game"
-	"log"
 	"strings"
 )
 
@@ -17,7 +16,6 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 	ResourceManager := resource.Manager()
 	prop.LoadProp(ResourceManager.ErrorModelName())
 
-	log.Println("Loading static props")
 	propPaths := make([]string, 0)
 	for _, propEntry := range propLump.PropLumps {
 		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])

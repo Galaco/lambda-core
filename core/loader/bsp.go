@@ -86,7 +86,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 			int(f.LightmapTextureSizeInLuxels[0]+1),
 			int(f.LightmapTextureSizeInLuxels[1]+1),
 			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
-		bspFaces[idx].Lightmap().Finish()
+		//bspFaces[idx].Lightmap().Finish()
 	}
 
 	// Add MATERIALS TO FACES

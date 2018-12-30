@@ -12,9 +12,9 @@ type Cubemap struct {
 }
 
 // Bind this material to the GPU
-func (material *Cubemap) Bind() {
-	gosigl.BindTextureCubemap(gosigl.TextureSlot(0), material.Buffer)
-}
+//func (material *Cubemap) Bind() {
+//	gosigl.BindTextureCubemap(gosigl.TextureSlot(0), material.Buffer)
+//}
 
 // Width Get material width.
 // Must have exactly 6 faces, and all faces are assumed the same size
@@ -44,15 +44,15 @@ func (material *Cubemap) Format() gosigl.PixelFormat {
 }
 
 // Finish Generate the GPU buffer for this material
-func (material *Cubemap) Finish() {
-	pixelData := [6][]byte{}
-	for i := 0; i < 6; i++ {
-		pixelData[i] = material.Faces[i].PixelDataForFrame(0)
-	}
-
-	firstFace := material.Faces[0]
-	material.Buffer = gosigl.CreateTextureCubemap(gosigl.TextureSlot(0), firstFace.Width(), firstFace.Height(), pixelData, firstFace.Format(), true)
-}
+//func (material *Cubemap) Finish() {
+//	pixelData := [6][]byte{}
+//	for i := 0; i < 6; i++ {
+//		pixelData[i] = material.Faces[i].PixelDataForFrame(0)
+//	}
+//
+//	firstFace := material.Faces[0]
+//	material.Buffer = gosigl.CreateTextureCubemap(gosigl.TextureSlot(0), firstFace.Width(), firstFace.Height(), pixelData, firstFace.Format(), true)
+//}
 
 func (material *Cubemap) Destroy() {
 

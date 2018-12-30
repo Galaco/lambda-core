@@ -1,10 +1,12 @@
 package gl
 
 import (
+	"github.com/galaco/Gource-Engine/client/renderer/cache"
 	"github.com/galaco/Gource-Engine/client/renderer/gl/shaders"
 	"github.com/galaco/Gource-Engine/client/renderer/gl/shaders/sky"
 	"github.com/galaco/Gource-Engine/client/scene/world"
 	"github.com/galaco/Gource-Engine/core/entity"
+	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
 	"github.com/galaco/gosigl"
@@ -145,7 +147,7 @@ func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 		}
 	}
 
-	manager.DrawSkyMaterial(sky.GetCubemap())
+	//manager.DrawSkyMaterial(sky.GetCubemap())
 }
 
 // Render a mesh and its submeshes/primitives
@@ -169,14 +171,15 @@ func (manager *Renderer) BindMesh(target mesh.IMesh) {
 	target.Bind()
 	// $basetexture
 	if target.GetMaterial() != nil {
-		target.GetMaterial().Bind()
+		gosigl.BindTexture2D(gosigl.TextureSlot(0), cache.TextureIdMap[target.GetMaterial().(*material.Material).Textures.Albedo.GetFilePath()])
+		//target.GetMaterial().Bind()
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["baseTextureSampler"], 0)
 	}
 	// Bind lightmap texture if it exists
 	if target.GetLightmap() != nil {
-		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 1)
+		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0) // lightmaps disabled
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
-		target.GetLightmap().Bind()
+		//target.GetLightmap().Bind()
 	} else {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0)
 	}
@@ -188,12 +191,13 @@ func (manager *Renderer) DrawFace(target *mesh.Face) {
 		return
 	}
 	// $basetexture
-	target.Material().Bind()
+	gosigl.BindTexture2D(gosigl.TextureSlot(0), cache.TextureIdMap[target.Material().(*material.Material).Textures.Albedo.GetFilePath()])
+	//target.Material().Bind()
 	opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["baseTextureSampler"], 0)
 
 	// Bind lightmap texture if it exists
 	if target.IsLightmapped() == true {
-		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 1)
+		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0) // lightmaps disabled
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
 		target.Lightmap().Bind()
 	} else {
@@ -223,7 +227,7 @@ func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
 
 	//DRAW
 	skybox.GetMeshes()[0].Bind()
-	skybox.GetMeshes()[0].GetMaterial().Bind()
+	//skybox.GetMeshes()[0].GetMaterial().Bind()
 	opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["cubemapSampler"], 0)
 	manager.DrawModel(skybox, mgl32.Ident4())
 

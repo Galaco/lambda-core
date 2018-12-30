@@ -22,11 +22,6 @@ func (error *Colour2D) PixelDataForFrame(frame int) []byte {
 	return error.rawColourData
 }
 
-// Finish binds colour data to GPU
-func (error *Colour2D) Finish() {
-	error.Buffer = gosigl.CreateTexture2D(gosigl.TextureSlot(0), error.Width(), error.Height(), error.PixelDataForFrame(0), error.Format(), false)
-}
-
 // Get New Error material
 func NewError(name string) *Colour2D {
 	mat := Colour2D{}
@@ -109,8 +104,6 @@ func NewError(name string) *Colour2D {
 		255, 0, 255,
 		255, 0, 255,
 	}
-
-	mat.Finish()
 
 	return &mat
 }
