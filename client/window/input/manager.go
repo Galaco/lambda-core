@@ -45,6 +45,10 @@ func (manager *Manager) Update(dt float64) {
 	input.GetMouse().Update()
 	glfw.PollEvents()
 }
+func (manager *Manager) PostUpdate() {
+	input.GetMouse().PostUpdate()
+}
+
 
 // Unregister
 func (manager *Manager) Unregister() {

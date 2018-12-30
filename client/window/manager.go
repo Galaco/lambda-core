@@ -41,5 +41,6 @@ func (manager *Manager) Unregister() {
 // In this case it simply SwapBuffers the window, (to display updated window
 // contents)
 func (manager *Manager) PostUpdate() {
+	manager.input.PostUpdate()
 	manager.window.SwapBuffers()
 }
