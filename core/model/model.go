@@ -30,11 +30,11 @@ func (model *Model) GetFilePath() string {
 	return model.fileName
 }
 
-func (model *Model) Destroy() {
-	for _, m := range model.meshes {
-		m.Destroy()
-	}
-}
+//func (model *Model) Destroy() {
+//	for _, m := range model.meshes {
+//		m.Destroy()
+//	}
+//}
 
 // NewModel returns a new Model
 func NewModel(filename string, meshes ...mesh.IMesh) *Model {

@@ -2,7 +2,6 @@ package primitive
 
 import (
 	"github.com/galaco/Gource-Engine/core/mesh"
-	"github.com/galaco/gosigl"
 )
 
 var cubeVerts = []float32{
@@ -92,10 +91,6 @@ type Cube struct {
 	mesh.Mesh
 }
 
-func (cube *Cube) GetFaceMode() uint32 {
-	return gosigl.Triangles
-}
-
 func NewCube() *Cube {
 	c := &Cube{
 		Mesh: *mesh.NewMesh(),
@@ -103,7 +98,7 @@ func NewCube() *Cube {
 	c.AddVertex(cubeVerts...)
 	c.AddNormal(cubeNormals...)
 	c.AddTextureCoordinate(cubeUVs...)
-	c.Finish()
+	//c.Finish()
 
 	return c
 }

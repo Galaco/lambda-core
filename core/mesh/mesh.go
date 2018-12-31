@@ -3,7 +3,6 @@ package mesh
 import (
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/texture"
-	"github.com/galaco/gosigl"
 )
 
 type Mesh struct {
@@ -12,8 +11,6 @@ type Mesh struct {
 	textureCoordinates  []float32
 	lightmapCoordinates []float32
 
-	gpuInfo   buffer
-	gpuObject *gosigl.VertexObject
 	material  material.IMaterial
 	lightmap  texture.ITexture
 }
@@ -32,25 +29,6 @@ func (mesh *Mesh) AddTextureCoordinate(uv ...float32) {
 
 func (mesh *Mesh) AddLightmapCoordinate(uv ...float32) {
 	mesh.lightmapCoordinates = append(mesh.lightmapCoordinates, uv...)
-}
-
-func (mesh *Mesh) Finish() {
-	if mesh.gpuInfo.IsPrepared == true {
-		return
-	}
-	mesh.gpuObject = gosigl.NewMesh(mesh.vertices)
-	gosigl.CreateVertexAttribute(mesh.gpuObject, mesh.textureCoordinates, 2)
-	gosigl.CreateVertexAttribute(mesh.gpuObject, mesh.normals, 3)
-
-	// @TODO Find a better solution
-	if len(mesh.lightmapCoordinates) < 2 {
-		mesh.lightmapCoordinates = []float32{0, 1}
-	}
-	gosigl.CreateVertexAttribute(mesh.gpuObject, mesh.lightmapCoordinates, 2)
-	gosigl.FinishMesh()
-	mesh.gpuInfo.FaceMode = gosigl.Triangles
-
-	mesh.gpuInfo.IsPrepared = true
 }
 
 func (mesh *Mesh) Vertices() []float32 {
@@ -83,14 +61,6 @@ func (mesh *Mesh) GetLightmap() texture.ITexture {
 
 func (mesh *Mesh) SetLightmap(mat texture.ITexture) {
 	mesh.lightmap = mat
-}
-
-func (mesh *Mesh) Bind() {
-	gosigl.BindMesh(mesh.gpuObject)
-}
-
-func (mesh *Mesh) Destroy() {
-	gosigl.DeleteMesh(mesh.gpuObject)
 }
 
 func NewMesh() *Mesh {

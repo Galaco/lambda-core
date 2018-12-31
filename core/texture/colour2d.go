@@ -1,7 +1,7 @@
 package texture
 
 import (
-	"github.com/galaco/gosigl"
+	"github.com/galaco/vtf/format"
 )
 
 // Colour2D is a material defined by raw/computed colour data,
@@ -12,8 +12,8 @@ type Colour2D struct {
 }
 
 // Format returns colour format
-func (error *Colour2D) Format() gosigl.PixelFormat {
-	return gosigl.RGB
+func (error *Colour2D) Format() uint32 {
+	return uint32(format.RGB888)
 }
 
 // PixelDataForFrame returns raw colour data for specific animation

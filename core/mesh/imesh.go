@@ -13,7 +13,7 @@ type IMesh interface {
 	AddNormal(...float32)
 	AddTextureCoordinate(...float32)
 	AddLightmapCoordinate(...float32)
-	Finish()
+	//Finish()
 
 	Vertices() []float32
 	Normals() []float32
@@ -25,6 +25,6 @@ type IMesh interface {
 	GetLightmap() texture.ITexture
 	SetLightmap(texture.ITexture)
 
-	Bind()
-	Destroy()
+	//Bind()
+	//Destroy()
 }

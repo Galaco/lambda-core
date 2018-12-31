@@ -1,12 +1,10 @@
 package texture
 
-import "github.com/galaco/gosigl"
-
 // ITexture Interface for a GPU texture
 type ITexture interface {
 	Width() int
 	Height() int
-	Format() gosigl.PixelFormat
+	Format() uint32
 	PixelDataForFrame(int) []byte
 	GetFilePath() string
 }

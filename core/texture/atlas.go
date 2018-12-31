@@ -2,7 +2,7 @@ package texture
 
 import (
 	"github.com/galaco/Gource-Engine/lib/math/shape"
-	"github.com/galaco/gosigl"
+	"github.com/galaco/vtf/format"
 	"github.com/go-gl/mathgl/mgl32"
 	"sort"
 )
@@ -18,8 +18,8 @@ type Atlas struct {
 
 // Format returns colour format
 // For now always RGBA
-func (atlas *Atlas) Format() gosigl.PixelFormat {
-	return gosigl.RGBA
+func (atlas *Atlas) Format() uint32 {
+	return uint32(format.RGBA8888)
 }
 
 // PackTextures

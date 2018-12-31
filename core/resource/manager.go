@@ -34,7 +34,7 @@ func (m *manager) AddMaterial(file material.IMaterial) {
 	m.materials[strings.ToLower(file.GetFilePath())] = file
 	m.materialReadMutex.Unlock()
 
-	event.GetEventManager().Dispatch(message.LoadedMaterial(file))
+	event.Manager().Dispatch(message.LoadedMaterial(file))
 }
 
 // Add a new material
@@ -45,7 +45,7 @@ func (m *manager) AddTexture(file texture.ITexture) {
 	m.textureReadMutex.Lock()
 	m.textures[strings.ToLower(file.GetFilePath())] = file
 	m.textureReadMutex.Unlock()
-	event.GetEventManager().Dispatch(message.LoadedTexture(file))
+	event.Manager().Dispatch(message.LoadedTexture(file))
 }
 
 // Add a new model
@@ -56,7 +56,7 @@ func (m *manager) AddModel(file *model.Model) {
 	m.modelReadMutex.Lock()
 	m.models[strings.ToLower(file.GetFilePath())] = file
 	m.modelReadMutex.Unlock()
-	event.GetEventManager().Dispatch(message.LoadedModel(file))
+	event.Manager().Dispatch(message.LoadedModel(file))
 }
 
 // Get Find a specific filesystem
@@ -140,22 +140,22 @@ func (m *manager) HasModel(filePath string) bool {
 
 func (m *manager) Empty() {
 	for idx,val := range m.materials {
-		event.GetEventManager().Dispatch(message.UnloadedMaterial(val))
+		event.Manager().Dispatch(message.UnloadedMaterial(val))
 		delete(m.materials, idx)
 	}
 	for idx,val := range m.textures {
-		event.GetEventManager().Dispatch(message.UnloadedTexture(val))
+		event.Manager().Dispatch(message.UnloadedTexture(val))
 		delete(m.textures, idx)
 	}
 	for idx,val := range m.models {
-		event.GetEventManager().Dispatch(message.UnloadedModel(val))
+		event.Manager().Dispatch(message.UnloadedModel(val))
 		delete(m.models, idx)
 	}
 }
 
 var resourceManager manager
 
-// Manager returns the static filemanager
+// manager returns the static filemanager
 func Manager() *manager {
 	if resourceManager.materials == nil {
 		resourceManager.errorModelName = "models/error.mdl"

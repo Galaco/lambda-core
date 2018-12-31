@@ -1,14 +1,18 @@
 package gl
 
 import (
-	"github.com/galaco/Gource-Engine/client/renderer/cache"
+	"github.com/galaco/Gource-Engine/client/renderer/gl/bsp"
+	material2 "github.com/galaco/Gource-Engine/client/renderer/gl/material"
+	"github.com/galaco/Gource-Engine/client/renderer/gl/prop"
 	"github.com/galaco/Gource-Engine/client/renderer/gl/shaders"
 	"github.com/galaco/Gource-Engine/client/renderer/gl/shaders/sky"
 	"github.com/galaco/Gource-Engine/client/scene/world"
 	"github.com/galaco/Gource-Engine/core/entity"
+	"github.com/galaco/Gource-Engine/core/event"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Gource-Engine/core/resource/message"
 	"github.com/galaco/gosigl"
 	opengl "github.com/go-gl/gl/v4.1-core/gl"
 	"github.com/go-gl/mathgl/mgl32"
@@ -34,6 +38,15 @@ type Renderer struct {
 // Preparation function
 // Loads shaders and sets necessary constants for opengls state machine
 func (manager *Renderer) LoadShaders() {
+	material2.TextureIdMap = map[string]gosigl.TextureBindingId{}
+	prop.ModelIdMap = map[string][]*gosigl.VertexObject{}
+
+	event.Manager().Listen(message.TypeTextureLoaded, material2.SyncTextureToGpu)
+	event.Manager().Listen(message.TypeTextureUnloaded, material2.DestroyTextureOnGPU)
+	event.Manager().Listen(message.TypeModelLoaded, prop.SyncPropToGpu)
+	event.Manager().Listen(message.TypeModelUnloaded, prop.DestroyPropOnGPU)
+	event.Manager().Listen(message.TypeMapLoaded, bsp.SyncMapToGpu)
+
 	manager.lightmappedGenericShader = gosigl.NewShader()
 	manager.lightmappedGenericShader.AddShader(shaders.Vertex, gosigl.VertexShader)
 	manager.lightmappedGenericShader.AddShader(shaders.Fragment, gosigl.FragmentShader)
@@ -104,9 +117,14 @@ func (manager *Renderer) EndFrame() {
 
 // Draw the main bsp world
 func (manager *Renderer) DrawBsp(world *world.World) {
+	if bsp.MapGPUResource == nil {
+		return
+	}
+
 	modelMatrix := mgl32.Ident4()
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.currentShaderId]["model"], 1, false, &modelMatrix[0])
-	manager.BindMesh(world.Bsp().Mesh())
+	gosigl.BindMesh(bsp.MapGPUResource)
+	//manager.BindMesh(world.Bsp().Mesh())
 	for _, cluster := range world.VisibleClusters() {
 		for _, face := range cluster.Faces {
 			manager.DrawFace(&face)
@@ -127,14 +145,16 @@ func (manager *Renderer) DrawBsp(world *world.World) {
 
 // Draw skybox (bsp model, staticprops, sky material)
 func (manager *Renderer) DrawSkybox(sky *world.Sky) {
-	if sky == nil {
+	if sky == nil || bsp.MapGPUResource == nil{
 		return
 	}
 
 	if sky.GetVisibleBsp() != nil {
 		modelMatrix := sky.Transform().GetTransformationMatrix()
 		opengl.UniformMatrix4fv(manager.uniformMap[manager.currentShaderId]["model"], 1, false, &modelMatrix[0])
-		manager.BindMesh(sky.GetVisibleBsp().Mesh())
+
+		gosigl.BindMesh(bsp.MapGPUResource)
+		//manager.BindMesh(sky.GetVisibleBsp().Mesh())
 		for _, cluster := range sky.GetClusterLeafs() {
 			for _, face := range cluster.Faces {
 				manager.DrawFace(&face)
@@ -153,25 +173,29 @@ func (manager *Renderer) DrawSkybox(sky *world.Sky) {
 // Render a mesh and its submeshes/primitives
 func (manager *Renderer) DrawModel(model *model.Model, transform mgl32.Mat4) {
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.currentShaderId]["model"], 1, false, &transform[0])
-
-	for _, mesh := range model.GetMeshes() {
+	modelBinding := prop.ModelIdMap[model.GetFilePath()]
+	if modelBinding == nil {
+		return
+	}
+	for idx, mesh := range model.GetMeshes() {
 		// Missing materials will be flat coloured
 		if mesh == nil || mesh.GetMaterial() == nil {
 			// We need the fallback material
 			continue
 		}
-		manager.BindMesh(mesh)
+		manager.BindMesh(mesh, modelBinding[idx])
 		gosigl.DrawArray(0, len(mesh.Vertices())/3)
 
 		numCalls++
 	}
 }
 
-func (manager *Renderer) BindMesh(target mesh.IMesh) {
-	target.Bind()
+func (manager *Renderer) BindMesh(target mesh.IMesh, meshBinding *gosigl.VertexObject) {
+	gosigl.BindMesh(meshBinding)
+	//target.Bind()
 	// $basetexture
 	if target.GetMaterial() != nil {
-		gosigl.BindTexture2D(gosigl.TextureSlot(0), cache.TextureIdMap[target.GetMaterial().(*material.Material).Textures.Albedo.GetFilePath()])
+		gosigl.BindTexture2D(gosigl.TextureSlot(0), material2.TextureIdMap[target.GetMaterial().(*material.Material).Textures.Albedo.GetFilePath()])
 		//target.GetMaterial().Bind()
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["baseTextureSampler"], 0)
 	}
@@ -191,7 +215,7 @@ func (manager *Renderer) DrawFace(target *mesh.Face) {
 		return
 	}
 	// $basetexture
-	gosigl.BindTexture2D(gosigl.TextureSlot(0), cache.TextureIdMap[target.Material().(*material.Material).Textures.Albedo.GetFilePath()])
+	gosigl.BindTexture2D(gosigl.TextureSlot(0), material2.TextureIdMap[target.Material().(*material.Material).Textures.Albedo.GetFilePath()])
 	//target.Material().Bind()
 	opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["baseTextureSampler"], 0)
 
@@ -199,7 +223,7 @@ func (manager *Renderer) DrawFace(target *mesh.Face) {
 	if target.IsLightmapped() == true {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0) // lightmaps disabled
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
-		target.Lightmap().Bind()
+		//target.Lightmap().Bind()
 	} else {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0)
 	}
@@ -226,7 +250,7 @@ func (manager *Renderer) DrawSkyMaterial(skybox *model.Model) {
 	opengl.UniformMatrix4fv(manager.uniformMap[manager.skyShader.Id()]["view"], 1, false, &manager.matrixes.view[0])
 
 	//DRAW
-	skybox.GetMeshes()[0].Bind()
+	//skybox.GetMeshes()[0].Bind()
 	//skybox.GetMeshes()[0].GetMaterial().Bind()
 	opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["cubemapSampler"], 0)
 	manager.DrawModel(skybox, mgl32.Ident4())

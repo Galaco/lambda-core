@@ -1,12 +1,14 @@
 package loader
 
 import (
+	"github.com/galaco/Gource-Engine/core/event"
 	"github.com/galaco/Gource-Engine/core/filesystem"
 	matloader "github.com/galaco/Gource-Engine/core/loader/material"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
 	"github.com/galaco/Gource-Engine/core/resource"
+	"github.com/galaco/Gource-Engine/core/resource/message"
 	"github.com/galaco/Gource-Engine/core/scene"
 	"github.com/galaco/Gource-Engine/core/texture"
 	"github.com/galaco/bsp"
@@ -121,7 +123,8 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 	}
 
 	// Finish the bsp object.
-	bspMesh.Finish()
+	event.Manager().Dispatch(message.LoadedMap(bspObject))
+	//bspMesh.Finish()
 
 	cl := model.ClusterLeaf{
 		Id:        0,
@@ -132,6 +135,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 
 	// Get static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
+
 
 	return scene.NewScene(*bspObject, staticProps)
 }

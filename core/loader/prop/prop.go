@@ -107,7 +107,7 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel)
 		smMesh.AddVertex(verts[i]...)
 		smMesh.AddNormal(normals[i]...)
 		smMesh.AddTextureCoordinate(textureCoordinates[i]...)
-		smMesh.Finish()
+		//smMesh.Finish()
 
 		//@TODO Map ALL materials to mesh data
 		smMesh.SetMaterial(mats[0])

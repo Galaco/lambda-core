@@ -4,12 +4,12 @@ import (
 	"sync"
 )
 
-// Manager Event manager
+// manager Event manager
 // Handles sending and receiving events for immediate handling
 // Generally used for engine functionality, such as user input events, window
 // management etc.
 // Game entities should use their own event queue, and should not hook into this queue.
-type Manager struct {
+type manager struct {
 	listenerMap map[MessageType]map[EventHandle]func(IMessage)
 	mu          sync.Mutex
 	eventQueue  []*queueItem
@@ -17,7 +17,7 @@ type Manager struct {
 }
 
 // Listen Register a new listener to listen to an event
-func (manager *Manager) Listen(eventName MessageType, callback func(IMessage)) EventHandle {
+func (manager *manager) Listen(eventName MessageType, callback func(IMessage)) EventHandle {
 	handle := newEventHandle()
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName]; !ok {
@@ -30,7 +30,7 @@ func (manager *Manager) Listen(eventName MessageType, callback func(IMessage)) E
 }
 
 // RunConcurrent Runs the event queue in its own go routine
-func (manager *Manager) RunConcurrent() {
+func (manager *manager) RunConcurrent() {
 	// Block double-running
 	//if manager.runAsync == true {
 	//	return
@@ -59,12 +59,12 @@ func (manager *Manager) RunConcurrent() {
 //	}()
 }
 
-func (manager *Manager) Update() {
+func (manager *manager) Update() {
 	manager.RunConcurrent()
 }
 
 // Unlisten Remove a listener from listening for an event
-func (manager *Manager) Unlisten(eventName MessageType, handle EventHandle) {
+func (manager *manager) Unlisten(eventName MessageType, handle EventHandle) {
 	manager.mu.Lock()
 	if _, ok := manager.listenerMap[eventName][handle]; ok {
 		delete(manager.listenerMap[eventName], handle)
@@ -73,7 +73,7 @@ func (manager *Manager) Unlisten(eventName MessageType, handle EventHandle) {
 }
 
 // Dispatch Fires an event to all listening objects
-func (manager *Manager) Dispatch(message IMessage) {
+func (manager *manager) Dispatch(message IMessage) {
 	queueItem := &queueItem{
 		EventName: message.Type(),
 		Message:   message,
@@ -84,15 +84,15 @@ func (manager *Manager) Dispatch(message IMessage) {
 }
 
 // Unregister Close the event manager
-func (manager *Manager) Unregister() {
+func (manager *manager) Unregister() {
 	// Ensure async event queue is halted
 	manager.runAsync = false
 }
 
-var eventManager Manager
+var eventManager manager
 
-// GetEventManager return static eventmanager
-func GetEventManager() *Manager {
+// Manager return static eventmanager
+func Manager() *manager {
 	if eventManager.listenerMap == nil {
 		eventManager.listenerMap = make(map[MessageType]map[EventHandle]func(IMessage), 512)
 	}

@@ -7,10 +7,6 @@ import (
 	"github.com/galaco/Gource-Engine/client/renderer/gl"
 	"github.com/galaco/Gource-Engine/client/scene"
 	"github.com/galaco/Gource-Engine/core"
-	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/galaco/Gource-Engine/core/resource"
-	"github.com/galaco/Gource-Engine/core/resource/message"
-	"github.com/galaco/gosigl"
 	"strings"
 	"sync"
 )
@@ -28,11 +24,6 @@ func (manager *Manager) Register() {
 	manager.renderer = gl.NewRenderer()
 
 	manager.renderer.LoadShaders()
-
-	cache.TextureIdMap = map[string]gosigl.TextureBindingId{}
-
-	event.GetEventManager().Listen(message.TypeTextureLoaded, syncTextureToGpu)
-	event.GetEventManager().Listen(message.TypeTextureUnloaded, destroyTextureOnGPU)
 }
 
 func (manager *Manager) Update(dt float64) {
@@ -91,21 +82,4 @@ func (manager *Manager) RecacheEntities(scene *scene.Scene) {
 		manager.dynamicPropCache = *c
 		cacheMutex.Unlock()
 	}()
-}
-
-
-func syncTextureToGpu(dispatched event.IMessage) {
-	msg := dispatched.(*message.TextureLoaded)
-	cache.TextureIdMap[msg.Resource.(resource.IResource).GetFilePath()] = gosigl.CreateTexture2D(
-		gosigl.TextureSlot(0),
-		msg.Resource.Width(),
-		msg.Resource.Height(),
-		msg.Resource.PixelDataForFrame(0),
-		gosigl.PixelFormat(msg.Resource.Format()),
-		false)
-}
-
-func destroyTextureOnGPU(dispatched event.IMessage) {
-	msg := dispatched.(*message.TextureUnloaded)
-	gosigl.DeleteTextures(cache.TextureIdMap[msg.Resource.GetFilePath()])
 }

@@ -93,5 +93,5 @@ func SetGame(proj game.IGame) string {
 
 // RegisterShutdownMethod Implements a way of shutting down the engine
 func RegisterShutdownMethod(app *core.Engine) {
-	event.GetEventManager().Listen(messages.TypeKeyDown, behaviour.NewCloseable(app).ReceiveMessage)
+	event.Manager().Listen(messages.TypeKeyDown, behaviour.NewCloseable(app).ReceiveMessage)
 }
