@@ -2,14 +2,6 @@ package material
 
 import "testing"
 
-func TestMaterial_Bind(t *testing.T) {
-	t.Skip()
-}
-
-func TestMaterial_Destroy(t *testing.T) {
-	t.Skip()
-}
-
 func TestMaterial_GetFilePath(t *testing.T) {
 	sut := Material{
 		FilePath: "foo/bar.vmt",

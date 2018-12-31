@@ -28,9 +28,6 @@ func (manager *Manager) Register() {
 
 func (manager *Manager) Update(dt float64) {
 	currentScene := scene.Get()
-	if !currentScene.IsLoaded() {
-		return
-	}
 
 	if manager.dynamicPropCache.NeedsRecache() {
 		manager.RecacheEntities(currentScene)

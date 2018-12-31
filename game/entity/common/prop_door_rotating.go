@@ -11,7 +11,7 @@ type PropDoorRotating struct {
 }
 
 func (entity *PropDoorRotating) New() entity2.IEntity {
-	return &PropDynamic{}
+	return &PropDoorRotating{}
 }
 
 func (entity PropDoorRotating) Classname() string {

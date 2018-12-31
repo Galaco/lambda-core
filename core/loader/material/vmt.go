@@ -36,7 +36,7 @@ func LoadErrorMaterial() {
 	errorMat := &material.Material{
 		FilePath: name,
 	}
-	errorMat.Textures.BaseTexture = ResourceManager.GetTexture(name).(texture.ITexture)
+	errorMat.Textures.Albedo = ResourceManager.GetTexture(name).(texture.ITexture)
 	ResourceManager.AddMaterial(errorMat)
 }
 
@@ -63,6 +63,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 		vmt := mat.(*material.Material)
 
 		if vmt.BaseTextureName == "" {
+			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
 			continue
 		}
@@ -73,10 +74,15 @@ func loadMaterials(materialList ...string) (missingList []string) {
 			vtfTexturePath = vtfTexturePath + filesystem.ExtensionVtf
 		}
 
-		vmt.Textures.BaseTexture = LoadSingleTexture(vtfTexturePath)
-		if vmt.Textures.BaseTexture == nil {
+		vmt.Textures.Albedo = LoadSingleTexture(vtfTexturePath)
+		if vmt.Textures.Albedo == nil {
+			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
 			continue
+		}
+
+		if vmt.BumpMapName != "" {
+			vmt.Textures.Normal = LoadSingleTexture(vmt.BumpMapName)
 		}
 	}
 	return missingList
@@ -108,7 +114,6 @@ func readVmt(path string) (material.IMaterial, error) {
 		return nil, err
 	}
 	root := roots[0]
-	shaderName := root.Key()
 
 	include, err := root.Find("include")
 	if include != nil && err == nil {
@@ -120,19 +125,9 @@ func readVmt(path string) (material.IMaterial, error) {
 	}
 
 	// @NOTE this will be replaced with a proper kv->material builder
-	baseTextureKV, err := root.Find("$basetexture")
+	mat,err := materialFromKeyValues(root, path)
 	if err != nil {
-		return nil, err
-	}
-	baseTexture, err := baseTextureKV.AsString()
-	if err != nil {
-		return nil, err
-	}
-
-	mat := &material.Material{
-		FilePath:        path,
-		ShaderName:      shaderName,
-		BaseTextureName: baseTexture,
+		return nil,err
 	}
 	ResourceManager.AddMaterial(mat)
 	return mat, nil
@@ -157,4 +152,35 @@ func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string) (*k
 		return mergeIncludedVmtRecursive(&result, newIncludePath)
 	}
 	return &result, nil
+}
+
+func materialFromKeyValues(kv *keyvalues.KeyValue, path string) (*material.Material,error) {
+	shaderName := kv.Key()
+
+	// $basetexture
+	baseTexture := findKeyValueAsString(kv, "$basetexture")
+
+	// $bumpmap
+	bumpMapTexture := findKeyValueAsString(kv, "$bumpmap")
+
+
+	return &material.Material{
+		FilePath:        path,
+		ShaderName:      shaderName,
+		BaseTextureName: baseTexture,
+		BumpMapName:     bumpMapTexture,
+	}, nil
+}
+
+func findKeyValueAsString(kv *keyvalues.KeyValue, keyName string) string {
+	target, err := kv.Find(keyName)
+	if err != nil {
+		return ""
+	}
+	ret, err := target.AsString()
+	if err != nil {
+		return ""
+	}
+
+	return ret
 }

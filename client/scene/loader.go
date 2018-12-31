@@ -17,6 +17,8 @@ import (
 )
 
 func LoadFromFile(fileName string) {
+	newScene := Get()
+
 	bspData, err := bsplib.ReadFromFile(fileName)
 	if err != nil {
 		logger.Fatal(err)
@@ -28,16 +30,14 @@ func LoadFromFile(fileName string) {
 	//Set pakfile for filesystem
 	filesystem.RegisterPakfile(bspData.GetLump(bsplib.LUMP_PAKFILE).(*lumps.Pakfile))
 
-	loadWorld(bspData)
+	loadWorld(newScene, bspData)
 
-	loadEntities(bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData))
+	loadEntities(newScene, bspData.GetLump(bsplib.LUMP_ENTITIES).(*lumps.EntData))
 
-	loadCamera()
-
-	currentScene.isLoaded = true
+	loadCamera(newScene)
 }
 
-func loadWorld(file *bsplib.Bsp) {
+func loadWorld(targetScene *Scene, file *bsplib.Bsp) {
 	baseWorld := loader.LoadMap(file)
 
 	baseWorldBsp := baseWorld.Bsp()
@@ -80,10 +80,10 @@ func loadWorld(file *bsplib.Bsp) {
 	baseWorldBsp.SetClusterLeafs(bspClusters)
 	baseWorldBsp.SetDefaultCluster(defaultCluster)
 
-	currentScene.SetWorld(world.NewWorld(*baseWorld.Bsp(), baseWorld.StaticProps(), visData))
+	targetScene.SetWorld(world.NewWorld(*baseWorld.Bsp(), baseWorld.StaticProps(), visData))
 }
 
-func loadEntities(entdata *lumps.EntData) {
+func loadEntities(targetScene *Scene, entdata *lumps.EntData) {
 	vmfEntityTree, err := entity2.ParseEntities(entdata.GetData())
 	if err != nil {
 		logger.Fatal(err)
@@ -91,7 +91,7 @@ func loadEntities(entdata *lumps.EntData) {
 	entityList := entitylib.FromVmfNodeTree(vmfEntityTree.Unclassified)
 	logger.Notice("Found %d entities\n", entityList.Length())
 	for i := 0; i < entityList.Length(); i++ {
-		currentScene.AddEntity(entity2.CreateEntity(entityList.Get(i)))
+		targetScene.AddEntity(entity2.CreateEntity(entityList.Get(i)))
 	}
 
 	skyCamera := entityList.FindByKeyValue("classname", "sky_camera")
@@ -104,12 +104,12 @@ func loadEntities(entdata *lumps.EntData) {
 		return
 	}
 
-	currentScene.world.BuildSkybox(
+	targetScene.world.BuildSkybox(
 		loader.LoadSky(worldSpawn.ValueForKey("skyname")),
 		skyCamera.VectorForKey("origin"),
 		float32(skyCamera.IntForKey("scale")))
 }
 
-func loadCamera() {
-	currentScene.AddCamera(entity.NewCamera(mgl32.DegToRad(70), float32(config.Get().Video.Width)/float32(config.Get().Video.Height)))
+func loadCamera(targetScene *Scene) {
+	targetScene.AddCamera(entity.NewCamera(mgl32.DegToRad(70), float32(config.Get().Video.Width)/float32(config.Get().Video.Height)))
 }

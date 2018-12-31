@@ -71,7 +71,7 @@ func main() {
 	Application.SetSimulationSpeed(10)
 	Application.Run()
 
-	defer resource.Manager().Cleanup()
+	defer resource.Manager().Empty()
 }
 
 // SetGame registers game entities and returns game name
@@ -93,5 +93,5 @@ func SetGame(proj game.IGame) string {
 
 // RegisterShutdownMethod Implements a way of shutting down the engine
 func RegisterShutdownMethod(app *core.Engine) {
-	event.GetEventManager().Listen(messages.TypeKeyDown, behaviour.NewCloseable(app))
+	event.Manager().Listen(messages.TypeKeyDown, behaviour.NewCloseable(app).ReceiveMessage)
 }

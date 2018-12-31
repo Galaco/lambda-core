@@ -7,7 +7,6 @@ import (
 	"github.com/galaco/Gource-Engine/core/resource"
 	"github.com/galaco/Gource-Engine/lib/util"
 	"github.com/galaco/bsp/primitives/game"
-	"log"
 	"strings"
 )
 
@@ -17,7 +16,6 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 	ResourceManager := resource.Manager()
 	prop.LoadProp(ResourceManager.ErrorModelName())
 
-	log.Println("Loading static props")
 	propPaths := make([]string, 0)
 	for _, propEntry := range propLump.PropLumps {
 		propPaths = append(propPaths, propLump.DictLump.Name[propEntry.GetPropType()])
@@ -46,12 +44,12 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 		modelName := propLump.DictLump.Name[propEntry.GetPropType()]
 		m := ResourceManager.GetModel(modelName)
 		if m != nil {
-			staticPropList = append(staticPropList, *model.NewStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
+			staticPropList = append(staticPropList, *model.NewStaticProp(propEntry, &propLump.LeafLump, m))
 			continue
 		}
 		// Model missing, use error model
 		m = ResourceManager.GetModel(ResourceManager.ErrorModelName())
-		staticPropList = append(staticPropList, *model.NewStaticProp(propEntry, &propLump.LeafLump, m.(*model.Model)))
+		staticPropList = append(staticPropList, *model.NewStaticProp(propEntry, &propLump.LeafLump, m))
 	}
 
 	return staticPropList

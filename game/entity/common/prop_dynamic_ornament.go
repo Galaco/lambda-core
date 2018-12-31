@@ -11,7 +11,7 @@ type PropDynamicOrnament struct {
 }
 
 func (entity *PropDynamicOrnament) New() entity.IEntity {
-	return &PropDynamicOverride{}
+	return &PropDynamicOrnament{}
 }
 
 func (entity PropDynamicOrnament) Classname() string {

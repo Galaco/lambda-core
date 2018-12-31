@@ -4,5 +4,4 @@ package resource
 // implement this.
 type IResource interface {
 	GetFilePath() string
-	Destroy()
 }

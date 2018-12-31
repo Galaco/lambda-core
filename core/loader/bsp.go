@@ -1,12 +1,14 @@
 package loader
 
 import (
+	"github.com/galaco/Gource-Engine/core/event"
 	"github.com/galaco/Gource-Engine/core/filesystem"
 	matloader "github.com/galaco/Gource-Engine/core/loader/material"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
 	"github.com/galaco/Gource-Engine/core/resource"
+	"github.com/galaco/Gource-Engine/core/resource/message"
 	"github.com/galaco/Gource-Engine/core/scene"
 	"github.com/galaco/Gource-Engine/core/texture"
 	"github.com/galaco/bsp"
@@ -24,16 +26,16 @@ import (
 )
 
 type bspstructs struct {
-	faces      []face.Face
-	planes     []plane.Plane
-	vertexes   []mgl32.Vec3
-	surfEdges  []int32
-	edges      [][2]uint16
-	texInfos   []texinfo.TexInfo
-	dispInfos  []dispinfo.DispInfo
-	dispVerts  []dispvert.DispVert
-	game       *lumps.Game
-	lightmap   []common.ColorRGBExponent32
+	faces     []face.Face
+	planes    []plane.Plane
+	vertexes  []mgl32.Vec3
+	surfEdges []int32
+	edges     [][2]uint16
+	texInfos  []texinfo.TexInfo
+	dispInfos []dispinfo.DispInfo
+	dispVerts []dispvert.DispVert
+	game      *lumps.Game
+	lightmap  []common.ColorRGBExponent32
 }
 
 // LoadMap is the gateway into loading the core static level. Entities are loaded
@@ -45,16 +47,16 @@ type bspstructs struct {
 func LoadMap(file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
-		faces:      file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
-		planes:     file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
-		vertexes:   file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
-		surfEdges:  file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
-		edges:      file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
-		texInfos:   file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
-		dispInfos:  file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
-		dispVerts:  file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-		game:       file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
-		lightmap:   file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
+		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
+		planes:    file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
+		vertexes:  file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
+		surfEdges: file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
+		edges:     file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
+		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
+		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
+		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
+		game:      file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
+		lightmap:  file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
 	}
 
 	//MATERIALS
@@ -86,7 +88,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 			int(f.LightmapTextureSizeInLuxels[0]+1),
 			int(f.LightmapTextureSizeInLuxels[1]+1),
 			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
-		bspFaces[idx].Lightmap().Finish()
+		//bspFaces[idx].Lightmap().Finish()
 	}
 
 	// Add MATERIALS TO FACES
@@ -121,7 +123,8 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 	}
 
 	// Finish the bsp object.
-	bspMesh.Finish()
+	event.Manager().Dispatch(message.LoadedMap(bspObject))
+	//bspMesh.Finish()
 
 	cl := model.ClusterLeaf{
 		Id:        0,
@@ -132,6 +135,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 
 	// Get static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
+
 
 	return scene.NewScene(*bspObject, staticProps)
 }

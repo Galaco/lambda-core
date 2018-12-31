@@ -2,7 +2,7 @@ package texture
 
 import (
 	"github.com/galaco/Gource-Engine/lib/math/shape"
-	"github.com/go-gl/gl/v4.1-core/gl"
+	"github.com/galaco/vtf/format"
 	"github.com/go-gl/mathgl/mgl32"
 	"sort"
 )
@@ -19,7 +19,7 @@ type Atlas struct {
 // Format returns colour format
 // For now always RGBA
 func (atlas *Atlas) Format() uint32 {
-	return gl.RGBA
+	return uint32(format.RGBA8888)
 }
 
 // PackTextures

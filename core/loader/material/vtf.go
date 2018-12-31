@@ -51,6 +51,5 @@ func readVtf(path string) (texture.ITexture, error) {
 			int(read.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	ResourceManager.GetTexture(path).(texture.ITexture).Finish()
 	return ResourceManager.GetTexture(path).(texture.ITexture), nil
 }
