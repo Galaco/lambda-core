@@ -29,38 +29,25 @@ func (manager *manager) Listen(eventName MessageType, callback func(IMessage)) E
 	return handle
 }
 
-// RunConcurrent Runs the event queue in its own go routine
-func (manager *manager) RunConcurrent() {
-	// Block double-running
-	//if manager.runAsync == true {
-	//	return
-	//}
-	//manager.runAsync = true
-//	func() {
-//		for manager.runAsync == true {
-			manager.mu.Lock()
-			queue := manager.eventQueue
-			manager.mu.Unlock()
+// ProcessQueue Runs the event queue in its own go routine
+func (manager *manager) ProcessQueue() {
+	manager.mu.Lock()
+	queue := manager.eventQueue
+	manager.mu.Unlock()
 
-			if len(queue) > 0 {
-				// FIFO - ensure dispatch order, and concurrency integrity
-				item := queue[0]
-				manager.mu.Lock()
-				manager.eventQueue = manager.eventQueue[1:]
+	if len(queue) > 0 {
+		// FIFO - ensure dispatch order, and concurrency integrity
+		item := queue[0]
+		manager.mu.Lock()
+		manager.eventQueue = manager.eventQueue[1:]
 
-				// Fire event
-				listeners := manager.listenerMap[item.EventName]
-				manager.mu.Unlock()
-				for _, listener := range listeners {
-					listener(item.Message)
-				}
-			}
-//		}
-//	}()
-}
-
-func (manager *manager) Update() {
-	manager.RunConcurrent()
+		// Fire event
+		listeners := manager.listenerMap[item.EventName]
+		manager.mu.Unlock()
+		for _, listener := range listeners {
+			listener(item.Message)
+		}
+	}
 }
 
 // Unlisten Remove a listener from listening for an event
@@ -81,12 +68,8 @@ func (manager *manager) Dispatch(message IMessage) {
 	manager.mu.Lock()
 	manager.eventQueue = append(manager.eventQueue, queueItem)
 	manager.mu.Unlock()
-}
 
-// Unregister Close the event manager
-func (manager *manager) Unregister() {
-	// Ensure async event queue is halted
-	manager.runAsync = false
+	manager.ProcessQueue()
 }
 
 var eventManager manager
