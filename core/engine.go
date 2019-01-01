@@ -1,7 +1,6 @@
 package core
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
 	"time"
 )
 
@@ -22,7 +21,7 @@ func (engine *Engine) Run() {
 	engine.running = true
 
 	// Begin the event manager thread in the background
-	//event.Manager().RunConcurrent()
+	//event.Manager().ProcessQueue()
 	// Anything that runs concurrently can start now
 	for _, manager := range engine.Managers {
 		manager.RunConcurrent()
@@ -32,7 +31,6 @@ func (engine *Engine) Run() {
 	startingTime := time.Now().UTC()
 
 	for engine.running == true {
-		event.Manager().Update()
 		for _, manager := range engine.Managers {
 			manager.Update(dt)
 		}

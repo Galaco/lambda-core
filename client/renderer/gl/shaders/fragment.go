@@ -5,7 +5,8 @@ var Fragment = `
 
 	uniform int useLightmap;
 
-	uniform sampler2D baseTextureSampler;
+	uniform sampler2D albedoSampler;
+	uniform sampler2D normalSampler;
 	uniform sampler2D lightmapTextureSampler;
 
 
@@ -16,7 +17,7 @@ var Fragment = `
 
 	// Basetexture
 	// Nothing is renderable without a base texture
-	void GetBasetexture(inout vec4 fragColour, in sampler2D basetexture, in vec2 uv) 
+	void Albedo(inout vec4 fragColour, in sampler2D basetexture, in vec2 uv) 
 	{
 		fragColour = texture(basetexture, uv).rgba;
 	}
@@ -34,7 +35,7 @@ var Fragment = `
 
     void main() 
 	{
-		GetBasetexture(frag_colour, baseTextureSampler, UV);
+		Albedo(frag_colour, albedoSampler, UV);
 		ApplyLightmap(frag_colour, lightmapTextureSampler, LightmapUV);
     }
 ` + "\x00"

@@ -19,7 +19,7 @@ func TestScene_Bsp(t *testing.T) {
 	bsp := model.NewBsp(bspMesh)
 
 	sut := NewScene(*bsp, make([]model.StaticProp, 0))
-	if sut.Bsp() != bsp {
+	if sut.Bsp().Mesh() != bsp.Mesh() {
 		t.Error("unexpected model contained in scene")
 	}
 }

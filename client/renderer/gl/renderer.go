@@ -70,7 +70,7 @@ func (manager *Renderer) LoadShaders() {
 	lightmappedGenericShaderMap["projection"] = manager.lightmappedGenericShader.GetUniform("projection")
 	lightmappedGenericShaderMap["view"] = manager.lightmappedGenericShader.GetUniform("view")
 	//material properties
-	lightmappedGenericShaderMap["baseTextureSampler"] = manager.lightmappedGenericShader.GetUniform("baseTextureSampler")
+	lightmappedGenericShaderMap["albedoSampler"] = manager.lightmappedGenericShader.GetUniform("albedoSampler")
 	lightmappedGenericShaderMap["useLightmap"] = manager.lightmappedGenericShader.GetUniform("useLightmap")
 	lightmappedGenericShaderMap["lightmapTextureSampler"] = manager.lightmappedGenericShader.GetUniform("lightmapTextureSampler")
 	manager.uniformMap[manager.lightmappedGenericShader.Id()] = lightmappedGenericShaderMap
@@ -195,9 +195,14 @@ func (manager *Renderer) BindMesh(target mesh.IMesh, meshBinding *gosigl.VertexO
 	//target.Bind()
 	// $basetexture
 	if target.GetMaterial() != nil {
-		gosigl.BindTexture2D(gosigl.TextureSlot(0), material2.TextureIdMap[target.GetMaterial().(*material.Material).Textures.Albedo.GetFilePath()])
-		//target.GetMaterial().Bind()
-		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["baseTextureSampler"], 0)
+		mat := target.GetMaterial().(*material.Material)
+		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["albedoSampler"], 0)
+		gosigl.BindTexture2D(gosigl.TextureSlot(0), material2.TextureIdMap[mat.Textures.Albedo.GetFilePath()])
+
+		if mat.BumpMapName != "" && mat.Textures.Normal != nil {
+			opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["normalSampler"], 1)
+			gosigl.BindTexture2D(gosigl.TextureSlot(1), material2.TextureIdMap[mat.Textures.Normal.GetFilePath()])
+		}
 	}
 	// Bind lightmap texture if it exists
 	if target.GetLightmap() != nil {
@@ -214,10 +219,16 @@ func (manager *Renderer) DrawFace(target *mesh.Face) {
 	if target.Material() == nil {
 		return
 	}
+
 	// $basetexture
-	gosigl.BindTexture2D(gosigl.TextureSlot(0), material2.TextureIdMap[target.Material().(*material.Material).Textures.Albedo.GetFilePath()])
-	//target.Material().Bind()
-	opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["baseTextureSampler"], 0)
+	mat := target.Material().(*material.Material)
+	opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["albedoSampler"], 0)
+	gosigl.BindTexture2D(gosigl.TextureSlot(0), material2.TextureIdMap[mat.Textures.Albedo.GetFilePath()])
+
+	if mat.BumpMapName != "" && mat.Textures.Normal != nil {
+		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["normalSampler"], 1)
+		gosigl.BindTexture2D(gosigl.TextureSlot(1), material2.TextureIdMap[mat.Textures.Normal.GetFilePath()])
+	}
 
 	// Bind lightmap texture if it exists
 	if target.IsLightmapped() == true {
