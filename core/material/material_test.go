@@ -1,6 +1,9 @@
 package material
 
-import "testing"
+import (
+	"github.com/galaco/Gource-Engine/core/texture"
+	"testing"
+)
 
 func TestMaterial_GetFilePath(t *testing.T) {
 	sut := Material{
@@ -13,9 +16,23 @@ func TestMaterial_GetFilePath(t *testing.T) {
 }
 
 func TestMaterial_Height(t *testing.T) {
-	t.Skip()
+	sut := Material{
+		FilePath: "foo/bar.vmt",
+	}
+	sut.Textures.Albedo = texture.NewError("error.vtf")
+
+	if sut.Height() != sut.Textures.Albedo.Height() {
+		t.Error("material height doesnt match basetextures height")
+	}
 }
 
 func TestMaterial_Width(t *testing.T) {
-	t.Skip()
+	sut := Material{
+		FilePath: "foo/bar.vmt",
+	}
+	sut.Textures.Albedo = texture.NewError("error.vtf")
+
+	if sut.Width() != sut.Textures.Albedo.Width() {
+		t.Error("material width doesnt match basetextures width")
+	}
 }

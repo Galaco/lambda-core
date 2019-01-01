@@ -38,6 +38,10 @@ func RegisterLocalDirectory(directory string) {
 func UnregisterLocalDirectory(directory string) {
 	for idx, dir := range localDirectories {
 		if dir == directory {
+			if len(localDirectories) == 1 {
+				localDirectories = make([]string, 0)
+				return
+			}
 			localDirectories = append(localDirectories[:idx], localDirectories[idx+1:]...)
 		}
 	}

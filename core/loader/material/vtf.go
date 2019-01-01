@@ -5,7 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/core/logger"
 	"github.com/galaco/Gource-Engine/core/resource"
 	"github.com/galaco/Gource-Engine/core/texture"
-	"github.com/galaco/Gource-Engine/lib/vtf"
+	"github.com/galaco/vtf"
 	"strings"
 )
 

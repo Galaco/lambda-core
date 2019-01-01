@@ -19,11 +19,34 @@ func TestUnregisterVpk(t *testing.T) {
 }
 
 func TestRegisterLocalDirectory(t *testing.T) {
-	t.Skip()
+	dir := "foo/bar/baz"
+	RegisterLocalDirectory(dir)
+	found := false
+	for _,path := range localDirectories {
+		if path == dir {
+			found = true
+			break
+		}
+	}
+	if found == false {
+		t.Error("local filepath was not found in registered paths")
+	}
 }
 
 func TestUnregisterLocalDirectory(t *testing.T) {
-	t.Skip()
+	dir := "foo/bar/baz"
+	RegisterLocalDirectory(dir)
+	UnregisterLocalDirectory(dir)
+	found := false
+	for _,path := range localDirectories {
+		if path == dir {
+			found = true
+			break
+		}
+	}
+	if found == true {
+		t.Error("local filepath was not found in registered paths")
+	}
 }
 
 func TestUnregisterPakfile(t *testing.T) {
