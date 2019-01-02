@@ -1,5 +1,6 @@
 package shaders
 
+// language=glsl
 var Vertex = `
     #version 410
 

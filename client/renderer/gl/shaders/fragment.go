@@ -1,5 +1,6 @@
 package shaders
 
+//language=glsl
 var Fragment = `
     #version 410
 
@@ -17,25 +18,34 @@ var Fragment = `
 
 	// Basetexture
 	// Nothing is renderable without a base texture
-	void Albedo(inout vec4 fragColour, in sampler2D basetexture, in vec2 uv) 
+	void AddAlbedo(inout vec4 fragColour, in sampler2D sampler, in vec2 uv) 
 	{
-		fragColour = texture(basetexture, uv).rgba;
+		fragColour = texture(sampler, uv).rgba;
 	}
+
+//	vec3 CalculateNormal(in sampler2D sampler, vec2 uv)    // Calculate new normal based off Normal Texture and TBN matrix
+//	{
+//    	vec3 BumpMapNormal = texture(sampler, uv).xyz;
+//    	BumpMapNormal = normalize(BumpMapNormal * 2.0 - 1.0);	// transform coordinates to -1-1 from 0-1
+//    	vec3 NewNormal = normalize(TBN * BumpMapNormal);	// Tangent Space Conversion
+//    	return NewNormal;
+//	}
 
 	// Lightmaps the face
 	// Does nothing if lightmap was not defined
-	void ApplyLightmap(inout vec4 fragColour, in sampler2D lightmap, in vec2 uv) 
+	void AddLightmap(inout vec4 fragColour, in sampler2D lightmap, in vec2 uv) 
 	{
-		if (useLightmap == 0) {
-			return;
-		}
-
 		fragColour = fragColour * texture(lightmap, uv).rgba;
 	}
 
     void main() 
 	{
-		Albedo(frag_colour, albedoSampler, UV);
-		ApplyLightmap(frag_colour, lightmapTextureSampler, LightmapUV);
+		AddAlbedo(frag_colour, albedoSampler, UV);
+
+//		bumpNormal = CalculateNormal(normalSampler, UV);
+
+		if (useLightmap == 1) {
+			AddLightmap(frag_colour, lightmapTextureSampler, LightmapUV);
+		}
     }
 ` + "\x00"

@@ -9,6 +9,7 @@ import (
 	"github.com/galaco/Gource-Engine/client/scene/world"
 	"github.com/galaco/Gource-Engine/core/entity"
 	"github.com/galaco/Gource-Engine/core/event"
+	"github.com/galaco/Gource-Engine/core/logger"
 	"github.com/galaco/Gource-Engine/core/material"
 	"github.com/galaco/Gource-Engine/core/mesh"
 	"github.com/galaco/Gource-Engine/core/model"
@@ -48,12 +49,24 @@ func (manager *Renderer) LoadShaders() {
 	event.Manager().Listen(message.TypeMapLoaded, bsp.SyncMapToGpu)
 
 	manager.lightmappedGenericShader = gosigl.NewShader()
-	manager.lightmappedGenericShader.AddShader(shaders.Vertex, gosigl.VertexShader)
-	manager.lightmappedGenericShader.AddShader(shaders.Fragment, gosigl.FragmentShader)
+	err := manager.lightmappedGenericShader.AddShader(shaders.Vertex, gosigl.VertexShader)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	err = manager.lightmappedGenericShader.AddShader(shaders.Fragment, gosigl.FragmentShader)
+	if err != nil {
+		logger.Fatal(err)
+	}
 	manager.lightmappedGenericShader.Finalize()
 	manager.skyShader = gosigl.NewShader()
-	manager.skyShader.AddShader(sky.Vertex, opengl.VERTEX_SHADER)
-	manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
+	err = manager.skyShader.AddShader(sky.Vertex, opengl.VERTEX_SHADER)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	err = manager.skyShader.AddShader(sky.Fragment, opengl.FRAGMENT_SHADER)
+	if err != nil {
+		logger.Fatal(err)
+	}
 	manager.skyShader.Finalize()
 
 	//matrixes

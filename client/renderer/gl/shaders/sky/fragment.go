@@ -1,5 +1,6 @@
 package sky
 
+// language=glsl
 var Fragment = `
     #version 410
 

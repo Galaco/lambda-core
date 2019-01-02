@@ -1,5 +1,6 @@
 package sky
 
+// language=glsl
 var Vertex = `
     #version 410
 
