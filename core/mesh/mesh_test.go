@@ -46,10 +46,10 @@ func TestMesh_AddTextureCoordinate(t *testing.T) {
 	expected := []float32{
 		1, 2, 3, 4,
 	}
-	sut.AddTextureCoordinate(expected...)
+	sut.AddUV(expected...)
 
 	for i := 0; i < len(expected); i++ {
-		if sut.TextureCoordinates()[i] != expected[i] {
+		if sut.UVs()[i] != expected[i] {
 			t.Error("unexpected texture coordinate")
 		}
 	}
@@ -158,10 +158,10 @@ func TestMesh_TextureCoordinates(t *testing.T) {
 	expected := []float32{
 		1, 2, 3, 4,
 	}
-	sut.AddTextureCoordinate(expected...)
+	sut.AddUV(expected...)
 
 	for i := 0; i < len(expected); i++ {
-		if sut.TextureCoordinates()[i] != expected[i] {
+		if sut.UVs()[i] != expected[i] {
 			t.Error("unexpected texture coordinate")
 		}
 	}

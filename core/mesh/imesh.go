@@ -11,13 +11,14 @@ import (
 type IMesh interface {
 	AddVertex(...float32)
 	AddNormal(...float32)
-	AddTextureCoordinate(...float32)
+	AddUV(...float32)
 	AddLightmapCoordinate(...float32)
-	//Finish()
+	GenerateTangents()
 
 	Vertices() []float32
 	Normals() []float32
-	TextureCoordinates() []float32
+	UVs() []float32
+	Tangents() []float32
 	LightmapCoordinates() []float32
 
 	GetMaterial() material.IMaterial

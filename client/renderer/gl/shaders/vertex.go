@@ -10,7 +10,8 @@ var Vertex = `
     layout(location = 0) in vec3 vertexPosition;
 	layout(location = 1) in vec2 vertexUV;
 	layout(location = 2) in vec3 vertexNormal;
-	layout(location = 3) in vec2 lightmapUV;
+	layout(location = 3) in vec4 vertexTangent;
+	layout(location = 4) in vec2 lightmapUV;
 
 	// Output data ; will be interpolated for each fragment.
 	out vec2 UV;

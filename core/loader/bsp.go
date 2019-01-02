@@ -105,7 +105,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 		lightMat := bspFaces[idx].Lightmap()
 		bspFaces[idx].AddMaterial(mat)
 		// Generate texture coordinates
-		bspMesh.AddTextureCoordinate(
+		bspMesh.AddUV(
 			texCoordsForFaceFromTexInfo(
 				bspMesh.Vertices()[bspFace.Offset()*3:(bspFace.Offset()*3)+(bspFace.Length()*3)],
 				&bspStructure.texInfos[bspStructure.faces[idx].TexInfo], mat.Width(), mat.Height())...)

@@ -18,16 +18,14 @@ func SyncPropToGpu(dispatched event.IMessage) {
 
 	for idx,mesh := range msg.Resource.GetMeshes() {
 		gpuObject := gosigl.NewMesh(mesh.Vertices())
-		gosigl.CreateVertexAttribute(gpuObject, mesh.TextureCoordinates(), 2)
+		gosigl.CreateVertexAttribute(gpuObject, mesh.UVs(), 2)
 		gosigl.CreateVertexAttribute(gpuObject, mesh.Normals(), 3)
 
-		// @TODO Find a better solution
-		if len(mesh.LightmapCoordinates()) < 2 {
-			lightmapCoordinates := []float32{0, 1}
-			gosigl.CreateVertexAttribute(gpuObject, lightmapCoordinates, 2)
-		} else {
-			gosigl.CreateVertexAttribute(gpuObject, mesh.LightmapCoordinates(), 2)
+		if len(mesh.Tangents()) == 0 {
+			mesh.GenerateTangents()
 		}
+		gosigl.CreateVertexAttribute(gpuObject, mesh.Tangents(), 4)
+		gosigl.CreateVertexAttribute(gpuObject, mesh.LightmapCoordinates(), 2)
 		gosigl.FinishMesh()
 		vals[idx] = gpuObject
 	}

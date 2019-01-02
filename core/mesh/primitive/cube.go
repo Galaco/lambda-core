@@ -97,7 +97,7 @@ func NewCube() *Cube {
 	}
 	c.AddVertex(cubeVerts...)
 	c.AddNormal(cubeNormals...)
-	c.AddTextureCoordinate(cubeUVs...)
+	c.AddUV(cubeUVs...)
 	//c.Finish()
 
 	return c

@@ -2,13 +2,15 @@ package mesh
 
 import (
 	"github.com/galaco/Gource-Engine/core/material"
+	"github.com/galaco/Gource-Engine/core/mesh/util"
 	"github.com/galaco/Gource-Engine/core/texture"
 )
 
 type Mesh struct {
 	vertices            []float32
 	normals             []float32
-	textureCoordinates  []float32
+	uvs                 []float32
+	tangents 			[]float32
 	lightmapCoordinates []float32
 
 	material  material.IMaterial
@@ -23,8 +25,12 @@ func (mesh *Mesh) AddNormal(normal ...float32) {
 	mesh.normals = append(mesh.normals, normal...)
 }
 
-func (mesh *Mesh) AddTextureCoordinate(uv ...float32) {
-	mesh.textureCoordinates = append(mesh.textureCoordinates, uv...)
+func (mesh *Mesh) AddUV(uv ...float32) {
+	mesh.uvs = append(mesh.uvs, uv...)
+}
+
+func (mesh *Mesh) AddTangent(tangent ...float32) {
+	mesh.tangents = append(mesh.tangents, tangent...)
 }
 
 func (mesh *Mesh) AddLightmapCoordinate(uv ...float32) {
@@ -39,11 +45,21 @@ func (mesh *Mesh) Normals() []float32 {
 	return mesh.normals
 }
 
-func (mesh *Mesh) TextureCoordinates() []float32 {
-	return mesh.textureCoordinates
+func (mesh *Mesh) UVs() []float32 {
+	return mesh.uvs
+}
+
+func (mesh *Mesh) Tangents() []float32 {
+	return mesh.tangents
 }
 
 func (mesh *Mesh) LightmapCoordinates() []float32 {
+	// use standard uvs if there is no lightmap. Not ideal,
+	// but there MUST be UVs, but they'll be ignored anyway if there is no
+	// lightmap
+	if len(mesh.lightmapCoordinates) == 0 {
+		return mesh.UVs()
+	}
 	return mesh.lightmapCoordinates
 }
 
@@ -61,6 +77,10 @@ func (mesh *Mesh) GetLightmap() texture.ITexture {
 
 func (mesh *Mesh) SetLightmap(mat texture.ITexture) {
 	mesh.lightmap = mat
+}
+
+func (mesh *Mesh) GenerateTangents() {
+	mesh.tangents = util.GenerateTangents(mesh.Vertices(), mesh.Normals(), mesh.UVs())
 }
 
 func NewMesh() *Mesh {
