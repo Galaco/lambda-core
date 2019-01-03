@@ -1,7 +1,8 @@
 package window
 
 import (
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/galaco/Gource-Engine/core/logger"
+	"github.com/vulkan-go/glfw/v3.3/glfw"
 	"runtime"
 )
 
@@ -20,7 +21,7 @@ func Create(width int, height int, name string) *glfw.Window {
 
 	window, err := glfw.CreateWindow(width, height, name, nil, nil)
 	if err != nil {
-		panic(err)
+		logger.Fatal(err)
 	}
 
 	window.MakeContextCurrent()

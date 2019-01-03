@@ -36,9 +36,7 @@ type Renderer struct {
 	}
 }
 
-// Preparation function
-// Loads shaders and sets necessary constants for opengls state machine
-func (manager *Renderer) LoadShaders() {
+func (manager *Renderer) Initialize() {
 	material2.TextureIdMap = map[string]gosigl.TextureBindingId{}
 	prop.ModelIdMap = map[string][]*gosigl.VertexObject{}
 
@@ -47,6 +45,12 @@ func (manager *Renderer) LoadShaders() {
 	event.Manager().Listen(message.TypeModelLoaded, prop.SyncPropToGpu)
 	event.Manager().Listen(message.TypeModelUnloaded, prop.DestroyPropOnGPU)
 	event.Manager().Listen(message.TypeMapLoaded, bsp.SyncMapToGpu)
+}
+
+// Preparation function
+// Loads shaders and sets necessary constants for opengls state machine
+func (manager *Renderer) LoadShaders() {
+
 
 	manager.lightmappedGenericShader = gosigl.NewShader()
 	err := manager.lightmappedGenericShader.AddShader(shaders.Vertex, gosigl.VertexShader)

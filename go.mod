@@ -13,4 +13,6 @@ require (
 	github.com/go-gl/glfw v0.0.0-20181213070059-819e8ce5125f
 	github.com/go-gl/mathgl v0.0.0-20180804195959-cdf14b6b8f8a
 	github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e
+	github.com/vulkan-go/glfw v0.0.0-20180930191036-cac57eedc4a5
+	github.com/vulkan-go/vulkan v0.0.0-20181015060211-df48e8cc1538
 )

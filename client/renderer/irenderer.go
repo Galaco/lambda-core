@@ -8,6 +8,7 @@ import (
 )
 
 type IRenderer interface {
+	Initialize()
 	StartFrame(*entity.Camera)
 	LoadShaders()
 	DrawBsp(*world.World)

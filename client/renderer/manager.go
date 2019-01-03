@@ -23,6 +23,7 @@ var cacheMutex sync.Mutex
 func (manager *Manager) Register() {
 	manager.renderer = gl.NewRenderer()
 
+	manager.renderer.Initialize()
 	manager.renderer.LoadShaders()
 }
 

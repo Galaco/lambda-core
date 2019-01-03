@@ -5,7 +5,7 @@ import (
 	"github.com/galaco/Gource-Engine/client/window/input"
 	"github.com/galaco/Gource-Engine/client/window/window"
 	"github.com/galaco/Gource-Engine/core"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/vulkan-go/glfw/v3.3/glfw"
 )
 
 // Manager is responsible for managing this games window. Understand
