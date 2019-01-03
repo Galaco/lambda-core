@@ -10,6 +10,7 @@ import (
 	"github.com/galaco/Gource-Engine/core/texture"
 	"github.com/galaco/KeyValues"
 	"strings"
+	"sync"
 )
 
 // LoadMaterialList GetFile all materials referenced in the map
@@ -18,7 +19,21 @@ import (
 // 2. Game directory
 // 3. Game VPK
 // 4. Other game shared VPK
+func LoadMaterialListConcurrent(materialList []string) {
+	var wg sync.WaitGroup
+	wg.Add(len(materialList))
+
+	for _, mat := range materialList {
+		go func() {
+			defer wg.Done()
+			loadMaterials(mat)
+		}()
+	}
+
+	wg.Wait()
+}
 func LoadMaterialList(materialList []string) {
+
 	loadMaterials(materialList...)
 }
 
