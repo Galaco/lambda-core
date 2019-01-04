@@ -205,7 +205,7 @@ func generateDisplacementFace(f *face.Face, bspStructure *bspstructs, bspMesh me
 		corners[surfId-f.FirstEdge] = vert
 
 		dist2tmp := info.StartPosition.Sub(vert)
-		dist2 := (dist2tmp.X() * dist2tmp.Y()) + (dist2tmp.Y() * dist2tmp.Y()) + (dist2tmp.Z() * dist2tmp.Z())
+		dist2 := (dist2tmp.X() * dist2tmp.X()) + (dist2tmp.Y() * dist2tmp.Y()) + (dist2tmp.Z() * dist2tmp.Z())
 		if dist2 < firstCornerDist2 {
 			firstCorner = surfId - f.FirstEdge
 			firstCornerDist2 = dist2
