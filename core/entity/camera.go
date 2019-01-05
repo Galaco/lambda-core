@@ -12,7 +12,7 @@ var minVerticalRotation = mgl32.DegToRad(90)
 var maxVerticalRotation = mgl32.DegToRad(270)
 
 type Camera struct {
-	*Base
+	Base
 	fov         float32
 	aspectRatio float32
 	up          mgl32.Vec3
@@ -88,6 +88,22 @@ func (camera *Camera) ViewMatrix() mgl32.Mat4 {
 		camera.up)
 }
 
+func (camera *Camera) Fov() float32 {
+	return camera.fov
+}
+
+func (camera *Camera) Up() mgl32.Vec3 {
+	return camera.up
+}
+
+func (camera *Camera) Direction() mgl32.Vec3 {
+	return camera.direction
+}
+
+func (camera *Camera) AspectRatio() float32 {
+	return camera.aspectRatio
+}
+
 // ProjectionMatrix calculates projection matrix.
 // This is unlikely to change throughout program lifetime, but could do
 func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
@@ -98,7 +114,6 @@ func (camera *Camera) ProjectionMatrix() mgl32.Mat4 {
 // fov should be provided in radians
 func NewCamera(fov float32, aspectRatio float32) *Camera {
 	return &Camera{
-		Base:        &Base{},
 		fov:         fov,
 		aspectRatio: aspectRatio,
 		up:          mgl32.Vec3{0, 1, 0},

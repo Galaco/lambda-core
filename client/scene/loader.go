@@ -49,6 +49,8 @@ func loadWorld(targetScene *Scene, file *bsplib.Bsp) {
 	bspClusters := make([]model.ClusterLeaf, visLump.NumClusters)
 	defaultCluster := model.ClusterLeaf{
 		Id: 32767,
+		Mins: mgl32.Vec3{-16384,-16384,-16384},
+		Maxs: mgl32.Vec3{16384,16384,16384},
 	}
 	for _, bspLeaf := range visData.Leafs {
 		for _, leafFace := range visData.LeafFaces[bspLeaf.FirstLeafFace : bspLeaf.FirstLeafFace+bspLeaf.NumLeafFaces] {
@@ -56,8 +58,27 @@ func loadWorld(targetScene *Scene, file *bsplib.Bsp) {
 				//defaultCluster.Faces = append(defaultCluster.Faces, bspFaces[leafFace])
 				continue
 			}
+
 			bspClusters[bspLeaf.Cluster].Id = bspLeaf.Cluster
 			bspClusters[bspLeaf.Cluster].Faces = append(bspClusters[bspLeaf.Cluster].Faces, baseWorldBspFaces[leafFace])
+			if bspClusters[bspLeaf.Cluster].Mins[0] > float32(bspLeaf.Mins[0]) {
+				bspClusters[bspLeaf.Cluster].Mins[0] = float32(bspLeaf.Mins[0])
+			}
+			if bspClusters[bspLeaf.Cluster].Mins[1] > float32(bspLeaf.Mins[1]) {
+				bspClusters[bspLeaf.Cluster].Mins[1] = float32(bspLeaf.Mins[1])
+			}
+			if bspClusters[bspLeaf.Cluster].Mins[2] > float32(bspLeaf.Mins[2]) {
+				bspClusters[bspLeaf.Cluster].Mins[2] = float32(bspLeaf.Mins[2])
+			}
+			if bspClusters[bspLeaf.Cluster].Maxs[0] > float32(bspLeaf.Maxs[0]) {
+				bspClusters[bspLeaf.Cluster].Maxs[0] = float32(bspLeaf.Maxs[0])
+			}
+			if bspClusters[bspLeaf.Cluster].Maxs[1] > float32(bspLeaf.Maxs[1]) {
+				bspClusters[bspLeaf.Cluster].Maxs[1] = float32(bspLeaf.Maxs[1])
+			}
+			if bspClusters[bspLeaf.Cluster].Maxs[2] > float32(bspLeaf.Maxs[2]) {
+				bspClusters[bspLeaf.Cluster].Maxs[2] = float32(bspLeaf.Maxs[2])
+			}
 		}
 	}
 

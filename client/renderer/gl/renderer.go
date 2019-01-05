@@ -34,6 +34,7 @@ type Renderer struct {
 		view       mgl32.Mat4
 		projection mgl32.Mat4
 	}
+	viewFrustum Frustum
 }
 
 // Preparation function
@@ -102,6 +103,8 @@ var numCalls = 0
 func (manager *Renderer) StartFrame(camera *entity.Camera) {
 	manager.matrixes.projection = camera.ProjectionMatrix()
 	manager.matrixes.view = camera.ViewMatrix()
+	manager.viewFrustum.setCamInternals(camera.Fov(), camera.AspectRatio(), 0.1, 16384)
+	manager.viewFrustum.setCamDef(camera.Transform().Position, camera.Direction(), camera.Up())
 
 	// Sky
 	manager.skyShader.UseProgram()
@@ -139,6 +142,9 @@ func (manager *Renderer) DrawBsp(world *world.World) {
 	gosigl.BindMesh(bsp.MapGPUResource)
 	//manager.BindMesh(world.Bsp().Mesh())
 	for _, cluster := range world.VisibleClusters() {
+		if manager.viewFrustum.AABBInFrustum(cluster.Mins, cluster.Maxs) == 0 {
+			continue
+		}
 		for _, face := range cluster.Faces {
 			manager.DrawFace(&face)
 		}
@@ -220,7 +226,7 @@ func (manager *Renderer) BindMesh(target mesh.IMesh, meshBinding *gosigl.VertexO
 	// Bind lightmap texture if it exists
 	if target.GetLightmap() != nil {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0) // lightmaps disabled
-		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
+		//opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
 		//target.GetLightmap().Bind()
 	} else {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0)
@@ -246,7 +252,7 @@ func (manager *Renderer) DrawFace(target *mesh.Face) {
 	// Bind lightmap texture if it exists
 	if target.IsLightmapped() == true {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0) // lightmaps disabled
-		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
+		//opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["lightmapTextureSampler"], 1)
 		//target.Lightmap().Bind()
 	} else {
 		opengl.Uniform1i(manager.uniformMap[manager.currentShaderId]["useLightmap"], 0)
