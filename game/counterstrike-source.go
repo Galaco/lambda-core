@@ -1,8 +1,8 @@
 package game
 
 import (
-	"github.com/galaco/Gource-Engine/core/loader/entity/classmap"
-	"github.com/galaco/Gource-Engine/game/entity/common"
+	"github.com/galaco/Lambda-Core/core/loader/entity/classmap"
+	"github.com/galaco/Lambda-Core/game/entity/common"
 )
 
 type CounterstrikeSource struct {

@@ -1,12 +1,12 @@
 package renderer
 
 import (
-	"github.com/galaco/Gource-Engine/client/input"
-	"github.com/galaco/Gource-Engine/client/input/keyboard"
-	"github.com/galaco/Gource-Engine/client/renderer/cache"
-	"github.com/galaco/Gource-Engine/client/renderer/gl"
-	"github.com/galaco/Gource-Engine/client/scene"
-	"github.com/galaco/Gource-Engine/core"
+	"github.com/galaco/Lambda-Core/client/input"
+	"github.com/galaco/Lambda-Core/client/input/keyboard"
+	"github.com/galaco/Lambda-Core/client/renderer/cache"
+	"github.com/galaco/Lambda-Core/client/renderer/gl"
+	"github.com/galaco/Lambda-Core/client/scene"
+	"github.com/galaco/Lambda-Core/core"
 	"strings"
 	"sync"
 )

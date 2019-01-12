@@ -1,9 +1,9 @@
 package renderer
 
 import (
-	"github.com/galaco/Gource-Engine/client/scene/world"
-	"github.com/galaco/Gource-Engine/core/entity"
-	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Lambda-Core/client/scene/world"
+	"github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/model"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

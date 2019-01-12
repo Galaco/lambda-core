@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/galaco/Gource-Engine/client/input"
-	"github.com/galaco/Gource-Engine/client/input/keyboard"
-	"github.com/galaco/Gource-Engine/client/scene"
-	"github.com/galaco/Gource-Engine/core"
+	"github.com/galaco/Lambda-Core/client/input"
+	"github.com/galaco/Lambda-Core/client/input/keyboard"
+	"github.com/galaco/Lambda-Core/client/scene"
+	"github.com/galaco/Lambda-Core/core"
 )
 
 type Camera struct {

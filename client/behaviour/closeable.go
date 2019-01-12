@@ -1,10 +1,10 @@
 package behaviour
 
 import (
-	"github.com/galaco/Gource-Engine/client/input/keyboard"
-	"github.com/galaco/Gource-Engine/client/messages"
-	"github.com/galaco/Gource-Engine/core"
-	"github.com/galaco/Gource-Engine/core/event"
+	"github.com/galaco/Lambda-Core/client/input/keyboard"
+	"github.com/galaco/Lambda-Core/client/messages"
+	"github.com/galaco/Lambda-Core/core"
+	"github.com/galaco/Lambda-Core/core/event"
 )
 
 // Closeable Simple struct to control engine shutdown utilising the internal event manager

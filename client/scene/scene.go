@@ -1,9 +1,9 @@
 package scene
 
 import (
-	"github.com/galaco/Gource-Engine/client/scene/world"
-	"github.com/galaco/Gource-Engine/core/entity"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/client/scene/world"
+	"github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/texture"
 )
 
 type Scene struct {

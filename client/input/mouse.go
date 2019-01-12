@@ -1,8 +1,8 @@
 package input
 
 import (
-	"github.com/galaco/Gource-Engine/client/messages"
-	"github.com/galaco/Gource-Engine/core/event"
+	"github.com/galaco/Lambda-Core/client/messages"
+	"github.com/galaco/Lambda-Core/core/event"
 	"github.com/go-gl/mathgl/mgl32"
 )
 

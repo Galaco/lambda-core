@@ -1,8 +1,8 @@
 package prop
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/galaco/Gource-Engine/core/resource/message"
+	"github.com/galaco/Lambda-Core/core/event"
+	"github.com/galaco/Lambda-Core/core/resource/message"
 	"github.com/galaco/gosigl"
 )
 

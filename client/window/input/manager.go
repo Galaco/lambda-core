@@ -1,10 +1,10 @@
 package input
 
 import (
-	"github.com/galaco/Gource-Engine/client/input"
-	"github.com/galaco/Gource-Engine/client/input/keyboard"
-	"github.com/galaco/Gource-Engine/client/messages"
-	"github.com/galaco/Gource-Engine/core/event"
+	"github.com/galaco/Lambda-Core/client/input"
+	"github.com/galaco/Lambda-Core/client/input/keyboard"
+	"github.com/galaco/Lambda-Core/client/messages"
+	"github.com/galaco/Lambda-Core/core/event"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/go-gl/mathgl/mgl64"
 )

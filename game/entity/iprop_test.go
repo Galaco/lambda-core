@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Lambda-Core/core/model"
 	"testing"
 )
 

@@ -1,8 +1,8 @@
 package common
 
 import (
-	entity2 "github.com/galaco/Gource-Engine/core/entity"
-	"github.com/galaco/Gource-Engine/game/entity"
+	entity2 "github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/game/entity"
 )
 
 type PropDoorRotating struct {

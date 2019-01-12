@@ -1,5 +1,5 @@
-[![GoDoc](https://godoc.org/github.com/Galaco/Gource-Engine?status.svg)](https://godoc.org/github.com/Galaco/Gource-Engine)
-[![Go report card](https://goreportcard.com/badge/github.com/galaco/Gource-Engine)](https://goreportcard.com/badge/github.com/galaco/Gource-Engine)
+[![GoDoc](https://godoc.org/github.com/Galaco/Lambda-Core?status.svg)](https://godoc.org/github.com/Galaco/Lambda-Core)
+[![Go report card](https://goreportcard.com/badge/github.com/galaco/Lambda-Core)](https://goreportcard.com/badge/github.com/galaco/Lambda-Core)
 
 # Gource Engine
 Gource is a game engine written in golang designed that loads Valve's Source Engine projects. Put simply, pointing this projects configuration at
@@ -16,7 +16,7 @@ You can build this right now, and, assuming you set the configuration to point t
 * Basic entdata loading (dynamic and physics props)
 
 ##### Counterstrike: Source de_dust2.bsp
-![de_dust2](https://raw.githubusercontent.com/Galaco/Gource-Engine/master/Documents/de_dust2.jpg)
+![de_dust2](https://raw.githubusercontent.com/Galaco/Lambda-Core/master/Documents/de_dust2.jpg)
 
 
 ## What will this do?
@@ -45,4 +45,4 @@ materials per prop, mdl data not fully loaded, and likely more
 
 #### Additional examples
 ##### Counterstrike: Source ze_FFVII_Mako_Reactor_v5_3.bsp
-![de_dust2](https://raw.githubusercontent.com/Galaco/Gource-Engine/master/Documents/ze_FFVII_Mako_Reactor_v5_3.jpg)
+![de_dust2](https://raw.githubusercontent.com/Galaco/Lambda-Core/master/Documents/ze_FFVII_Mako_Reactor_v5_3.jpg)

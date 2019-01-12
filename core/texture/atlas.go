@@ -1,10 +1,10 @@
 package texture
 
 import (
-	"github.com/galaco/Gource-Engine/lib/math/shape"
+	"github.com/galaco/Lambda-Core/lib/math/shape"
+	"github.com/galaco/packrect"
 	"github.com/galaco/vtf/format"
 	"github.com/go-gl/mathgl/mgl32"
-	"sort"
 )
 
 // @TODO THIS IS NOT COMPLETE. IT DOES NOT WORK
@@ -13,45 +13,45 @@ import (
 // A texture atlas implementation.
 type Atlas struct {
 	Colour2D
-	PackedRectangles []shape.Rect
 }
 
 // Format returns colour format
 // For now always RGBA
 func (atlas *Atlas) Format() uint32 {
-	return uint32(format.RGBA8888)
+	return uint32(format.RGB888)
 }
 
 // PackTextures
-func (atlas *Atlas) PackTextures(textures []Texture2D, padding int, maxSize int) ([]shape.Rect, error) {
-	// order by size smallest to largest
-	ordered := make([]*Texture2D, len(textures))
-	for idx := range textures {
-		ordered[idx] = &textures[idx]
+func (atlas *Atlas) PackTextures(textures []ITexture, padding int) ([]shape.Rect, error) {
+	root := packrect.SubRect{
+		Width: atlas.Width(),
+		Height: atlas.Height(),
 	}
-	sort.Slice(ordered, func(i, j int) bool {
-		return (ordered[i].Width() * ordered[i].Height()) > (ordered[j].Width() * ordered[j].Height())
-	})
-
-	var err error
-	for _, tex := range ordered {
-		x, y, err := atlas.findSpace(tex.Width(), tex.Height())
-		if err != nil {
-			// Atlas is too small for textures to pack
-			break
-		}
-
-		// Ensure that all textures are the same format
-
-		// Write data to buffer
-		atlas.insert(tex.PixelDataForFrame(0), tex.Width(), tex.Height(), x, y)
-
-		atlas.PackedRectangles = append(atlas.PackedRectangles, *shape.NewRect(
-			mgl32.Vec2{float32(x), float32(y)},
-			mgl32.Vec2{float32(x) + float32(tex.Width()), float32(y) + float32(tex.Height())}))
+	rects := make([]packrect.IRectangle, len(textures))
+	for idx,tex := range textures {
+		rects[idx] = packrect.NewRectangle(tex.Width() + (padding*2), tex.Height() + (padding*2))
 	}
 
-	return atlas.PackedRectangles, err
+	mapping,err := packrect.Pack(&root, rects)
+	if err != nil {
+		return nil,err
+	}
+
+	uvRects := make([]shape.Rect, len(mapping))
+	for idx,rect := range mapping {
+		atlas.writeTexture(textures[idx], &rect, padding)
+		uvRects[idx] = *shape.NewRect(mgl32.Vec2{
+			float32(rect.Left + padding) / float32(atlas.Width()),
+			float32(rect.Top + padding) / float32(atlas.Height()),
+			},
+			mgl32.Vec2{
+				float32(rect.Left + (rect.Width - (2*padding))) / float32(atlas.Width()),
+				float32(rect.Top + (rect.Height - (2*padding))) / float32(atlas.Height()),
+			})
+	}
+
+
+	return uvRects,nil
 }
 
 // findSpace finds free space in atlas buffer to write rectangle to
@@ -61,16 +61,86 @@ func (atlas *Atlas) findSpace(width int, height int) (x, y int, err error) {
 }
 
 // insert write raw data into atlas at calculated position
-func (atlas *Atlas) insert(data []uint8, width int, height int, x int, y int) {
-	for i := 0; i < height; i++ {
-		offset := (x * atlas.width * 4) + (y * i * 4)
+func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, padding int) {
+	data := tex.PixelDataForFrame(0)
 
-		for j := 0; j < width; j++ {
-			atlas.rawColourData[offset+(j*4)+0] = data[(i*width)+(j*4)]
-			atlas.rawColourData[offset+(j*4)+1] = data[(i*width)+(j*4)+1]
-			atlas.rawColourData[offset+(j*4)+2] = data[(i*width)+(j*4)+2]
-			atlas.rawColourData[offset+(j*4)+3] = 255
+	bytesPerPixel := 3
+	bytesPerRow := bytesPerPixel * tex.Width()
+
+	// indent into atlas top-left
+	offset := (location.Top * (bytesPerPixel * atlas.Width())) + (bytesPerPixel * location.Left)
+
+	// WRITE TOP PADDING
+	for i := 0; i < padding; i++ {
+		localOffset := 0
+		row := make([]byte, bytesPerRow + 2 * (bytesPerPixel * padding))
+		// left
+		for j := 0; j < padding; j++ {
+			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
+			localOffset += bytesPerPixel
 		}
+		// middle
+		copy(row[localOffset:localOffset+bytesPerRow], data[:bytesPerRow])
+		localOffset += bytesPerRow
+
+		//right
+		for j := 0; j < padding; j++ {
+			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
+			localOffset += bytesPerPixel
+		}
+
+		// write row
+		copy(atlas.rawColourData[offset:offset + len(row)], row[:])
+		offset += (bytesPerPixel * atlas.Width())
+	}
+
+	// WRITE MAIN TEXTURE
+	for i := 0; i < tex.Height(); i++ {
+		localOffset := 0
+		row := make([]byte, bytesPerRow + 2 * (bytesPerPixel * padding))
+		// left
+		for j := 0; j < padding; j++ {
+			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
+			localOffset += bytesPerPixel
+		}
+		// middle
+		copy(row[localOffset:localOffset+bytesPerRow], data[i*bytesPerRow:(i*bytesPerRow) + bytesPerRow])
+		localOffset += bytesPerRow
+
+		//right
+		for j := 0; j < padding; j++ {
+			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
+			localOffset += bytesPerPixel
+		}
+
+		// write row
+		copy(atlas.rawColourData[offset:offset + len(row)], row[:])
+		offset += (bytesPerPixel * atlas.Width())
+	}
+
+
+	// write bottom padding
+	for i := 0; i < padding; i++ {
+		localOffset := 0
+		row := make([]byte, bytesPerRow + 2 * (bytesPerPixel * padding))
+		// left
+		for j := 0; j < padding; j++ {
+			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
+			localOffset += bytesPerPixel
+		}
+		// middle
+		copy(row[localOffset:localOffset+bytesPerRow], data[:bytesPerRow])
+		localOffset += bytesPerRow
+
+		//right
+		for j := 0; j < padding; j++ {
+			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
+			localOffset += bytesPerPixel
+		}
+
+		// write row
+		copy(atlas.rawColourData[offset:offset + len(row)], row[:])
+		offset += (bytesPerPixel * atlas.Width())
 	}
 }
 
@@ -78,12 +148,11 @@ func (atlas *Atlas) insert(data []uint8, width int, height int, x int, y int) {
 func NewAtlas(width int, height int) *Atlas {
 	return &Atlas{
 		Colour2D: Colour2D{
-			rawColourData: make([]uint8, width*height*4),
+			rawColourData: make([]uint8, width*height*3),
 			Texture2D: Texture2D{
 				width:  width,
 				height: height,
 			},
 		},
-		PackedRectangles: make([]shape.Rect, 0),
 	}
 }

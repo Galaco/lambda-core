@@ -1,8 +1,8 @@
 package mesh
 
 import (
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/texture"
 )
 
 // Generic Mesh object

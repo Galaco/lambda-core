@@ -1,10 +1,10 @@
 package window
 
 import (
-	"github.com/galaco/Gource-Engine/client/config"
-	"github.com/galaco/Gource-Engine/client/window/input"
-	"github.com/galaco/Gource-Engine/client/window/window"
-	"github.com/galaco/Gource-Engine/core"
+	"github.com/galaco/Lambda-Core/client/config"
+	"github.com/galaco/Lambda-Core/client/window/input"
+	"github.com/galaco/Lambda-Core/client/window/window"
+	"github.com/galaco/Lambda-Core/core"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 

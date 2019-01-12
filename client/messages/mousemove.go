@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
+	"github.com/galaco/Lambda-Core/core/event"
 )
 
 const TypeMouseMove = event.MessageType("MouseMove")

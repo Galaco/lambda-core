@@ -1,8 +1,8 @@
 package message
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/event"
+	"github.com/galaco/Lambda-Core/core/texture"
 )
 
 const TypeTextureLoaded = event.MessageType("TextureLoaded")

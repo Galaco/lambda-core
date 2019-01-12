@@ -1,14 +1,14 @@
 package prop
 
 import (
-	"github.com/galaco/Gource-Engine/core/filesystem"
-	material2 "github.com/galaco/Gource-Engine/core/loader/material"
-	"github.com/galaco/Gource-Engine/core/logger"
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/mesh"
-	"github.com/galaco/Gource-Engine/core/model"
-	"github.com/galaco/Gource-Engine/core/resource"
-	studiomodellib "github.com/galaco/Gource-Engine/lib/studiomodel"
+	"github.com/galaco/Lambda-Core/core/filesystem"
+	material2 "github.com/galaco/Lambda-Core/core/loader/material"
+	"github.com/galaco/Lambda-Core/core/logger"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/mesh"
+	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/galaco/Lambda-Core/core/resource"
+	studiomodellib "github.com/galaco/Lambda-Core/lib/studiomodel"
 	"github.com/galaco/StudioModel"
 	"github.com/galaco/StudioModel/mdl"
 	"github.com/galaco/StudioModel/phy"

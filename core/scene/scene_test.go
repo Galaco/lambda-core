@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"github.com/galaco/Gource-Engine/core/mesh"
-	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Lambda-Core/core/mesh"
+	"github.com/galaco/Lambda-Core/core/model"
 	"reflect"
 	"testing"
 )

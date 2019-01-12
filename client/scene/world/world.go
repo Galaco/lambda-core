@@ -1,10 +1,10 @@
 package world
 
 import (
-	"github.com/galaco/Gource-Engine/client/scene/visibility"
-	"github.com/galaco/Gource-Engine/core/entity"
-	"github.com/galaco/Gource-Engine/core/mesh"
-	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Lambda-Core/client/scene/visibility"
+	"github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/mesh"
+	"github.com/galaco/Lambda-Core/core/model"
 	"github.com/galaco/bsp/primitives/leaf"
 	"github.com/go-gl/mathgl/mgl32"
 	"sync"
