@@ -22,7 +22,7 @@ func TestRegisterLocalDirectory(t *testing.T) {
 	dir := "foo/bar/baz"
 	RegisterLocalDirectory(dir)
 	found := false
-	for _,path := range localDirectories {
+	for _, path := range localDirectories {
 		if path == dir {
 			found = true
 			break
@@ -38,7 +38,7 @@ func TestUnregisterLocalDirectory(t *testing.T) {
 	RegisterLocalDirectory(dir)
 	UnregisterLocalDirectory(dir)
 	found := false
-	for _,path := range localDirectories {
+	for _, path := range localDirectories {
 		if path == dir {
 			found = true
 			break

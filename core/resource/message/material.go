@@ -26,13 +26,13 @@ func (message *MaterialUnloaded) Type() event.MessageType {
 	return TypeMaterialUnloaded
 }
 
-func LoadedMaterial(mat material.IMaterial) event.IMessage{
+func LoadedMaterial(mat material.IMaterial) event.IMessage {
 	return &MaterialLoaded{
 		Resource: mat,
 	}
 }
 
-func UnloadedMaterial(mat material.IMaterial) event.IMessage{
+func UnloadedMaterial(mat material.IMaterial) event.IMessage {
 	return &MaterialUnloaded{
 		Resource: mat,
 	}

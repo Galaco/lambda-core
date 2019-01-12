@@ -10,11 +10,11 @@ type Mesh struct {
 	vertices            []float32
 	normals             []float32
 	uvs                 []float32
-	tangents 			[]float32
+	tangents            []float32
 	lightmapCoordinates []float32
 
-	material  material.IMaterial
-	lightmap  texture.ITexture
+	material material.IMaterial
+	lightmap texture.ITexture
 }
 
 func (mesh *Mesh) AddVertex(vertex ...float32) {

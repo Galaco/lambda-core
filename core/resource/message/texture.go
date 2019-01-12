@@ -26,13 +26,13 @@ func (message *TextureUnloaded) Type() event.MessageType {
 	return TypeTextureUnloaded
 }
 
-func LoadedTexture(tex texture.ITexture) event.IMessage{
+func LoadedTexture(tex texture.ITexture) event.IMessage {
 	return &TextureLoaded{
 		Resource: tex,
 	}
 }
 
-func UnloadedTexture(tex texture.ITexture) event.IMessage{
+func UnloadedTexture(tex texture.ITexture) event.IMessage {
 	return &TextureUnloaded{
 		Resource: tex,
 	}

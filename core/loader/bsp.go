@@ -4,7 +4,6 @@ import (
 	"github.com/galaco/Lambda-Core/core/event"
 	"github.com/galaco/Lambda-Core/core/filesystem"
 	matloader "github.com/galaco/Lambda-Core/core/loader/material"
-	"github.com/galaco/Lambda-Core/core/logger"
 	"github.com/galaco/Lambda-Core/core/material"
 	"github.com/galaco/Lambda-Core/core/mesh"
 	"github.com/galaco/Lambda-Core/core/model"
@@ -130,11 +129,11 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 		}
 	}
 
-	lightmapTexture := texture.NewAtlas(4096, 4096)
-	_,err := lightmapTexture.PackTextures(lightMaps, 1)
-	if err != nil {
-		logger.Error(err)
-	}
+	//lightmapTexture := texture.NewAtlas(4096, 4096)
+	//_,err := lightmapTexture.PackTextures(lightMaps, 1)
+	//if err != nil {
+	//	logger.Error(err)
+	//}
 
 	// Finish the bsp object.
 	event.Manager().Dispatch(message.LoadedMap(bspObject))
@@ -149,7 +148,6 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 
 	// Get static props
 	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
-
 
 	return scene.NewScene(*bspObject, staticProps)
 }

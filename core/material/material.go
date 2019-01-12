@@ -10,7 +10,7 @@ type Material struct {
 	}
 	FilePath        string
 	BaseTextureName string
-	BumpMapName		string
+	BumpMapName     string
 	Properties      struct {
 	}
 }

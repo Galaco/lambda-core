@@ -89,7 +89,7 @@ func TestNewError(t *testing.T) {
 		255, 0, 255,
 	}
 
-	for idx,v := range expectedColourData {
+	for idx, v := range expectedColourData {
 		if tex.PixelDataForFrame(0)[idx] != v {
 			t.Error("unexpected colour data for error texture")
 		}
@@ -180,7 +180,7 @@ func TestColour2D_PixelDataForFrame(t *testing.T) {
 		255, 0, 255,
 	}
 
-	for idx,v := range expectedColourData {
+	for idx, v := range expectedColourData {
 		if tex.PixelDataForFrame(0)[idx] != v {
 			t.Error("unexpected colour data for error texture")
 		}
