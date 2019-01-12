@@ -5,8 +5,7 @@
 Lambda Core provides a semi-comprehensive set of tools to build practically any Source Engine tool from. Any module can be used 
 in isolation, but its recommended to utilise at least the FileSystem and ResourceManager modules if any loader is used.
 
-##### See [https://github.com/galaco/Lambda-Client](https://github.com/galaco/Lambda-Client) for a working BSP renderer built
-on top of this toolkit.
+##### See [https://github.com/galaco/Lambda-Client](https://github.com/galaco/Lambda-Client) for a working BSP renderer built on top of this toolkit.
 
 ### Current features
 * GameInfo.txt parser for existing games
