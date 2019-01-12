@@ -1,6 +1,6 @@
 package material
 
-import "github.com/galaco/Gource-Engine/core/texture"
+import "github.com/galaco/Lambda-Core/core/texture"
 
 type Material struct {
 	ShaderName string

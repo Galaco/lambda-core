@@ -1,7 +1,7 @@
 package material
 
 import (
-	"github.com/galaco/Gource-Engine/lib/stringtable"
+	"github.com/galaco/Lambda-Core/lib/stringtable"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/source-tools-common/texdatastringtable"

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/galaco/Gource-Engine/core/entity"
+	"github.com/galaco/Lambda-Core/core/entity"
 	"github.com/galaco/bsp/primitives/game"
 )
 

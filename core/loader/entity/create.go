@@ -1,8 +1,8 @@
 package entity
 
 import (
-	entity3 "github.com/galaco/Gource-Engine/core/entity"
-	"github.com/galaco/Gource-Engine/core/loader/entity/classmap"
+	entity3 "github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/loader/entity/classmap"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"

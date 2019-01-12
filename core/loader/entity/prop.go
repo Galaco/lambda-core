@@ -1,10 +1,10 @@
 package entity
 
 import (
-	"github.com/galaco/Gource-Engine/core/entity"
-	"github.com/galaco/Gource-Engine/core/loader/prop"
-	"github.com/galaco/Gource-Engine/core/resource"
-	entity2 "github.com/galaco/Gource-Engine/game/entity"
+	"github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/loader/prop"
+	"github.com/galaco/Lambda-Core/core/resource"
+	entity2 "github.com/galaco/Lambda-Core/game/entity"
 	"strings"
 )
 

@@ -1,6 +1,6 @@
 package entity
 
-import "github.com/galaco/Gource-Engine/core/model"
+import "github.com/galaco/Lambda-Core/core/model"
 
 // IProp Base renderable prop interface
 type IProp interface {

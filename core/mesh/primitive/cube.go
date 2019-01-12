@@ -1,7 +1,7 @@
 package primitive
 
 import (
-	"github.com/galaco/Gource-Engine/core/mesh"
+	"github.com/galaco/Lambda-Core/core/mesh"
 )
 
 var cubeVerts = []float32{

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/galaco/Gource-Engine/core/mesh"
+	"github.com/galaco/Lambda-Core/core/mesh"
 )
 
 // Model A collection of renderable primitives/submeshes

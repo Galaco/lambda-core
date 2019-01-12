@@ -1,16 +1,17 @@
 package loader
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/galaco/Gource-Engine/core/filesystem"
-	matloader "github.com/galaco/Gource-Engine/core/loader/material"
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/mesh"
-	"github.com/galaco/Gource-Engine/core/model"
-	"github.com/galaco/Gource-Engine/core/resource"
-	"github.com/galaco/Gource-Engine/core/resource/message"
-	"github.com/galaco/Gource-Engine/core/scene"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/event"
+	"github.com/galaco/Lambda-Core/core/filesystem"
+	matloader "github.com/galaco/Lambda-Core/core/loader/material"
+	"github.com/galaco/Lambda-Core/core/logger"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/mesh"
+	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/galaco/Lambda-Core/core/resource"
+	"github.com/galaco/Lambda-Core/core/resource/message"
+	"github.com/galaco/Lambda-Core/core/scene"
+	"github.com/galaco/Lambda-Core/core/texture"
 	"github.com/galaco/bsp"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/common"
@@ -70,6 +71,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 	bspObject := model.NewBsp(bspMesh)
 	bspFaces := make([]mesh.Face, len(bspStructure.faces))
 	dispFaces := make([]int, 0)
+	lightMaps := make([]texture.ITexture, len(bspFaces))
 
 	for idx, f := range bspStructure.faces {
 		if f.DispInfo > -1 {
@@ -84,10 +86,16 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 		if len(bspStructure.lightmap) < 1 {
 			continue
 		}
-		bspFaces[idx].AddLightmap(texture.LightmapFromColorRGBExp32(
+
+		lightMaps[idx] = texture.LightmapFromColorRGBExp32(
 			int(f.LightmapTextureSizeInLuxels[0]+1),
 			int(f.LightmapTextureSizeInLuxels[1]+1),
-			lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
+			lightmapSamplesFromFace(&f, &bspStructure.lightmap))
+
+		//bspFaces[idx].AddLightmap(texture.LightmapFromColorRGBExp32(
+		//	int(f.LightmapTextureSizeInLuxels[0]+1),
+		//	int(f.LightmapTextureSizeInLuxels[1]+1),
+		//	lightmapSamplesFromFace(&f, &bspStructure.lightmap)))
 		//bspFaces[idx].Lightmap().Finish()
 	}
 
@@ -120,6 +128,12 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 		if strings.HasPrefix(faceVmt, "TOOLS/") {
 			bspFaces[idx].AddMaterial(nil)
 		}
+	}
+
+	lightmapTexture := texture.NewAtlas(4096, 4096)
+	_,err := lightmapTexture.PackTextures(lightMaps, 1)
+	if err != nil {
+		logger.Error(err)
 	}
 
 	// Finish the bsp object.

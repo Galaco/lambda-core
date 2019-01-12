@@ -1,9 +1,9 @@
 package mesh
 
 import (
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/mesh/util"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/mesh/util"
+	"github.com/galaco/Lambda-Core/core/texture"
 )
 
 type Mesh struct {

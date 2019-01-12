@@ -2,12 +2,12 @@ package material
 
 import (
 	"errors"
-	"github.com/galaco/Gource-Engine/core/filesystem"
-	keyvalues2 "github.com/galaco/Gource-Engine/core/loader/keyvalues"
-	"github.com/galaco/Gource-Engine/core/logger"
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/resource"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/filesystem"
+	keyvalues2 "github.com/galaco/Lambda-Core/core/loader/keyvalues"
+	"github.com/galaco/Lambda-Core/core/logger"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/resource"
+	"github.com/galaco/Lambda-Core/core/texture"
 	"github.com/galaco/KeyValues"
 	"strings"
 )

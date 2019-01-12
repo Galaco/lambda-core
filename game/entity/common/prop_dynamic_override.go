@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/galaco/Gource-Engine/core/entity"
-	entity2 "github.com/galaco/Gource-Engine/game/entity"
+	"github.com/galaco/Lambda-Core/core/entity"
+	entity2 "github.com/galaco/Lambda-Core/game/entity"
 )
 
 type PropDynamicOverride struct {

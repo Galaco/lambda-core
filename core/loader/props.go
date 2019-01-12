@@ -1,11 +1,11 @@
 package loader
 
 import (
-	"github.com/galaco/Gource-Engine/core/loader/prop"
-	"github.com/galaco/Gource-Engine/core/logger"
-	"github.com/galaco/Gource-Engine/core/model"
-	"github.com/galaco/Gource-Engine/core/resource"
-	"github.com/galaco/Gource-Engine/lib/util"
+	"github.com/galaco/Lambda-Core/core/loader/prop"
+	"github.com/galaco/Lambda-Core/core/logger"
+	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/galaco/Lambda-Core/core/resource"
+	"github.com/galaco/Lambda-Core/lib/util"
 	"github.com/galaco/bsp/primitives/game"
 	"strings"
 )

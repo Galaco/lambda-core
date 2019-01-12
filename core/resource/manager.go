@@ -1,12 +1,12 @@
 package resource
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/galaco/Gource-Engine/core/filesystem"
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/model"
-	"github.com/galaco/Gource-Engine/core/resource/message"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/event"
+	"github.com/galaco/Lambda-Core/core/filesystem"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/galaco/Lambda-Core/core/resource/message"
+	"github.com/galaco/Lambda-Core/core/texture"
 	"strings"
 	"sync"
 )

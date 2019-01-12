@@ -1,11 +1,11 @@
 package loader
 
 import (
-	material2 "github.com/galaco/Gource-Engine/core/loader/material"
-	"github.com/galaco/Gource-Engine/core/material"
-	"github.com/galaco/Gource-Engine/core/mesh/primitive"
-	"github.com/galaco/Gource-Engine/core/model"
-	"github.com/galaco/Gource-Engine/core/texture"
+	material2 "github.com/galaco/Lambda-Core/core/loader/material"
+	"github.com/galaco/Lambda-Core/core/material"
+	"github.com/galaco/Lambda-Core/core/mesh/primitive"
+	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/galaco/Lambda-Core/core/texture"
 )
 
 const skyboxRootDir = "skybox/"

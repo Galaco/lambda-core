@@ -1,10 +1,10 @@
 package material
 
 import (
-	"github.com/galaco/Gource-Engine/core/filesystem"
-	"github.com/galaco/Gource-Engine/core/logger"
-	"github.com/galaco/Gource-Engine/core/resource"
-	"github.com/galaco/Gource-Engine/core/texture"
+	"github.com/galaco/Lambda-Core/core/filesystem"
+	"github.com/galaco/Lambda-Core/core/logger"
+	"github.com/galaco/Lambda-Core/core/resource"
+	"github.com/galaco/Lambda-Core/core/texture"
 	"github.com/galaco/vtf"
 	"strings"
 )

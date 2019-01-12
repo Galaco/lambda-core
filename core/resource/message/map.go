@@ -1,8 +1,8 @@
 package message
 
 import (
-	"github.com/galaco/Gource-Engine/core/event"
-	"github.com/galaco/Gource-Engine/core/model"
+	"github.com/galaco/Lambda-Core/core/event"
+	"github.com/galaco/Lambda-Core/core/model"
 )
 
 const TypeMapLoaded = event.MessageType("MapLoaded")

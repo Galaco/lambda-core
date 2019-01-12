@@ -1,7 +1,7 @@
 package keyvalues
 
 import (
-	"github.com/galaco/Gource-Engine/core/filesystem"
+	"github.com/galaco/Lambda-Core/core/filesystem"
 	"github.com/galaco/KeyValues"
 )
 
