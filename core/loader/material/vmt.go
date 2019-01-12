@@ -2,13 +2,13 @@ package material
 
 import (
 	"errors"
+	"github.com/galaco/KeyValues"
 	"github.com/galaco/Lambda-Core/core/filesystem"
 	keyvalues2 "github.com/galaco/Lambda-Core/core/loader/keyvalues"
 	"github.com/galaco/Lambda-Core/core/logger"
 	"github.com/galaco/Lambda-Core/core/material"
 	"github.com/galaco/Lambda-Core/core/resource"
 	"github.com/galaco/Lambda-Core/core/texture"
-	"github.com/galaco/KeyValues"
 	"strings"
 )
 
@@ -125,9 +125,9 @@ func readVmt(path string) (material.IMaterial, error) {
 	}
 
 	// @NOTE this will be replaced with a proper kv->material builder
-	mat,err := materialFromKeyValues(root, path)
+	mat, err := materialFromKeyValues(root, path)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	ResourceManager.AddMaterial(mat)
 	return mat, nil
@@ -154,7 +154,7 @@ func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string) (*k
 	return &result, nil
 }
 
-func materialFromKeyValues(kv *keyvalues.KeyValue, path string) (*material.Material,error) {
+func materialFromKeyValues(kv *keyvalues.KeyValue, path string) (*material.Material, error) {
 	shaderName := kv.Key()
 
 	// $basetexture
@@ -162,7 +162,6 @@ func materialFromKeyValues(kv *keyvalues.KeyValue, path string) (*material.Mater
 
 	// $bumpmap
 	bumpMapTexture := findKeyValueAsString(kv, "$bumpmap")
-
 
 	return &material.Material{
 		FilePath:        path,

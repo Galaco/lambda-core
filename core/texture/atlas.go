@@ -24,34 +24,33 @@ func (atlas *Atlas) Format() uint32 {
 // PackTextures
 func (atlas *Atlas) PackTextures(textures []ITexture, padding int) ([]shape.Rect, error) {
 	root := packrect.SubRect{
-		Width: atlas.Width(),
+		Width:  atlas.Width(),
 		Height: atlas.Height(),
 	}
 	rects := make([]packrect.IRectangle, len(textures))
-	for idx,tex := range textures {
-		rects[idx] = packrect.NewRectangle(tex.Width() + (padding*2), tex.Height() + (padding*2))
+	for idx, tex := range textures {
+		rects[idx] = packrect.NewRectangle(tex.Width()+(padding*2), tex.Height()+(padding*2))
 	}
 
-	mapping,err := packrect.Pack(&root, rects)
+	mapping, err := packrect.Pack(&root, rects)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	uvRects := make([]shape.Rect, len(mapping))
-	for idx,rect := range mapping {
+	for idx, rect := range mapping {
 		atlas.writeTexture(textures[idx], &rect, padding)
 		uvRects[idx] = *shape.NewRect(mgl32.Vec2{
-			float32(rect.Left + padding) / float32(atlas.Width()),
-			float32(rect.Top + padding) / float32(atlas.Height()),
-			},
+			float32(rect.Left+padding) / float32(atlas.Width()),
+			float32(rect.Top+padding) / float32(atlas.Height()),
+		},
 			mgl32.Vec2{
-				float32(rect.Left + (rect.Width - (2*padding))) / float32(atlas.Width()),
-				float32(rect.Top + (rect.Height - (2*padding))) / float32(atlas.Height()),
+				float32(rect.Left+(rect.Width-(2*padding))) / float32(atlas.Width()),
+				float32(rect.Top+(rect.Height-(2*padding))) / float32(atlas.Height()),
 			})
 	}
 
-
-	return uvRects,nil
+	return uvRects, nil
 }
 
 // findSpace finds free space in atlas buffer to write rectangle to
@@ -73,7 +72,7 @@ func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, paddi
 	// WRITE TOP PADDING
 	for i := 0; i < padding; i++ {
 		localOffset := 0
-		row := make([]byte, bytesPerRow + 2 * (bytesPerPixel * padding))
+		row := make([]byte, bytesPerRow+2*(bytesPerPixel*padding))
 		// left
 		for j := 0; j < padding; j++ {
 			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
@@ -90,21 +89,21 @@ func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, paddi
 		}
 
 		// write row
-		copy(atlas.rawColourData[offset:offset + len(row)], row[:])
+		copy(atlas.rawColourData[offset:offset+len(row)], row[:])
 		offset += (bytesPerPixel * atlas.Width())
 	}
 
 	// WRITE MAIN TEXTURE
 	for i := 0; i < tex.Height(); i++ {
 		localOffset := 0
-		row := make([]byte, bytesPerRow + 2 * (bytesPerPixel * padding))
+		row := make([]byte, bytesPerRow+2*(bytesPerPixel*padding))
 		// left
 		for j := 0; j < padding; j++ {
 			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
 			localOffset += bytesPerPixel
 		}
 		// middle
-		copy(row[localOffset:localOffset+bytesPerRow], data[i*bytesPerRow:(i*bytesPerRow) + bytesPerRow])
+		copy(row[localOffset:localOffset+bytesPerRow], data[i*bytesPerRow:(i*bytesPerRow)+bytesPerRow])
 		localOffset += bytesPerRow
 
 		//right
@@ -114,15 +113,14 @@ func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, paddi
 		}
 
 		// write row
-		copy(atlas.rawColourData[offset:offset + len(row)], row[:])
+		copy(atlas.rawColourData[offset:offset+len(row)], row[:])
 		offset += (bytesPerPixel * atlas.Width())
 	}
-
 
 	// write bottom padding
 	for i := 0; i < padding; i++ {
 		localOffset := 0
-		row := make([]byte, bytesPerRow + 2 * (bytesPerPixel * padding))
+		row := make([]byte, bytesPerRow+2*(bytesPerPixel*padding))
 		// left
 		for j := 0; j < padding; j++ {
 			copy(row[localOffset:localOffset+bytesPerPixel], data[(j*bytesPerPixel):(j*bytesPerPixel)+bytesPerPixel])
@@ -139,7 +137,7 @@ func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, paddi
 		}
 
 		// write row
-		copy(atlas.rawColourData[offset:offset + len(row)], row[:])
+		copy(atlas.rawColourData[offset:offset+len(row)], row[:])
 		offset += (bytesPerPixel * atlas.Width())
 	}
 }

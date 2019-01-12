@@ -139,15 +139,15 @@ func (m *manager) HasModel(filePath string) bool {
 }
 
 func (m *manager) Empty() {
-	for idx,val := range m.materials {
+	for idx, val := range m.materials {
 		event.Manager().Dispatch(message.UnloadedMaterial(val))
 		delete(m.materials, idx)
 	}
-	for idx,val := range m.textures {
+	for idx, val := range m.textures {
 		event.Manager().Dispatch(message.UnloadedTexture(val))
 		delete(m.textures, idx)
 	}
-	for idx,val := range m.models {
+	for idx, val := range m.models {
 		event.Manager().Dispatch(message.UnloadedModel(val))
 		delete(m.models, idx)
 	}

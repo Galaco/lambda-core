@@ -1,8 +1,8 @@
 package keyvalues
 
 import (
-	"github.com/galaco/Lambda-Core/core/filesystem"
 	"github.com/galaco/KeyValues"
+	"github.com/galaco/Lambda-Core/core/filesystem"
 )
 
 // ReadKeyValues loads a keyvalues file.

@@ -26,13 +26,13 @@ func (message *MapUnloaded) Type() event.MessageType {
 	return TypeMapUnloaded
 }
 
-func LoadedMap(world *model.Bsp) event.IMessage{
+func LoadedMap(world *model.Bsp) event.IMessage {
 	return &MapLoaded{
 		Resource: world,
 	}
 }
 
-func UnloadedMap(world *model.Bsp) event.IMessage{
+func UnloadedMap(world *model.Bsp) event.IMessage {
 	return &MapUnloaded{
 		Resource: world,
 	}

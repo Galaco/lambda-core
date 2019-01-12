@@ -1,7 +1,5 @@
 module github.com/galaco/Lambda-Core
 
-replace github.com/galaco/packrect v0.0.0-20190106134957-d6cd1e9d06f9 => E:/Users/Josh/go/src/github.com/galaco/packrect
-
 require (
 	github.com/galaco/KeyValues v1.2.3
 	github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af
