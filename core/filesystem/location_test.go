@@ -19,10 +19,11 @@ func TestUnregisterVpk(t *testing.T) {
 }
 
 func TestRegisterLocalDirectory(t *testing.T) {
+	fs := NewFileSystem()
 	dir := "foo/bar/baz"
-	RegisterLocalDirectory(dir)
+	fs.RegisterLocalDirectory(dir)
 	found := false
-	for _, path := range localDirectories {
+	for _, path := range fs.localDirectories {
 		if path == dir {
 			found = true
 			break
@@ -34,11 +35,12 @@ func TestRegisterLocalDirectory(t *testing.T) {
 }
 
 func TestUnregisterLocalDirectory(t *testing.T) {
+	fs := NewFileSystem()
 	dir := "foo/bar/baz"
-	RegisterLocalDirectory(dir)
-	UnregisterLocalDirectory(dir)
+	fs.RegisterLocalDirectory(dir)
+	fs.UnregisterLocalDirectory(dir)
 	found := false
-	for _, path := range localDirectories {
+	for _, path := range fs.localDirectories {
 		if path == dir {
 			found = true
 			break

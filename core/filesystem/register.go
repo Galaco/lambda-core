@@ -9,9 +9,11 @@ import (
 	"strings"
 )
 
-// Read game resource data paths from gameinfo.txt
-// All games should ship with a gameinfo.txt, but it isn't actually mandatory
-func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
+// CreateFilesystemFromGameInfoDefinitions Reads game resource data paths
+// from gameinfo.txt
+// All games should ship with a gameinfo.txt, but it isn't actually mandatory.
+func CreateFilesystemFromGameInfoDefinitions(basePath string, gameInfo *keyvalues.KeyValue) *FileSystem {
+	fs := NewFileSystem()
 	gameInfoNode, _ := gameInfo.Find("GameInfo")
 	fsNode, _ := gameInfoNode.Find("FileSystem")
 
@@ -49,16 +51,17 @@ func RegisterGameResourcePaths(basePath string, gameInfo *keyvalues.KeyValue) {
 				logger.Error(err)
 				continue
 			}
-			RegisterVpk(vpkHandle)
+			fs.RegisterVpk(vpkHandle)
 			logger.Notice("Registered vpk: " + path)
 		} else {
 			// wildcard suffixes not useful
 			if strings.HasSuffix(path, "/*") {
 				path = strings.Replace(path, "/*", "", -1)
 			}
-			RegisterLocalDirectory(path)
+			fs.RegisterLocalDirectory(path)
 			logger.Notice("Registered path: " + path)
 		}
-
 	}
+
+	return fs
 }
