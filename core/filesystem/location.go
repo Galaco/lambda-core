@@ -11,70 +11,66 @@ import (
 	"strings"
 )
 
-var gameVPKs []*vpk.VPK
-var localDirectories []string
-var pakFile *lumps.Pakfile
-
 // RegisterVpk registers a vpk package as a valid
 // asset directory
-func RegisterVpk(vpkFile *vpk.VPK) {
-	gameVPKs = append(gameVPKs, vpkFile)
+func (fs *FileSystem) RegisterVpk(vpkFile *vpk.VPK) {
+	fs.gameVPKs = append(fs.gameVPKs, *vpkFile)
 }
 
-func UnregisterVpk(vpkFile *vpk.VPK) {
-	for idx, pkg := range gameVPKs {
-		if pkg == vpkFile {
-			gameVPKs = append(gameVPKs[:idx], gameVPKs[idx+1:]...)
+func (fs *FileSystem) UnregisterVpk(vpkFile *vpk.VPK) {
+	for idx := range fs.gameVPKs {
+		if &fs.gameVPKs[idx] == vpkFile {
+			fs.gameVPKs = append(fs.gameVPKs[:idx], fs.gameVPKs[idx+1:]...)
 		}
 	}
 }
 
 // RegisterLocalDirectory register a filesystem path as a valid
 // asset directory
-func RegisterLocalDirectory(directory string) {
-	localDirectories = append(localDirectories, directory)
+func (fs *FileSystem) RegisterLocalDirectory(directory string) {
+	fs.localDirectories = append(fs.localDirectories, directory)
 }
 
-func UnregisterLocalDirectory(directory string) {
-	for idx, dir := range localDirectories {
+func (fs *FileSystem) UnregisterLocalDirectory(directory string) {
+	for idx, dir := range fs.localDirectories {
 		if dir == directory {
-			if len(localDirectories) == 1 {
-				localDirectories = make([]string, 0)
+			if len(fs.localDirectories) == 1 {
+				fs.localDirectories = make([]string, 0)
 				return
 			}
-			localDirectories = append(localDirectories[:idx], localDirectories[idx+1:]...)
+			fs.localDirectories = append(fs.localDirectories[:idx], fs.localDirectories[idx+1:]...)
 		}
 	}
 }
 
 // RegisterPakfile Set a pakfile to be used as an asset directory.
 // This would normally be called during each map load
-func RegisterPakfile(pakfile *lumps.Pakfile) {
-	pakFile = pakfile
+func (fs *FileSystem) RegisterPakFile(pakfile *lumps.Pakfile) {
+	fs.pakFile = pakfile
 }
 
 // UnregisterPakfile removes the current pakfile from
 // available search locations
-func UnregisterPakfile() {
-	pakFile = nil
+func (fs *FileSystem) UnregisterPakFile() {
+	fs.pakFile = nil
 }
 
 // GetFile attempts to get stream for filename.
 // Search order is Pak->FileSystem->VPK
-func GetFile(filename string) (io.Reader, error) {
+func (fs *FileSystem) GetFile(filename string) (io.Reader, error) {
 	// sanitise file
 	searchPath := NormalisePath(strings.ToLower(filename))
 
 	// try to read from pakfile first
-	if pakFile != nil {
-		f, err := pakFile.GetFile(searchPath)
+	if fs.pakFile != nil {
+		f, err := fs.pakFile.GetFile(searchPath)
 		if err == nil && f != nil && len(f) != 0 {
 			return bytes.NewReader(f), nil
 		}
 	}
 
 	// Fallback to local filesystem
-	for _, dir := range localDirectories {
+	for _, dir := range fs.localDirectories {
 		if _, err := os.Stat(dir + "\\" + searchPath); os.IsNotExist(err) {
 			continue
 		}
@@ -86,8 +82,8 @@ func GetFile(filename string) (io.Reader, error) {
 	}
 
 	// Fall back to game vpk
-	for _, fs := range gameVPKs {
-		entry := fs.Entry(searchPath)
+	for _, vfs := range fs.gameVPKs {
+		entry := vfs.Entry(searchPath)
 		if entry != nil {
 			return entry.Open()
 		}
