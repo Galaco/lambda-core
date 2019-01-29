@@ -37,6 +37,11 @@ func (tex *Texture2D) PixelDataForFrame(frame int) []byte {
 	return tex.vtf.GetHighestResolutionImageForFrame(frame)
 }
 
+// Thumbnail returns a small thumbnail image of a material
+func (tex *Texture2D) Thumbnail() []byte {
+	return tex.vtf.GetLowResImageData()
+}
+
 // NewMaterial returns a new material from Vtf
 func NewTexture2D(filePath string, vtf *vtf.Vtf, width int, height int) *Texture2D {
 	return &Texture2D{
