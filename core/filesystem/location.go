@@ -11,16 +11,22 @@ import (
 	"strings"
 )
 
-// RegisterVpk registers a vpk package as a valid
-// asset directory
-func (fs *FileSystem) RegisterVpk(vpkFile *vpk.VPK) {
-	fs.gameVPKs = append(fs.gameVPKs, *vpkFile)
+// PakFile returns loaded pakfile
+// There can only be 1 registered pakfile at once.
+func (fs *FileSystem) PakFile() *lumps.Pakfile {
+	return fs.pakFile
 }
 
-func (fs *FileSystem) UnregisterVpk(vpkFile *vpk.VPK) {
-	for idx := range fs.gameVPKs {
-		if &fs.gameVPKs[idx] == vpkFile {
-			fs.gameVPKs = append(fs.gameVPKs[:idx], fs.gameVPKs[idx+1:]...)
+// RegisterVpk registers a vpk package as a valid
+// asset directory
+func (fs *FileSystem) RegisterVpk(path string, vpkFile *vpk.VPK) {
+	fs.gameVPKs[Path(path)] = *vpkFile
+}
+
+func (fs *FileSystem) UnregisterVpk(path string) {
+	for key := range fs.gameVPKs {
+		if key == Path(path) {
+			delete(fs.gameVPKs, key)
 		}
 	}
 }
@@ -53,6 +59,20 @@ func (fs *FileSystem) RegisterPakFile(pakfile *lumps.Pakfile) {
 // available search locations
 func (fs *FileSystem) UnregisterPakFile() {
 	fs.pakFile = nil
+}
+
+// EnumerateResourcePaths returns all registered resource paths.
+// Pakfile is excluded.
+func (fs *FileSystem) EnumerateResourcePaths() []string {
+	list := make([]string, 0)
+
+	for idx := range  fs.gameVPKs {
+		list = append(list, string(idx))
+	}
+
+	list = append(list, fs.localDirectories...)
+
+	return list
 }
 
 // GetFile attempts to get stream for filename.

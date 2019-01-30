@@ -5,15 +5,17 @@ import (
 	"github.com/galaco/vpk2"
 )
 
+type Path string
+
 type FileSystem struct {
-	gameVPKs         []vpk.VPK
+	gameVPKs         map[Path]vpk.VPK
 	localDirectories []string
 	pakFile          *lumps.Pakfile
 }
 
 func NewFileSystem() *FileSystem {
 	return &FileSystem{
-		gameVPKs:         make([]vpk.VPK, 0),
+		gameVPKs:         map[Path]vpk.VPK{},
 		localDirectories: make([]string, 0),
 		pakFile:          nil,
 	}

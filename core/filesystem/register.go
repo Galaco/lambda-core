@@ -51,7 +51,7 @@ func CreateFilesystemFromGameInfoDefinitions(basePath string, gameInfo *keyvalue
 				logger.Error(err)
 				continue
 			}
-			fs.RegisterVpk(vpkHandle)
+			fs.RegisterVpk(path, vpkHandle)
 			logger.Notice("Registered vpk: " + path)
 		} else {
 			// wildcard suffixes not useful
