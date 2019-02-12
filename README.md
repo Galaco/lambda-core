@@ -1,5 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/Galaco/Lambda-Core?status.svg)](https://godoc.org/github.com/Galaco/Lambda-Core)
 [![Go report card](https://goreportcard.com/badge/github.com/galaco/Lambda-Core)](https://goreportcard.com/badge/github.com/galaco/Lambda-Core)
+[![Build Status](https://travis-ci.com/Galaco/lambda-core.svg?branch=master)](https://travis-ci.com/Galaco/lambda-core)
 
 # Lambda Core
 Lambda Core provides a semi-comprehensive set of tools to build practically any Source Engine tool from. Any module can be used 
