@@ -18,8 +18,8 @@ import (
 // 2. Game directory
 // 3. Game VPK
 // 4. Other game shared VPK
-func LoadMaterialList(materialList []string) {
-	loadMaterials(materialList...)
+func LoadMaterialList(fs *filesystem.FileSystem, materialList []string) {
+	loadMaterials(fs, materialList...)
 }
 
 // LoadErrorMaterial ensures that the error material has been loaded
@@ -41,7 +41,7 @@ func LoadErrorMaterial() {
 }
 
 // loadMaterials "private" function that actually does the loading
-func loadMaterials(materialList ...string) (missingList []string) {
+func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingList []string) {
 	ResourceManager := resource.Manager()
 
 	for _, materialPath := range materialList {
@@ -54,7 +54,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 			continue
 		}
 
-		mat, err := readVmt(filesystem.BasePathMaterial + materialPath)
+		mat, err := readVmt(filesystem.BasePathMaterial + materialPath, fs)
 		if err != nil {
 			logger.Warn("Failed to load material: %s. Reason: %s", filesystem.BasePathMaterial+materialPath, err)
 			missingList = append(missingList, materialPath)
@@ -74,7 +74,7 @@ func loadMaterials(materialList ...string) (missingList []string) {
 			vtfTexturePath = vtfTexturePath + filesystem.ExtensionVtf
 		}
 
-		vmt.Textures.Albedo = LoadSingleTexture(vtfTexturePath)
+		vmt.Textures.Albedo = LoadSingleTexture(vtfTexturePath, fs)
 		if vmt.Textures.Albedo == nil {
 			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
@@ -82,19 +82,19 @@ func loadMaterials(materialList ...string) (missingList []string) {
 		}
 
 		if vmt.BumpMapName != "" {
-			vmt.Textures.Normal = LoadSingleTexture(vmt.BumpMapName)
+			vmt.Textures.Normal = LoadSingleTexture(vmt.BumpMapName, fs)
 		}
 	}
 	return missingList
 }
 
 // LoadSingleMaterial loads a single material with known file path
-func LoadSingleMaterial(filePath string) material.IMaterial {
+func LoadSingleMaterial(filePath string, fs *filesystem.FileSystem) material.IMaterial {
 	if resource.Manager().HasMaterial(filesystem.BasePathMaterial + filePath) {
 		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 	}
 
-	result := loadMaterials(filePath)
+	result := loadMaterials(fs, filePath)
 	if len(result) == 0 {
 		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 
@@ -102,10 +102,10 @@ func LoadSingleMaterial(filePath string) material.IMaterial {
 	return resource.Manager().GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
 }
 
-func readVmt(path string) (material.IMaterial, error) {
+func readVmt(path string, fs *filesystem.FileSystem) (material.IMaterial, error) {
 	ResourceManager := resource.Manager()
 
-	kvs, err := keyvalues2.ReadKeyValues(path)
+	kvs, err := keyvalues2.ReadKeyValues(path, fs)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func readVmt(path string) (material.IMaterial, error) {
 	include, err := root.Find("include")
 	if include != nil && err == nil {
 		includePath, _ := include.AsString()
-		root, err = mergeIncludedVmtRecursive(root, includePath)
+		root, err = mergeIncludedVmtRecursive(root, includePath, fs)
 		if err != nil {
 			return nil, err
 		}
@@ -133,8 +133,8 @@ func readVmt(path string) (material.IMaterial, error) {
 	return mat, nil
 }
 
-func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string) (*keyvalues.KeyValue, error) {
-	parent, err := keyvalues2.ReadKeyValues(includePath)
+func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string, fs *filesystem.FileSystem) (*keyvalues.KeyValue, error) {
+	parent, err := keyvalues2.ReadKeyValues(includePath, fs)
 	if err != nil {
 		return base, errors.New("failed to read included vmt")
 	}
@@ -149,7 +149,7 @@ func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string) (*k
 			err = result.RemoveChild("include")
 			return &result, err
 		}
-		return mergeIncludedVmtRecursive(&result, newIncludePath)
+		return mergeIncludedVmtRecursive(&result, newIncludePath, fs)
 	}
 	return &result, nil
 }

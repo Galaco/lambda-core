@@ -18,7 +18,7 @@ func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 func AssignStudioModelToEntity(entity entity.IEntity) {
 	modelName := entity.KeyValues().ValueForKey("model")
 	if !resource.Manager().HasModel(modelName) {
-		m, _ := prop.LoadProp(modelName)
+		m, _ := prop.LoadProp(modelName, nil)
 		entity.(entity2.IProp).SetModel(m)
 	} else {
 		entity.(entity2.IProp).SetModel(resource.Manager().GetModel(modelName))

@@ -1,6 +1,7 @@
 package loader
 
 import (
+	"github.com/galaco/Lambda-Core/core/filesystem"
 	"github.com/galaco/Lambda-Core/core/loader/prop"
 	"github.com/galaco/Lambda-Core/core/logger"
 	"github.com/galaco/Lambda-Core/core/model"
@@ -12,9 +13,9 @@ import (
 
 // LoadStaticProps GetFile all staticprops referenced in a
 // bsp's game lump
-func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
+func LoadStaticProps(propLump *game.StaticPropLump, fs *filesystem.FileSystem) []model.StaticProp {
 	ResourceManager := resource.Manager()
-	prop.LoadProp(ResourceManager.ErrorModelName())
+	prop.LoadProp(ResourceManager.ErrorModelName(), fs)
 
 	propPaths := make([]string, 0)
 	for _, propEntry := range propLump.PropLumps {
@@ -29,7 +30,7 @@ func LoadStaticProps(propLump *game.StaticPropLump) []model.StaticProp {
 		if !strings.HasSuffix(path, ".mdl") {
 			path += ".mdl"
 		}
-		_, err := prop.LoadProp(path)
+		_, err := prop.LoadProp(path, fs)
 		if err != nil {
 			continue
 		}

@@ -22,14 +22,14 @@ import (
 // some corruption.
 
 // LoadProp loads a single prop/model of known filepath
-func LoadProp(path string) (*model.Model, error) {
+func LoadProp(path string, fs *filesystem.FileSystem) (*model.Model, error) {
 	ResourceManager := resource.Manager()
 	if ResourceManager.HasModel(path) {
 		return ResourceManager.GetModel(path), nil
 	}
-	prop, err := loadProp(strings.Split(path, ".mdl")[0])
+	prop, err := loadProp(strings.Split(path, ".mdl")[0], fs)
 	if prop != nil {
-		m := modelFromStudioModel(path, prop)
+		m := modelFromStudioModel(path, prop, fs)
 		if m != nil {
 			ResourceManager.AddModel(m)
 		} else {
@@ -42,11 +42,11 @@ func LoadProp(path string) (*model.Model, error) {
 	return ResourceManager.GetModel(path), err
 }
 
-func loadProp(filePath string) (*studiomodel.StudioModel, error) {
+func loadProp(filePath string, fs *filesystem.FileSystem) (*studiomodel.StudioModel, error) {
 	prop := studiomodel.NewStudioModel(filePath)
 
 	// MDL
-	f, err := filesystem.GetFile(filePath + ".mdl")
+	f, err := fs.GetFile(filePath + ".mdl")
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddMdl(mdlFile)
 
 	// VVD
-	f, err = filesystem.GetFile(filePath + ".vvd")
+	f, err = fs.GetFile(filePath + ".vvd")
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddVvd(vvdFile)
 
 	// VTX
-	f, err = filesystem.GetFile(filePath + ".dx90.vtx")
+	f, err = fs.GetFile(filePath + ".dx90.vtx")
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	prop.AddVtx(vtxFile)
 
 	// PHY
-	f, err = filesystem.GetFile(filePath + ".phy")
+	f, err = fs.GetFile(filePath + ".phy")
 	if err != nil {
 		return prop, err
 	}
@@ -94,14 +94,14 @@ func loadProp(filePath string) (*studiomodel.StudioModel, error) {
 	return prop, nil
 }
 
-func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel) *model.Model {
+func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs *filesystem.FileSystem) *model.Model {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
 		logger.Error(err)
 		return nil
 	}
 	outModel := model.NewModel(filename)
-	mats := materialsForStudioModel(studioModel.Mdl)
+	mats := materialsForStudioModel(studioModel.Mdl, fs)
 	for i := 0; i < len(verts); i++ { //verts is a slice of slices, (ie vertex data per mesh)
 		smMesh := mesh.NewMesh()
 		smMesh.AddVertex(verts[i]...)
@@ -118,12 +118,12 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel)
 	return outModel
 }
 
-func materialsForStudioModel(mdlData *mdl.Mdl) []material.IMaterial {
+func materialsForStudioModel(mdlData *mdl.Mdl, fs *filesystem.FileSystem) []material.IMaterial {
 	materials := make([]material.IMaterial, 0)
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
 			path := strings.Replace(dir, "\\", "/", -1) + name + filesystem.ExtensionVmt
-			materials = append(materials, material2.LoadSingleMaterial(path))
+			materials = append(materials, material2.LoadSingleMaterial(path, fs))
 		}
 	}
 	return materials

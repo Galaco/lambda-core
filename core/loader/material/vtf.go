@@ -10,7 +10,7 @@ import (
 )
 
 // LoadSingleTexture
-func LoadSingleTexture(filePath string) texture.ITexture {
+func LoadSingleTexture(filePath string, fs *filesystem.FileSystem) texture.ITexture {
 	filePath = filesystem.NormalisePath(filePath)
 	if !strings.HasSuffix(filePath, filesystem.ExtensionVtf) {
 		filePath = filePath + filesystem.ExtensionVtf
@@ -21,7 +21,7 @@ func LoadSingleTexture(filePath string) texture.ITexture {
 	if filePath == "" {
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	mat, err := readVtf(filesystem.BasePathMaterial + filePath)
+	mat, err := readVtf(filesystem.BasePathMaterial + filePath, fs)
 	if err != nil {
 		logger.Warn("Failed to load texture: %s. Reason: %s", filesystem.BasePathMaterial+filePath, err)
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
@@ -29,9 +29,9 @@ func LoadSingleTexture(filePath string) texture.ITexture {
 	return mat
 }
 
-func readVtf(path string) (texture.ITexture, error) {
+func readVtf(path string, fs *filesystem.FileSystem) (texture.ITexture, error) {
 	ResourceManager := resource.Manager()
-	stream, err := filesystem.GetFile(path)
+	stream, err := fs.GetFile(path)
 	if err != nil {
 		return nil, err
 	}

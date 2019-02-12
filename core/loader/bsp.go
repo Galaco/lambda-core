@@ -44,7 +44,7 @@ type bspstructs struct {
 // BSP Geometry
 // BSP Materials
 // StaticProps (materials loaded as required)
-func LoadMap(file *bsp.Bsp) scene.IScene {
+func LoadMap(fs *filesystem.FileSystem, file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
@@ -61,6 +61,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 
 	//MATERIALS
 	stringTable := matloader.LoadMaterials(
+		fs,
 		file.GetLump(bsp.LUMP_TEXDATA_STRING_DATA).(*lumps.TexdataStringData),
 		file.GetLump(bsp.LUMP_TEXDATA_STRING_TABLE).(*lumps.TexDataStringTable),
 		&bspStructure.texInfos)
@@ -147,7 +148,7 @@ func LoadMap(file *bsp.Bsp) scene.IScene {
 	bspObject.SetClusterLeafs([]model.ClusterLeaf{cl})
 
 	// Get static props
-	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump())
+	staticProps := LoadStaticProps(bspStructure.game.GetStaticPropLump(), fs)
 
 	return scene.NewScene(*bspObject, staticProps)
 }
