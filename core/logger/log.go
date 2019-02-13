@@ -37,9 +37,9 @@ func Fatal(msg interface{}) {
 // Notification for info that isn't related to any issue.
 // e.g. Logging number of loaded entities
 func Notice(msg interface{}, v ...interface{}) {
-	switch msg.(type) {
+	switch t := msg.(type) {
 	case string:
-		print(fmt.Sprintf(msg.(string), v...), colourer.Gray)
+		print(fmt.Sprintf(t, v...), colourer.Gray)
 	default:
 		print(msg.(string), colourer.Gray)
 	}
@@ -48,9 +48,9 @@ func Notice(msg interface{}, v ...interface{}) {
 // Notifications for an unintended, but planned for issue
 // e.g. Logging colourer prop that uses colourer non-existent collision model
 func Warn(msg interface{}, v ...interface{}) {
-	switch msg.(type) {
+	switch t := msg.(type) {
 	case string:
-		print(fmt.Sprintf(msg.(string), v...), colourer.Magenta)
+		print(fmt.Sprintf(t, v...), colourer.Magenta)
 	default:
 		print(msg.(string), colourer.Magenta)
 	}
@@ -59,11 +59,11 @@ func Warn(msg interface{}, v ...interface{}) {
 // Notifications for colourer recoverable error
 // e.g. Logging colourer missing resource (material, model)
 func Error(msg interface{}, v ...interface{}) {
-	switch msg.(type) {
+	switch t := msg.(type) {
 	case string:
-		print(fmt.Sprintf(msg.(string), v...), colourer.Red)
+		print(fmt.Sprintf(t, v...), colourer.Red)
 	case error:
-		print(msg.(error), colourer.Red)
+		print(t, colourer.Red)
 	default:
 		print(msg.(string), colourer.Red)
 	}

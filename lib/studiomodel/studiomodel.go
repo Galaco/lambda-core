@@ -42,14 +42,14 @@ func indicesForMesh(mesh *vtx.Mesh) []uint16 {
 	if len(mesh.StripGroups) > 1 {
 		return make([]uint16, 0)
 	}
-	indexMap := make([]uint16, 0)
+//	indexMap := make([]uint16, 0)
 	meshIndices := make([]uint16, 0)
 
 	stripGroup := mesh.StripGroups[0]
 
-	for i := 0; i < len(stripGroup.Vertexes); i++ {
-		indexMap = append(indexMap, stripGroup.Vertexes[i].OriginalMeshVertexID)
-	}
+	//for i := 0; i < len(stripGroup.Vertexes); i++ {
+	//	indexMap = append(indexMap, stripGroup.Vertexes[i].OriginalMeshVertexID)
+	//}
 
 	for _, strip := range stripGroup.Strips {
 		for j := int32(0); j < strip.NumIndices; j++ {

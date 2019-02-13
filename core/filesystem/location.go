@@ -66,7 +66,7 @@ func (fs *FileSystem) UnregisterPakFile() {
 func (fs *FileSystem) EnumerateResourcePaths() []string {
 	list := make([]string, 0)
 
-	for idx := range  fs.gameVPKs {
+	for idx := range fs.gameVPKs {
 		list = append(list, string(idx))
 	}
 

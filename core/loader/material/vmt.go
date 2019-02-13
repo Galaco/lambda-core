@@ -50,11 +50,11 @@ func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingLi
 		if !strings.HasSuffix(materialPath, filesystem.ExtensionVmt) {
 			materialPath += filesystem.ExtensionVmt
 		}
-		if ResourceManager.HasMaterial(filesystem.BasePathMaterial+materialPath) == true {
+		if ResourceManager.HasMaterial(filesystem.BasePathMaterial+materialPath) {
 			continue
 		}
 
-		mat, err := readVmt(filesystem.BasePathMaterial + materialPath, fs)
+		mat, err := readVmt(filesystem.BasePathMaterial+materialPath, fs)
 		if err != nil {
 			logger.Warn("Failed to load material: %s. Reason: %s", filesystem.BasePathMaterial+materialPath, err)
 			missingList = append(missingList, materialPath)

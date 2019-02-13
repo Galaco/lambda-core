@@ -21,7 +21,7 @@ func LoadSingleTexture(filePath string, fs *filesystem.FileSystem) texture.IText
 	if filePath == "" {
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
-	mat, err := readVtf(filesystem.BasePathMaterial + filePath, fs)
+	mat, err := readVtf(filesystem.BasePathMaterial+filePath, fs)
 	if err != nil {
 		logger.Warn("Failed to load texture: %s. Reason: %s", filesystem.BasePathMaterial+filePath, err)
 		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)

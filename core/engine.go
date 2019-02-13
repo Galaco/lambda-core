@@ -30,7 +30,7 @@ func (engine *Engine) Run() {
 	dt := 0.0
 	startingTime := time.Now().UTC()
 
-	for engine.running == true {
+	for engine.running {
 		for _, manager := range engine.Managers {
 			manager.Update(dt)
 		}

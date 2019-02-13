@@ -53,11 +53,11 @@ func (atlas *Atlas) PackTextures(textures []ITexture, padding int) ([]shape.Rect
 	return uvRects, nil
 }
 
-// findSpace finds free space in atlas buffer to write rectangle to
-func (atlas *Atlas) findSpace(width int, height int) (x, y int, err error) {
-
-	return x, y, err
-}
+//// findSpace finds free space in atlas buffer to write rectangle to
+//func (atlas *Atlas) findSpace(width int, height int) (x, y int, err error) {
+//
+//	return x, y, err
+//}
 
 // insert write raw data into atlas at calculated position
 func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, padding int) {
