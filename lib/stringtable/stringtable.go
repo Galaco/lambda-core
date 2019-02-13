@@ -25,7 +25,7 @@ func SortUnique(stringTable *texdatastringtable.TexDataStringTable, texInfos *[]
 				break
 			}
 		}
-		if found == false {
+		if !found {
 			materialList = append(materialList, target)
 		}
 	}

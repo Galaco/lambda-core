@@ -13,7 +13,6 @@ type manager struct {
 	listenerMap map[MessageType]map[EventHandle]func(IMessage)
 	mu          sync.Mutex
 	eventQueue  []*queueItem
-	runAsync    bool
 }
 
 // Listen Register a new listener to listen to an event
@@ -53,9 +52,7 @@ func (manager *manager) ProcessQueue() {
 // Unlisten Remove a listener from listening for an event
 func (manager *manager) Unlisten(eventName MessageType, handle EventHandle) {
 	manager.mu.Lock()
-	if _, ok := manager.listenerMap[eventName][handle]; ok {
-		delete(manager.listenerMap[eventName], handle)
-	}
+	delete(manager.listenerMap[eventName], handle)
 	manager.mu.Unlock()
 }
 

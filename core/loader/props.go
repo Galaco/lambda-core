@@ -15,7 +15,11 @@ import (
 // bsp's game lump
 func LoadStaticProps(propLump *game.StaticPropLump, fs *filesystem.FileSystem) []model.StaticProp {
 	ResourceManager := resource.Manager()
-	prop.LoadProp(ResourceManager.ErrorModelName(), fs)
+	_,err := prop.LoadProp(ResourceManager.ErrorModelName(), fs)
+	// If we have no error model, expect this to be fatal issue
+	if err != nil {
+		logger.Fatal(err)
+	}
 
 	propPaths := make([]string, 0)
 	for _, propEntry := range propLump.PropLumps {
