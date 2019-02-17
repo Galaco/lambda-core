@@ -5,7 +5,7 @@ require (
 	github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af
 	github.com/galaco/bsp v0.1.2
 	github.com/galaco/gosigl v0.0.0-20190217205945-633335646da6
-	github.com/galaco/packrect v0.0.0-20190106134957-d6cd1e9d06f9
+	github.com/galaco/packrect v0.0.0-20190217214943-9e2d67f8fa37
 	github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546
 	github.com/galaco/vmf v0.0.0-20180309175744-7a9ccb6e8abb
 	github.com/galaco/vpk2 v0.0.0-20181012095330-21e4d1f6c888
