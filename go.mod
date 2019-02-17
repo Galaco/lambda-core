@@ -1,7 +1,7 @@
 module github.com/galaco/Lambda-Core
 
 require (
-	github.com/galaco/KeyValues v1.2.3
+	github.com/galaco/KeyValues v1.3.1
 	github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af
 	github.com/galaco/bsp v0.1.2
 	github.com/galaco/gosigl v0.0.0-20181228204141-a4f1befcc399
