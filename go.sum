@@ -20,6 +20,7 @@ github.com/galaco/KeyValues v1.2.3 h1:WT7P+Djq+7903zLnnw/yyjSxVORwm8NBeI6gYHfzwx
 github.com/galaco/KeyValues v1.2.3/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af h1:WvaI49oII83yG2LCseuOuIIbo/f5k5iCDvFwe8W5HPI=
 github.com/galaco/StudioModel v0.0.0-20181028212841-5b8408bcc2af/go.mod h1:TyLwCRckWSsaQhePyfTOwfSXlEUJ411MwYaVkbPwOMo=
+github.com/galaco/StudioModel v0.1.0/go.mod h1:kMK3O6si6tHlxuxYvUAOuPsINUq00i+N5FqusJqaEvs=
 github.com/galaco/bsp v0.0.0-20181206122338-5c49a9094ff9 h1:31PuOdqnRSsbDpqdouUqP/OtHoOBA2udNMOW8wsogzw=
 github.com/galaco/bsp v0.0.0-20181206122338-5c49a9094ff9/go.mod h1:RcrH7F/FezUOMXKWuYyWYwrHdamdvFxZqD2lg8LFcnc=
 github.com/galaco/bsp v0.1.1 h1:4iR/XeAc4CgwMIhMiZO5cwfb4htD1oIoEkm2gDY9qvg=
@@ -53,3 +54,4 @@ github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e h1:9MlwzLdW7QSD
 github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e/go.mod h1:7rIyQOR62GCctdiQpZ/zOJlFyk6y+94wXzv6RNZgaR4=
 golang.org/x/image v0.0.0-20181206121112-cd38e8056d9b h1:9WPnadh+EKSlC7bAQtFhmNxmx/rQOj35pa7nFj6b/Dw=
 golang.org/x/image v0.0.0-20181206121112-cd38e8056d9b/go.mod h1:ux5Hcp/YLpHSI86hEcLt0YII63i6oz57MZXIpbrjZUs=
+golang.org/x/image v0.0.0-20190209060608-ef4a1470e0dc/go.mod h1:ux5Hcp/YLpHSI86hEcLt0YII63i6oz57MZXIpbrjZUs=
