@@ -4,7 +4,7 @@ require (
 	github.com/galaco/KeyValues v1.2.3
 	github.com/galaco/StudioModel v0.1.0
 	github.com/galaco/bsp v0.1.2
-	github.com/galaco/gosigl v0.0.0-20190217205945-633335646da6
+	github.com/galaco/gosigl v0.0.0-20190218114618-7d72bfe172dc
 	github.com/galaco/packrect v0.0.0-20190106134957-d6cd1e9d06f9
 	github.com/galaco/source-tools-common v0.1.0
 	github.com/galaco/vmf v1.0.0
