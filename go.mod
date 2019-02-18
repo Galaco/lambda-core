@@ -7,7 +7,7 @@ require (
 	github.com/galaco/gosigl v0.0.0-20190217205945-633335646da6
 	github.com/galaco/packrect v0.0.0-20190106134957-d6cd1e9d06f9
 	github.com/galaco/source-tools-common v0.1.0
-	github.com/galaco/vmf v0.0.0-20180309175744-7a9ccb6e8abb
+	github.com/galaco/vmf v1.0.0
 	github.com/galaco/vpk2 v0.0.0-20181012095330-21e4d1f6c888
 	github.com/galaco/vtf v1.0.0
 	github.com/go-gl/gl v0.0.0-20181026044259-55b76b7df9d2

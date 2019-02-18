@@ -36,6 +36,7 @@ github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546/go.mod 
 github.com/galaco/source-tools-common v0.1.0/go.mod h1:+TApRVomBN759va2qrv5GaLuCaK2AWxR0tn9oc2U73Q=
 github.com/galaco/vmf v0.0.0-20180309175744-7a9ccb6e8abb h1:15XPqvxG/llf53op1m6Dy4CDiZ+DUvnqc1IEqHdxxN4=
 github.com/galaco/vmf v0.0.0-20180309175744-7a9ccb6e8abb/go.mod h1:+hpnZQBHJ5xrERgGMr6f/KO0ZkxEkrvjqr3RI9aNHes=
+github.com/galaco/vmf v1.0.0/go.mod h1:+hpnZQBHJ5xrERgGMr6f/KO0ZkxEkrvjqr3RI9aNHes=
 github.com/galaco/vpk2 v0.0.0-20181012095330-21e4d1f6c888 h1:QCMt6AZ5gwsJ3SNsvTULg/xjZIfmcbRWv6BBnkYNOWI=
 github.com/galaco/vpk2 v0.0.0-20181012095330-21e4d1f6c888/go.mod h1:jL22XAWuUlYUmONuamxDdbDlGJhuOFkqNRPJwuBA3X8=
 github.com/galaco/vtf v0.0.0-20181112121510-54bb06976efb h1:b+el2mp+Hs7MH6zgYSF9aXCYAgQlPYy2b/bkrhZQ3UQ=
