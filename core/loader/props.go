@@ -15,9 +15,9 @@ import (
 // bsp's game lump
 func LoadStaticProps(propLump *game.StaticPropLump, fs *filesystem.FileSystem) []model.StaticProp {
 	ResourceManager := resource.Manager()
-	_,err := prop.LoadProp(ResourceManager.ErrorModelName(), fs)
+	errorProp,err := prop.LoadProp(ResourceManager.ErrorModelName(), fs)
 	// If we have no error model, expect this to be fatal issue
-	if err != nil {
+	if errorProp == nil && err != nil {
 		logger.Fatal(err)
 	}
 

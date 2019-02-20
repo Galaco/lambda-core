@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/filesystem"
 	"github.com/galaco/Lambda-Core/core/loader/prop"
 	"github.com/galaco/Lambda-Core/core/resource"
 	entity2 "github.com/galaco/Lambda-Core/game/entity"
@@ -15,10 +16,10 @@ func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 }
 
 // AssignStudioModelToEntity sets a renderable entity's model
-func AssignStudioModelToEntity(entity entity.IEntity) {
+func AssignStudioModelToEntity(entity entity.IEntity, fs *filesystem.FileSystem) {
 	modelName := entity.KeyValues().ValueForKey("model")
 	if !resource.Manager().HasModel(modelName) {
-		m, _ := prop.LoadProp(modelName, nil)
+		m, _ := prop.LoadProp(modelName, fs)
 		entity.(entity2.IProp).SetModel(m)
 	} else {
 		entity.(entity2.IProp).SetModel(resource.Manager().GetModel(modelName))

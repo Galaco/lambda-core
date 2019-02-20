@@ -2,6 +2,7 @@ package entity
 
 import (
 	entity3 "github.com/galaco/Lambda-Core/core/entity"
+	"github.com/galaco/Lambda-Core/core/filesystem"
 	"github.com/galaco/Lambda-Core/core/loader/entity/classmap"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
@@ -21,7 +22,7 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 
 // CreateEntity creates a new entity with common properties
 // e.g. origin and angles
-func CreateEntity(ent *entity.Entity) entity3.IEntity {
+func CreateEntity(ent *entity.Entity, fs *filesystem.FileSystem) entity3.IEntity {
 	localEdict := loader.New(ent.ValueForKey("classname"))
 	if localEdict == nil {
 		localEdict = entity3.NewGenericEntity(ent)
@@ -34,7 +35,7 @@ func CreateEntity(ent *entity.Entity) entity3.IEntity {
 	angles := ent.VectorForKey("angles")
 	localEdict.Transform().Rotation = mgl32.Vec3{angles.X(), angles.Y(), angles.Z()}
 
-	AssignProperties(localEdict)
+	AssignProperties(localEdict, fs)
 
 	return localEdict
 }
@@ -42,8 +43,8 @@ func CreateEntity(ent *entity.Entity) entity3.IEntity {
 // AssignProperties assigns type specific properties.
 // @TODO This is probably going to grow massively as more common types get implemented.
 // It should probably be refactored.
-func AssignProperties(ent entity3.IEntity) {
+func AssignProperties(ent entity3.IEntity, fs *filesystem.FileSystem) {
 	if DoesEntityReferenceStudioModel(ent) {
-		AssignStudioModelToEntity(ent)
+		AssignStudioModelToEntity(ent, fs)
 	}
 }

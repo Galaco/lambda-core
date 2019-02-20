@@ -138,7 +138,7 @@ func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string, fs 
 	if err != nil {
 		return base, errors.New("failed to read included vmt")
 	}
-	result, err := base.MergeInto(parent)
+	result, err := base.Patch(parent)
 	if err != nil {
 		return base, errors.New("failed to merge included vmt")
 	}
