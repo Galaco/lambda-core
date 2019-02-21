@@ -34,6 +34,7 @@ github.com/galaco/gosigl v0.0.0-20190217205945-633335646da6/go.mod h1:bo6fzFnd9D
 github.com/galaco/gosigl v0.0.0-20190218114618-7d72bfe172dc/go.mod h1:bo6fzFnd9DxiwROJFDQ19WrqtSbzRJbJcOTv6lO7lAk=
 github.com/galaco/packrect v0.0.0-20190106134957-d6cd1e9d06f9 h1:olmG0U3mzsfWrBkGjllQraRq8iuFaoqDoAJjXNoai2E=
 github.com/galaco/packrect v0.0.0-20190106134957-d6cd1e9d06f9/go.mod h1:1QOQWDBGRc6sT0tglK344YodNuAGsj6WPqZXzzpv6f4=
+github.com/galaco/packrect v0.0.0-20190221105636-d10c60f871c0/go.mod h1:1QOQWDBGRc6sT0tglK344YodNuAGsj6WPqZXzzpv6f4=
 github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546 h1:zWNJVV0bFq+/O7nMK+AJfCXCD4V5vhwukgt/F9TeBa0=
 github.com/galaco/source-tools-common v0.0.0-20181114203108-b70b8e75c546/go.mod h1:vcKoSJ6VLGuLDPp2ptTTb1J7D51w5+t02EqlNtwMDLI=
 github.com/galaco/source-tools-common v0.1.0/go.mod h1:+TApRVomBN759va2qrv5GaLuCaK2AWxR0tn9oc2U73Q=
