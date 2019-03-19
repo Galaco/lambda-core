@@ -1,5 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/Galaco/Lambda-Core?status.svg)](https://godoc.org/github.com/Galaco/Lambda-Core)
 [![Go report card](https://goreportcard.com/badge/github.com/galaco/Lambda-Core)](https://goreportcard.com/badge/github.com/galaco/Lambda-Core)
+[![GolangCI](https://golangci.com/badges/github.com/galaco/lambda-core.svg)](https://golangci.com)
 [![Build Status](https://travis-ci.com/Galaco/lambda-core.svg?branch=master)](https://travis-ci.com/Galaco/lambda-core)
 [![Coverage Status](https://coveralls.io/repos/github/Galaco/lambda-core/badge.svg?branch=master)](https://coveralls.io/github/Galaco/lambda-core?branch=master)
 [![CircleCI](https://circleci.com/gh/Galaco/lambda-core.svg?style=svg)](https://circleci.com/gh/Galaco/lambda-core)
