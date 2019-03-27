@@ -7,7 +7,7 @@ import (
 )
 
 // GetTable returns a new StringTable
-func GetTable(stringData *lumps.TexdataStringData, stringTable *lumps.TexDataStringTable) *texdatastringtable.TexDataStringTable {
+func GetTable(stringData *lumps.TexDataStringData, stringTable *lumps.TexDataStringTable) *texdatastringtable.TexDataStringTable {
 	// Prepare texture lookup table
 	return texdatastringtable.NewTable(stringData.GetData(), stringTable.GetData())
 }

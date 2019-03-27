@@ -47,23 +47,23 @@ type bspstructs struct {
 func LoadMap(fs *filesystem.FileSystem, file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
-		faces:     file.GetLump(bsp.LUMP_FACES).(*lumps.Face).GetData(),
-		planes:    file.GetLump(bsp.LUMP_PLANES).(*lumps.Planes).GetData(),
-		vertexes:  file.GetLump(bsp.LUMP_VERTEXES).(*lumps.Vertex).GetData(),
-		surfEdges: file.GetLump(bsp.LUMP_SURFEDGES).(*lumps.Surfedge).GetData(),
-		edges:     file.GetLump(bsp.LUMP_EDGES).(*lumps.Edge).GetData(),
-		texInfos:  file.GetLump(bsp.LUMP_TEXINFO).(*lumps.TexInfo).GetData(),
-		dispInfos: file.GetLump(bsp.LUMP_DISPINFO).(*lumps.DispInfo).GetData(),
-		dispVerts: file.GetLump(bsp.LUMP_DISP_VERTS).(*lumps.DispVert).GetData(),
-		game:      file.GetLump(bsp.LUMP_GAME_LUMP).(*lumps.Game),
-		lightmap:  file.GetLump(bsp.LUMP_LIGHTING).(*lumps.Lighting).GetData(),
+		faces:     file.Lump(bsp.LumpFaces).(*lumps.Face).GetData(),
+		planes:    file.Lump(bsp.LumpPlanes).(*lumps.Planes).GetData(),
+		vertexes:  file.Lump(bsp.LumpVertexes).(*lumps.Vertex).GetData(),
+		surfEdges: file.Lump(bsp.LumpSurfEdges).(*lumps.Surfedge).GetData(),
+		edges:     file.Lump(bsp.LumpEdges).(*lumps.Edge).GetData(),
+		texInfos:  file.Lump(bsp.LumpTexInfo).(*lumps.TexInfo).GetData(),
+		dispInfos: file.Lump(bsp.LumpDispInfo).(*lumps.DispInfo).GetData(),
+		dispVerts: file.Lump(bsp.LumpDispVerts).(*lumps.DispVert).GetData(),
+		game:      file.Lump(bsp.LumpGame).(*lumps.Game),
+		lightmap:  file.Lump(bsp.LumpLighting).(*lumps.Lighting).GetData(),
 	}
 
 	//MATERIALS
 	stringTable := matloader.LoadMaterials(
 		fs,
-		file.GetLump(bsp.LUMP_TEXDATA_STRING_DATA).(*lumps.TexdataStringData),
-		file.GetLump(bsp.LUMP_TEXDATA_STRING_TABLE).(*lumps.TexDataStringTable),
+		file.Lump(bsp.LumpTexDataStringData).(*lumps.TexDataStringData),
+		file.Lump(bsp.LumpTexDataStringTable).(*lumps.TexDataStringTable),
 		&bspStructure.texInfos)
 
 	// BSP FACES

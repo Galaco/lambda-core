@@ -5,7 +5,7 @@ import (
 )
 
 // ClusterLeaf represents a single cluster that contains the contents of
-// all the leafs that are contained withing it
+// all the leafs that are contained within it
 type ClusterLeaf struct {
 	Id          int16
 	Faces       []mesh.Face

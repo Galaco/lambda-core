@@ -50,7 +50,7 @@ func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingLi
 		if !strings.HasSuffix(materialPath, filesystem.ExtensionVmt) {
 			materialPath += filesystem.ExtensionVmt
 		}
-		if ResourceManager.HasMaterial(filesystem.BasePathMaterial+materialPath) {
+		if ResourceManager.HasMaterial(filesystem.BasePathMaterial + materialPath) {
 			continue
 		}
 

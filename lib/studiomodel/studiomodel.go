@@ -42,7 +42,7 @@ func indicesForMesh(mesh *vtx.Mesh) []uint16 {
 	if len(mesh.StripGroups) > 1 {
 		return make([]uint16, 0)
 	}
-//	indexMap := make([]uint16, 0)
+	//	indexMap := make([]uint16, 0)
 	meshIndices := make([]uint16, 0)
 
 	stripGroup := mesh.StripGroups[0]
