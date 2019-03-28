@@ -13,7 +13,7 @@ const skyboxRootDir = "skybox/"
 
 // LoadSky loads the skymaterial cubemap.
 // The materialname is normally obtained from the worldspawn entity
-func LoadSky(materialName string, fs *filesystem.FileSystem) *model.Model {
+func LoadSky(materialName string, fs filesystem.IFileSystem) *model.Model {
 	sky := model.NewModel(materialName)
 
 	mats := make([]material.IMaterial, 6)

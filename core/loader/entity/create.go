@@ -22,7 +22,7 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 
 // CreateEntity creates a new entity with common properties
 // e.g. origin and angles
-func CreateEntity(ent *entity.Entity, fs *filesystem.FileSystem) entity3.IEntity {
+func CreateEntity(ent *entity.Entity, fs filesystem.IFileSystem) entity3.IEntity {
 	localEdict := loader.New(ent.ValueForKey("classname"))
 	if localEdict == nil {
 		localEdict = entity3.NewGenericEntity(ent)
@@ -43,7 +43,7 @@ func CreateEntity(ent *entity.Entity, fs *filesystem.FileSystem) entity3.IEntity
 // AssignProperties assigns type specific properties.
 // @TODO This is probably going to grow massively as more common types get implemented.
 // It should probably be refactored.
-func AssignProperties(ent entity3.IEntity, fs *filesystem.FileSystem) {
+func AssignProperties(ent entity3.IEntity, fs filesystem.IFileSystem) {
 	if DoesEntityReferenceStudioModel(ent) {
 		AssignStudioModelToEntity(ent, fs)
 	}

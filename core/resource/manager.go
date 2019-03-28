@@ -158,7 +158,7 @@ var resourceManager manager
 // manager returns the static filemanager
 func Manager() *manager {
 	if resourceManager.materials == nil {
-		resourceManager.errorModelName = "models/error.mdl"
+		resourceManager.errorModelName = filesystem.BasePathModels + "error.mdl"
 		resourceManager.errorTextureName = filesystem.BasePathMaterial + "error" + filesystem.ExtensionVtf
 		resourceManager.materials = make(map[string]material.IMaterial, 1024)
 		resourceManager.models = make(map[string]*model.Model, 256)

@@ -12,7 +12,7 @@ import (
 // CreateFilesystemFromGameInfoDefinitions Reads game resource data paths
 // from gameinfo.txt
 // All games should ship with a gameinfo.txt, but it isn't actually mandatory.
-func CreateFilesystemFromGameInfoDefinitions(basePath string, gameInfo *keyvalues.KeyValue) *FileSystem {
+func CreateFilesystemFromGameInfoDefinitions(basePath string, gameInfo *keyvalues.KeyValue) IFileSystem {
 	fs := NewFileSystem()
 	gameInfoNode, _ := gameInfo.Find("GameInfo")
 	fsNode, _ := gameInfoNode.Find("FileSystem")

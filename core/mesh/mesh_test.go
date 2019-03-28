@@ -69,18 +69,6 @@ func TestMesh_AddVertex(t *testing.T) {
 	}
 }
 
-func TestMesh_Bind(t *testing.T) {
-	t.Skip()
-}
-
-func TestMesh_Destroy(t *testing.T) {
-	t.Skip()
-}
-
-func TestMesh_Finish(t *testing.T) {
-	t.Skip()
-}
-
 func TestMesh_GetLightmap(t *testing.T) {
 	sut := Mesh{}
 	expected := &texture.Lightmap{}

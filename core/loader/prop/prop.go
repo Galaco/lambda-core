@@ -22,7 +22,7 @@ import (
 // some corruption.
 
 // LoadProp loads a single prop/model of known filepath
-func LoadProp(path string, fs *filesystem.FileSystem) (*model.Model, error) {
+func LoadProp(path string, fs filesystem.IFileSystem) (*model.Model, error) {
 	ResourceManager := resource.Manager()
 	if ResourceManager.HasModel(path) {
 		return ResourceManager.GetModel(path), nil
@@ -42,7 +42,7 @@ func LoadProp(path string, fs *filesystem.FileSystem) (*model.Model, error) {
 	return ResourceManager.GetModel(path), err
 }
 
-func loadProp(filePath string, fs *filesystem.FileSystem) (*studiomodel.StudioModel, error) {
+func loadProp(filePath string, fs filesystem.IFileSystem) (*studiomodel.StudioModel, error) {
 	prop := studiomodel.NewStudioModel(filePath)
 
 	// MDL
@@ -94,7 +94,7 @@ func loadProp(filePath string, fs *filesystem.FileSystem) (*studiomodel.StudioMo
 	return prop, nil
 }
 
-func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs *filesystem.FileSystem) *model.Model {
+func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs filesystem.IFileSystem) *model.Model {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
 		logger.Error(err)
@@ -118,7 +118,7 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel,
 	return outModel
 }
 
-func materialsForStudioModel(mdlData *mdl.Mdl, fs *filesystem.FileSystem) []material.IMaterial {
+func materialsForStudioModel(mdlData *mdl.Mdl, fs filesystem.IFileSystem) []material.IMaterial {
 	materials := make([]material.IMaterial, 0)
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {

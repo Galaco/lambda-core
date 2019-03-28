@@ -16,7 +16,7 @@ func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 }
 
 // AssignStudioModelToEntity sets a renderable entity's model
-func AssignStudioModelToEntity(entity entity.IEntity, fs *filesystem.FileSystem) {
+func AssignStudioModelToEntity(entity entity.IEntity, fs filesystem.IFileSystem) {
 	modelName := entity.KeyValues().ValueForKey("model")
 	if !resource.Manager().HasModel(modelName) {
 		m, _ := prop.LoadProp(modelName, fs)

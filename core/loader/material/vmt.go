@@ -18,7 +18,7 @@ import (
 // 2. Game directory
 // 3. Game VPK
 // 4. Other game shared VPK
-func LoadMaterialList(fs *filesystem.FileSystem, materialList []string) {
+func LoadMaterialList(fs filesystem.IFileSystem, materialList []string) {
 	loadMaterials(fs, materialList...)
 }
 
@@ -41,7 +41,7 @@ func LoadErrorMaterial() {
 }
 
 // loadMaterials "private" function that actually does the loading
-func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingList []string) {
+func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingList []string) {
 	ResourceManager := resource.Manager()
 
 	for _, materialPath := range materialList {
@@ -93,7 +93,7 @@ func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingLi
 }
 
 // LoadSingleMaterial loads a single material with known file path
-func LoadSingleMaterial(filePath string, fs *filesystem.FileSystem) material.IMaterial {
+func LoadSingleMaterial(filePath string, fs filesystem.IFileSystem) material.IMaterial {
 	if resource.Manager().HasMaterial(filesystem.BasePathMaterial + filePath) {
 		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 	}
@@ -106,7 +106,7 @@ func LoadSingleMaterial(filePath string, fs *filesystem.FileSystem) material.IMa
 	return resource.Manager().GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
 }
 
-func readVmt(path string, fs *filesystem.FileSystem) (material.IMaterial, error) {
+func readVmt(path string, fs filesystem.IFileSystem) (material.IMaterial, error) {
 	kvs, err := keyvalues2.ReadKeyValues(path, fs)
 	if err != nil {
 		return nil, err
@@ -134,7 +134,7 @@ func readVmt(path string, fs *filesystem.FileSystem) (material.IMaterial, error)
 	return mat, nil
 }
 
-func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string, fs *filesystem.FileSystem) (*keyvalues.KeyValue, error) {
+func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string, fs filesystem.IFileSystem) (*keyvalues.KeyValue, error) {
 	parent, err := keyvalues2.ReadKeyValues(includePath, fs)
 	if err != nil {
 		return base, errors.New("failed to read included vmt")

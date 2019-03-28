@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/logrusorgru/aurora"
@@ -8,39 +9,35 @@ import (
 )
 
 func TestNotice(t *testing.T) {
-	actual := ""
-	SetOutputPipeFunc(func(val string) {
-		actual = val
-	})
+	writer := bytes.NewBuffer(make([]byte, 0))
+	SetWriter(writer)
 
 	expected := "hello world"
 	Notice(expected)
+	actual := writer.String()
 	if expected != actual {
 		t.Error("log info doesn't match expected")
 	}
 }
 
 func TestWarn(t *testing.T) {
-	actual := ""
-	SetOutputPipeFunc(func(val string) {
-		actual = val
-	})
-
+	writer := bytes.NewBuffer(make([]byte, 0))
+	SetWriter(writer)
 	expected := "hello world"
 	Warn(expected)
+	actual := writer.String()
 	if expected != actual {
 		t.Error("log info doesn't match expected")
 	}
 }
 
 func TestError(t *testing.T) {
-	actual := ""
-	SetOutputPipeFunc(func(val string) {
-		actual = val
-	})
+	writer := bytes.NewBuffer(make([]byte, 0))
+	SetWriter(writer)
 
 	expected := "hello world"
 	Error(expected)
+	actual := writer.String()
 	if expected != actual {
 		t.Error("log info doesn't match expected")
 	}
@@ -49,20 +46,18 @@ func TestError(t *testing.T) {
 }
 
 func TestFatal(t *testing.T) {
-	t.Skip("can't test a wrapper for log.Fatal()")
+	t.Skip("can't test a wrapper for log.Panic()")
 }
 
 func TestEnablePretty(t *testing.T) {
 	EnablePretty()
-
-	actual := ""
-	SetOutputPipeFunc(func(val string) {
-		actual = val
-	})
+	writer := bytes.NewBuffer(make([]byte, 0))
+	SetWriter(writer)
 
 	colour := aurora.NewAurora(true)
 	expected := "hello world"
 	Error(expected)
+	actual := writer.String()
 	expected = fmt.Sprint(colour.Red(expected))
 	if expected != actual {
 		t.Error(actual)
@@ -74,26 +69,24 @@ func TestDisablePretty(t *testing.T) {
 	EnablePretty()
 	DisablePretty()
 
-	actual := ""
-	SetOutputPipeFunc(func(val string) {
-		actual = val
-	})
+	writer := bytes.NewBuffer(make([]byte, 0))
+	SetWriter(writer)
 
 	expected := "hello world"
 	Error(expected)
+	actual := writer.String()
 	if expected != actual {
 		t.Error("log info doesn't match expected")
 	}
 }
 
 func TestSetDestination(t *testing.T) {
-	actual := ""
-	SetOutputPipeFunc(func(val string) {
-		actual = val
-	})
+	writer := bytes.NewBuffer(make([]byte, 0))
+	SetWriter(writer)
 
 	expected := "hello world"
 	Notice(expected)
+	actual := writer.String()
 	if expected != actual {
 		t.Error("log info doesn't match expected")
 	}
