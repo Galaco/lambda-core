@@ -44,7 +44,7 @@ type bspstructs struct {
 // BSP Geometry
 // BSP Materials
 // StaticProps (materials loaded as required)
-func LoadMap(fs *filesystem.FileSystem, file *bsp.Bsp) scene.IScene {
+func LoadMap(fs filesystem.IFileSystem, file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:     file.Lump(bsp.LumpFaces).(*lumps.Face).GetData(),

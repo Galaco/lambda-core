@@ -49,7 +49,7 @@ func TestError(t *testing.T) {
 }
 
 func TestFatal(t *testing.T) {
-	t.Skip("can't test a wrapper for log.Fatal()")
+	t.Skip("can't test a wrapper for log.Panic()")
 }
 
 func TestEnablePretty(t *testing.T) {
