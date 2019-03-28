@@ -65,6 +65,8 @@ func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingLi
 		if vmt.BaseTextureName == "" {
 			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
+
+			ResourceManager.AddMaterial(vmt)
 			continue
 		}
 
@@ -78,12 +80,14 @@ func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingLi
 		if vmt.Textures.Albedo == nil {
 			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
+			ResourceManager.AddMaterial(vmt)
 			continue
 		}
 
 		if vmt.BumpMapName != "" {
 			vmt.Textures.Normal = LoadSingleTexture(vmt.BumpMapName, fs)
 		}
+		ResourceManager.AddMaterial(vmt)
 	}
 	return missingList
 }
@@ -103,8 +107,6 @@ func LoadSingleMaterial(filePath string, fs *filesystem.FileSystem) material.IMa
 }
 
 func readVmt(path string, fs *filesystem.FileSystem) (material.IMaterial, error) {
-	ResourceManager := resource.Manager()
-
 	kvs, err := keyvalues2.ReadKeyValues(path, fs)
 	if err != nil {
 		return nil, err
@@ -129,7 +131,6 @@ func readVmt(path string, fs *filesystem.FileSystem) (material.IMaterial, error)
 	if err != nil {
 		return nil, err
 	}
-	ResourceManager.AddMaterial(mat)
 	return mat, nil
 }
 
