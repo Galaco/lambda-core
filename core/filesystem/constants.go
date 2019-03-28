@@ -1,12 +1,17 @@
 package filesystem
 
 // File Extensions
-// ExtensionVmt Material file extension
-const ExtensionVmt = ".vmt"
-
-// ExtensionVtf Texture file extension
-const ExtensionVtf = ".vtf"
+const (
+	// ExtensionVmt Material file extension
+	ExtensionVmt = ".vmt"
+	// ExtensionVtf Texture file extension
+	ExtensionVtf = ".vtf"
+)
 
 // FilePath prefixes
-// BasePathMaterial is path prefix for all materials/textures
-const BasePathMaterial = "materials/"
+const (
+	// BasePathMaterial is path prefix for all materials/textures
+	BasePathMaterial = "materials/"
+	// BasePathModels is path prefix for all models/props
+	BasePathModels = "models/"
+)

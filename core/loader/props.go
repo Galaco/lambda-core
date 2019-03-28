@@ -13,12 +13,12 @@ import (
 
 // LoadStaticProps GetFile all staticprops referenced in a
 // bsp's game lump
-func LoadStaticProps(propLump *game.StaticPropLump, fs *filesystem.FileSystem) []model.StaticProp {
+func LoadStaticProps(propLump *game.StaticPropLump, fs filesystem.IFileSystem) []model.StaticProp {
 	ResourceManager := resource.Manager()
 	errorProp, err := prop.LoadProp(ResourceManager.ErrorModelName(), fs)
 	// If we have no error model, expect this to be fatal issue
 	if errorProp == nil && err != nil {
-		logger.Fatal(err)
+		logger.Panic(err)
 	}
 
 	propPaths := make([]string, 0)

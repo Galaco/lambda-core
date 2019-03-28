@@ -23,7 +23,7 @@ func (entity *Base) KeyValues() *entity2.Entity {
 	return entity.keyValues
 }
 
-// Get this entitiy's classname
+// Classname gets this entitiy's classname
 func (entity *Base) Classname() string {
 	if entity.keyValues == nil {
 		return "generic"
