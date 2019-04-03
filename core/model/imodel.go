@@ -1,5 +1,7 @@
 package model
 
+// IModel
 type IModel interface {
-	GetFilePath() string
+	// FilePath
+	FilePath() string
 }

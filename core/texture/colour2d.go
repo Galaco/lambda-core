@@ -27,7 +27,7 @@ func (error *Colour2D) Thumbnail() []byte {
 	return append(error.rawColourData, append(error.rawColourData, append(error.rawColourData, error.rawColourData...)...)...)
 }
 
-// Get New Error material
+// NewError returns new Error material
 func NewError(name string) *Colour2D {
 	mat := Colour2D{}
 

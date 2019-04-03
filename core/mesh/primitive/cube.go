@@ -87,10 +87,12 @@ var cubeUVs = []float32{
 	1, 1,
 }
 
+// Cube
 type Cube struct {
 	mesh.Mesh
 }
 
+// NewCube
 func NewCube() *Cube {
 	c := &Cube{
 		Mesh: *mesh.NewMesh(),

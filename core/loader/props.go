@@ -47,13 +47,13 @@ func LoadStaticProps(propLump *game.StaticPropLump, fs filesystem.IFileSystem) [
 
 	for _, propEntry := range propLump.PropLumps {
 		modelName := propLump.DictLump.Name[propEntry.GetPropType()]
-		m := ResourceManager.GetModel(modelName)
+		m := ResourceManager.Model(modelName)
 		if m != nil {
 			staticPropList = append(staticPropList, *model.NewStaticProp(propEntry, &propLump.LeafLump, m))
 			continue
 		}
 		// Model missing, use error model
-		m = ResourceManager.GetModel(ResourceManager.ErrorModelName())
+		m = ResourceManager.Model(ResourceManager.ErrorModelName())
 		staticPropList = append(staticPropList, *model.NewStaticProp(propEntry, &propLump.LeafLump, m))
 	}
 

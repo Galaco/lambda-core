@@ -5,19 +5,19 @@ import (
 	"testing"
 )
 
-func TestMaterial_GetFilePath(t *testing.T) {
+func TestMaterial_FilePath(t *testing.T) {
 	sut := Material{
-		FilePath: "foo/bar.vmt",
+		filePath: "foo/bar.vmt",
 	}
 
-	if sut.GetFilePath() != "foo/bar.vmt" {
-		t.Errorf("incorrect filepath returned. Expected %s, but received: %s", "foo/bar.vmt", sut.GetFilePath())
+	if sut.FilePath() != "foo/bar.vmt" {
+		t.Errorf("incorrect filepath returned. Expected %s, but received: %s", "foo/bar.vmt", sut.FilePath())
 	}
 }
 
 func TestMaterial_Height(t *testing.T) {
 	sut := Material{
-		FilePath: "foo/bar.vmt",
+		filePath: "foo/bar.vmt",
 	}
 	sut.Textures.Albedo = texture.NewError("error.vtf")
 
@@ -28,7 +28,7 @@ func TestMaterial_Height(t *testing.T) {
 
 func TestMaterial_Width(t *testing.T) {
 	sut := Material{
-		FilePath: "foo/bar.vmt",
+		filePath: "foo/bar.vmt",
 	}
 	sut.Textures.Albedo = texture.NewError("error.vtf")
 

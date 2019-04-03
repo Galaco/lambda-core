@@ -2,6 +2,7 @@ package model
 
 import (
 	"github.com/galaco/Lambda-Core/core/mesh"
+	"github.com/go-gl/mathgl/mgl32"
 )
 
 // ClusterLeaf represents a single cluster that contains the contents of
@@ -11,4 +12,6 @@ type ClusterLeaf struct {
 	Faces       []mesh.Face
 	StaticProps []*StaticProp
 	DispFaces   []int
+	Mins, Maxs  mgl32.Vec3
+	Origin      mgl32.Vec3
 }

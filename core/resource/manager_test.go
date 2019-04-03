@@ -30,15 +30,15 @@ func TestManager_ErrorTextureName(t *testing.T) {
 	t.Skip()
 }
 
-func TestManager_GetMaterial(t *testing.T) {
+func TestManager_Material(t *testing.T) {
 	t.Skip()
 }
 
-func TestManager_GetModel(t *testing.T) {
+func TestManager_Model(t *testing.T) {
 	t.Skip()
 }
 
-func TestManager_GetTexture(t *testing.T) {
+func TestManager_Texture(t *testing.T) {
 	t.Skip()
 }
 

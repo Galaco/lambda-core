@@ -70,7 +70,7 @@ func Error(msg interface{}, v ...interface{}) {
 
 // print prints colourer message to console.
 func print(message interface{}, col func(arg interface{}) aurora.Value) {
-	if _,err := internalWriter.Write([]byte(fmt.Sprint(col(message)))); err != nil {
+	if _, err := internalWriter.Write([]byte(fmt.Sprint(col(message)))); err != nil {
 		panic(err)
 	}
 }

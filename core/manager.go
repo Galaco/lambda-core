@@ -9,7 +9,7 @@ type Manager struct {
 func (manager *Manager) Register() {
 }
 
-// ProcessQueue If this manager is supported to run concurrently, custom concurrency
+// RunConcurrent If this manager is supported to run concurrently, custom concurrency
 // function should be defined here
 func (manager *Manager) RunConcurrent() {
 }

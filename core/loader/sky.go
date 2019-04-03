@@ -32,7 +32,7 @@ func LoadSky(materialName string, fs filesystem.IFileSystem) *model.Model {
 
 	sky.AddMesh(primitive.NewCube())
 
-	sky.GetMeshes()[0].SetMaterial(texture.NewCubemap(texs))
+	sky.Meshes()[0].SetMaterial(texture.NewCubemap(texs))
 
 	return sky
 }

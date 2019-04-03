@@ -2,16 +2,24 @@ package material
 
 import "github.com/galaco/Lambda-Core/core/texture"
 
+// Material
 type Material struct {
+	filePath string
+	// ShaderName
 	ShaderName string
-	Textures   struct {
+	// Textures
+	Textures struct {
+		// Albedo
 		Albedo texture.ITexture
+		// Normal
 		Normal texture.ITexture
 	}
-	FilePath        string
+	// BaseTextureName
 	BaseTextureName string
-	BumpMapName     string
-	Properties      struct {
+	// BumpMapName
+	BumpMapName string
+	// Properties
+	Properties struct {
 	}
 }
 
@@ -27,8 +35,14 @@ func (mat *Material) Height() int {
 	return mat.Textures.Albedo.Height()
 }
 
-// GetFilePath returns this materials location in whatever
+// FilePath returns this materials location in whatever
 // filesystem it was found
-func (mat *Material) GetFilePath() string {
-	return mat.FilePath
+func (mat *Material) FilePath() string {
+	return mat.filePath
+}
+
+func NewMaterial(filePath string) *Material {
+	return &Material{
+		filePath: filePath,
+	}
 }

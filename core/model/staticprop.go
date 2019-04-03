@@ -10,18 +10,28 @@ import (
 // it is basically a renderable entity that cannot do anything or be reference)
 type StaticProp struct {
 	entity.Base
-	leafList []uint16
-	model    *Model
+	leafList        []uint16
+	model           *Model
+	fadeMinDistance float32
+	fadeMaxDistance float32
 }
 
-// GetModel returns props model
-func (prop *StaticProp) GetModel() *Model {
+// Model returns props model
+func (prop *StaticProp) Model() *Model {
 	return prop.model
 }
 
 // LeafList returrns all leafs that this props is in
 func (prop *StaticProp) LeafList() []uint16 {
 	return prop.leafList
+}
+
+func (prop *StaticProp) FadeMinDistance() float32 {
+	return prop.fadeMinDistance
+}
+
+func (prop *StaticProp) FadeMaxDistance() float32 {
+	return prop.fadeMaxDistance
 }
 
 // NewStaticProp returns new StaticProp
@@ -34,6 +44,8 @@ func NewStaticProp(lumpProp game.IStaticPropDataLump, propLeafs *game.StaticProp
 	}
 	prop.Transform().Position = lumpProp.GetOrigin()
 	prop.Transform().Rotation = lumpProp.GetAngles()
+	prop.fadeMinDistance = lumpProp.GetFadeMinDist()
+	prop.fadeMaxDistance = lumpProp.GetFadeMaxDist()
 
 	return &prop
 }

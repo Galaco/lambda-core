@@ -2,6 +2,7 @@ package util
 
 import "github.com/go-gl/mathgl/mgl32"
 
+// GenerateTangents generates tangents for vertex data
 func GenerateTangents(points []float32, normals []float32, texCoords []float32) (tangents []float32) {
 	//const vector<vec3> & points,
 	//const vector<vec3> & normals,

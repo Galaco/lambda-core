@@ -69,24 +69,22 @@ func TestMesh_AddVertex(t *testing.T) {
 	}
 }
 
-func TestMesh_GetLightmap(t *testing.T) {
+func TestMesh_Lightmap(t *testing.T) {
 	sut := Mesh{}
 	expected := &texture.Lightmap{}
 	sut.SetLightmap(expected)
 
-	if expected != sut.GetLightmap() {
+	if expected != sut.Lightmap() {
 		t.Error("unexpected lightmap applied to mesh")
 	}
 }
 
-func TestMesh_GetMaterial(t *testing.T) {
+func TestMesh_Material(t *testing.T) {
 	sut := Mesh{}
-	expected := &material.Material{
-		FilePath: "foo.vmt",
-	}
+	expected := material.NewMaterial("foo.vmt")
 	sut.SetMaterial(expected)
 
-	if expected != sut.GetMaterial() {
+	if expected != sut.Material() {
 		t.Error("unexpected material applied to mesh")
 	}
 }
@@ -124,19 +122,17 @@ func TestMesh_SetLightmap(t *testing.T) {
 	expected := &texture.Lightmap{}
 	sut.SetLightmap(expected)
 
-	if expected != sut.GetLightmap() {
+	if expected != sut.Lightmap() {
 		t.Error("unexpected lightmap applied to mesh")
 	}
 }
 
 func TestMesh_SetMaterial(t *testing.T) {
 	sut := Mesh{}
-	expected := &material.Material{
-		FilePath: "foo.vmt",
-	}
+	expected := material.NewMaterial("foo.vmt")
 	sut.SetMaterial(expected)
 
-	if expected != sut.GetMaterial() {
+	if expected != sut.Material() {
 		t.Error("unexpected material applied to mesh")
 	}
 }

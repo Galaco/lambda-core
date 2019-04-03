@@ -11,6 +11,7 @@ const sensitivity = float32(0.03)
 var minVerticalRotation = mgl32.DegToRad(90)
 var maxVerticalRotation = mgl32.DegToRad(270)
 
+// Camera
 type Camera struct {
 	*Base
 	fov         float32
@@ -21,22 +22,27 @@ type Camera struct {
 	worldUp     mgl32.Vec3
 }
 
+// Forwards
 func (camera *Camera) Forwards(dt float64) {
 	camera.Transform().Position = camera.Transform().Position.Add(camera.direction.Mul(float32(cameraSpeed * dt)))
 }
 
+// Backwards
 func (camera *Camera) Backwards(dt float64) {
 	camera.Transform().Position = camera.Transform().Position.Sub(camera.direction.Mul(float32(cameraSpeed * dt)))
 }
 
+// Left
 func (camera *Camera) Left(dt float64) {
 	camera.Transform().Position = camera.Transform().Position.Sub(camera.right.Mul(float32(cameraSpeed * dt)))
 }
 
+// Right
 func (camera *Camera) Right(dt float64) {
 	camera.Transform().Position = camera.Transform().Position.Add(camera.right.Mul(float32(cameraSpeed * dt)))
 }
 
+// Rotate
 func (camera *Camera) Rotate(x, y, z float32) {
 	camera.Transform().Rotation[0] -= float32(x * sensitivity)
 	camera.Transform().Rotation[1] -= float32(y * sensitivity)

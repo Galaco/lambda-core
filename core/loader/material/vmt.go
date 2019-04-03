@@ -27,16 +27,14 @@ func LoadErrorMaterial() {
 	ResourceManager := resource.Manager()
 	name := ResourceManager.ErrorTextureName()
 
-	if ResourceManager.GetMaterial(name) != nil {
+	if ResourceManager.Material(name) != nil {
 		return
 	}
 
 	// Ensure that error texture is available
 	ResourceManager.AddTexture(texture.NewError(name))
-	errorMat := &material.Material{
-		FilePath: name,
-	}
-	errorMat.Textures.Albedo = ResourceManager.GetTexture(name).(texture.ITexture)
+	errorMat := material.NewMaterial(name)
+	errorMat.Textures.Albedo = ResourceManager.Texture(name).(texture.ITexture)
 	ResourceManager.AddMaterial(errorMat)
 }
 
@@ -63,7 +61,7 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 		vmt := mat.(*material.Material)
 
 		if vmt.BaseTextureName == "" {
-			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
+			vmt.Textures.Albedo = ResourceManager.Texture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
 
 			ResourceManager.AddMaterial(vmt)
@@ -78,7 +76,7 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 
 		vmt.Textures.Albedo = LoadSingleTexture(vtfTexturePath, fs)
 		if vmt.Textures.Albedo == nil {
-			vmt.Textures.Albedo = ResourceManager.GetTexture(ResourceManager.ErrorTextureName()).(texture.ITexture)
+			vmt.Textures.Albedo = ResourceManager.Texture(ResourceManager.ErrorTextureName()).(texture.ITexture)
 			missingList = append(missingList, materialPath)
 			ResourceManager.AddMaterial(vmt)
 			continue
@@ -95,15 +93,15 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 // LoadSingleMaterial loads a single material with known file path
 func LoadSingleMaterial(filePath string, fs filesystem.IFileSystem) material.IMaterial {
 	if resource.Manager().HasMaterial(filesystem.BasePathMaterial + filePath) {
-		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+		return resource.Manager().Material(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 	}
 
 	result := loadMaterials(fs, filePath)
 	if len(result) == 0 {
-		return resource.Manager().GetMaterial(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+		return resource.Manager().Material(filesystem.BasePathMaterial + filePath).(material.IMaterial)
 
 	}
-	return resource.Manager().GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
+	return resource.Manager().Material(resource.Manager().ErrorTextureName()).(material.IMaterial)
 }
 
 func readVmt(path string, fs filesystem.IFileSystem) (material.IMaterial, error) {
@@ -164,12 +162,11 @@ func materialFromKeyValues(kv *keyvalues.KeyValue, path string) (*material.Mater
 	// $bumpmap
 	bumpMapTexture := findKeyValueAsString(kv, "$bumpmap")
 
-	return &material.Material{
-		FilePath:        path,
-		ShaderName:      shaderName,
-		BaseTextureName: baseTexture,
-		BumpMapName:     bumpMapTexture,
-	}, nil
+	mat := material.NewMaterial(path)
+	mat.ShaderName = shaderName
+	mat.BaseTextureName = baseTexture
+	mat.BumpMapName = bumpMapTexture
+	return mat, nil
 }
 
 func findKeyValueAsString(kv *keyvalues.KeyValue, keyName string) string {

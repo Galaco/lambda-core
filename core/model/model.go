@@ -15,8 +15,8 @@ func (model *Model) AddMesh(meshes ...mesh.IMesh) {
 	model.meshes = append(model.meshes, meshes...)
 }
 
-// GetMeshes Get all primitives/submeshes
-func (model *Model) GetMeshes() []mesh.IMesh {
+// Meshes Get all primitives/submeshes
+func (model *Model) Meshes() []mesh.IMesh {
 	return model.meshes
 }
 
@@ -25,8 +25,8 @@ func (model *Model) Reset() {
 	model.meshes = []mesh.IMesh{}
 }
 
-// GetFilePath returns where is model was found on disk
-func (model *Model) GetFilePath() string {
+// FilePath returns where is model was found on disk
+func (model *Model) FilePath() string {
 	return model.fileName
 }
 

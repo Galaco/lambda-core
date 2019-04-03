@@ -22,6 +22,6 @@ func AssignStudioModelToEntity(entity entity.IEntity, fs filesystem.IFileSystem)
 		m, _ := prop.LoadProp(modelName, fs)
 		entity.(entity2.IProp).SetModel(m)
 	} else {
-		entity.(entity2.IProp).SetModel(resource.Manager().GetModel(modelName))
+		entity.(entity2.IProp).SetModel(resource.Manager().Model(modelName))
 	}
 }

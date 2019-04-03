@@ -6,6 +6,6 @@ type ITexture interface {
 	Height() int
 	Format() uint32
 	PixelDataForFrame(int) []byte
-	GetFilePath() string
+	FilePath() string
 	Thumbnail() []byte
 }

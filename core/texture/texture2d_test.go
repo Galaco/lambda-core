@@ -2,9 +2,9 @@ package texture
 
 import "testing"
 
-func TestTexture2D_GetFilePath(t *testing.T) {
+func TestTexture2D_FilePath(t *testing.T) {
 	tex := NewError("error.vtf")
-	if tex.GetFilePath() != "error.vtf" {
+	if tex.FilePath() != "error.vtf" {
 		t.Error("incorrect filepath for texture")
 	}
 }
