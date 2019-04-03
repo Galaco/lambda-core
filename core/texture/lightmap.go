@@ -9,7 +9,7 @@ type Lightmap struct {
 	Colour2D
 }
 
-// Create a lightmap from BSP stored colour data
+// LightmapFromColorRGBExp32 creates a lightmap from BSP stored colour data
 func LightmapFromColorRGBExp32(width int, height int, colorMaps []common.ColorRGBExponent32) *Lightmap {
 	raw := make([]uint8, len(colorMaps)*3)
 

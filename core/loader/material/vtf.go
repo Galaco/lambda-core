@@ -15,20 +15,21 @@ func LoadSingleTexture(filePath string, fs filesystem.IFileSystem) texture.IText
 	if !strings.HasSuffix(filePath, filesystem.ExtensionVtf) {
 		filePath = filePath + filesystem.ExtensionVtf
 	}
-	if resource.Manager().GetTexture(filesystem.BasePathMaterial+filePath) != nil {
-		return resource.Manager().GetTexture(filesystem.BasePathMaterial + filePath).(texture.ITexture)
+	if resource.Manager().Texture(filesystem.BasePathMaterial+filePath) != nil {
+		return resource.Manager().Texture(filesystem.BasePathMaterial + filePath).(texture.ITexture)
 	}
 	if filePath == "" {
-		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
+		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
 	mat, err := readVtf(filesystem.BasePathMaterial+filePath, fs)
 	if err != nil {
 		logger.Warn("Failed to load texture: %s. Reason: %s", filesystem.BasePathMaterial+filePath, err)
-		return resource.Manager().GetTexture(resource.Manager().ErrorTextureName()).(texture.ITexture)
+		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
 	return mat
 }
 
+// readVtf
 func readVtf(path string, fs filesystem.IFileSystem) (texture.ITexture, error) {
 	ResourceManager := resource.Manager()
 	stream, err := fs.GetFile(path)
@@ -51,5 +52,5 @@ func readVtf(path string, fs filesystem.IFileSystem) (texture.ITexture, error) {
 			int(read.GetHeader().Height)))
 
 	// Finally generate the gpu buffer for the material
-	return ResourceManager.GetTexture(path).(texture.ITexture), nil
+	return ResourceManager.Texture(path).(texture.ITexture), nil
 }

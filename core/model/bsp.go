@@ -2,7 +2,7 @@ package model
 
 import "github.com/galaco/Lambda-Core/core/mesh"
 
-// BSP is a specialised model that represents an entire bsp map
+// Bsp is a specialised model that represents an entire bsp map
 // It is represented by a single mesh and a series of visiblity structures
 // that dictate what can and can't be seen from a given point
 type Bsp struct {
@@ -13,7 +13,7 @@ type Bsp struct {
 	visibleClusterLeafs []*ClusterLeaf
 }
 
-// mesh returns Bsp Mesh
+// Mesh returns Bsp Mesh
 func (bsp *Bsp) Mesh() mesh.IMesh {
 	return bsp.internalMesh
 }
@@ -39,10 +39,12 @@ func (bsp *Bsp) SetVisibleClusters(clusterLeafs []*ClusterLeaf) {
 	bsp.visibleClusterLeafs = clusterLeafs
 }
 
+// SetDefaultCluster
 func (bsp *Bsp) SetDefaultCluster(dispFaces ClusterLeaf) {
 	bsp.defaultClusterLeaf = dispFaces
 }
 
+// DefaultCluster
 func (bsp *Bsp) DefaultCluster() *ClusterLeaf {
 	return &bsp.defaultClusterLeaf
 }

@@ -59,7 +59,7 @@ func (atlas *Atlas) PackTextures(textures []ITexture, padding int) ([]shape.Rect
 //	return x, y, err
 //}
 
-// insert write raw data into atlas at calculated position
+// writeTexture insert write raw data into atlas at calculated position
 func (atlas *Atlas) writeTexture(tex ITexture, location *packrect.SubRect, padding int) {
 	data := tex.PixelDataForFrame(0)
 

@@ -19,8 +19,8 @@ type Transform struct {
 	quat         mgl32.Quat
 }
 
-// GetTransformationMatrix computes object transformation matrix
-func (transform *Transform) GetTransformationMatrix() mgl32.Mat4 {
+// TransformationMatrix computes object transformation matrix
+func (transform *Transform) TransformationMatrix() mgl32.Mat4 {
 	if !transform.Position.ApproxEqual(transform.prevPosition) ||
 		!transform.Rotation.ApproxEqual(transform.prevRotation) ||
 		!transform.Scale.ApproxEqual(transform.prevScale) {

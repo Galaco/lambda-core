@@ -26,9 +26,7 @@ func TestFace_Length(t *testing.T) {
 
 func TestFace_AddMaterial(t *testing.T) {
 	sut := Face{}
-	expected := &material.Material{
-		FilePath: "foo.vmt",
-	}
+	expected := material.NewMaterial("foo.vmt")
 	sut.AddMaterial(expected)
 
 	if expected != sut.Material() {
@@ -58,9 +56,7 @@ func TestFace_Lightmap(t *testing.T) {
 
 func TestFace_Material(t *testing.T) {
 	sut := Face{}
-	expected := &material.Material{
-		FilePath: "foo.vmt",
-	}
+	expected := material.NewMaterial("foo.vmt")
 	sut.AddMaterial(expected)
 
 	if expected != sut.Material() {

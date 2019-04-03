@@ -105,9 +105,9 @@ func LoadMap(fs filesystem.IFileSystem, file *bsp.Bsp) scene.IScene {
 		vmtPath := filesystem.BasePathMaterial + faceVmt + filesystem.ExtensionVmt
 		var mat material.IMaterial
 		if ResourceManager.HasMaterial(vmtPath) {
-			mat = ResourceManager.GetMaterial(vmtPath).(material.IMaterial)
+			mat = ResourceManager.Material(vmtPath).(material.IMaterial)
 		} else {
-			mat = ResourceManager.GetMaterial(resource.Manager().ErrorTextureName()).(material.IMaterial)
+			mat = ResourceManager.Material(resource.Manager().ErrorTextureName()).(material.IMaterial)
 		}
 
 		lightMat := bspFaces[idx].Lightmap()

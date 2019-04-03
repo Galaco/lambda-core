@@ -27,11 +27,11 @@ type manager struct {
 
 // Add a new material
 func (m *manager) AddMaterial(file material.IMaterial) {
-	if m.HasMaterial(file.GetFilePath()) {
+	if m.HasMaterial(file.FilePath()) {
 		return
 	}
 	m.materialReadMutex.Lock()
-	m.materials[strings.ToLower(file.GetFilePath())] = file
+	m.materials[strings.ToLower(file.FilePath())] = file
 	m.materialReadMutex.Unlock()
 
 	event.Manager().Dispatch(message.LoadedMaterial(file))
@@ -39,36 +39,36 @@ func (m *manager) AddMaterial(file material.IMaterial) {
 
 // Add a new material
 func (m *manager) AddTexture(file texture.ITexture) {
-	if m.HasTexture(file.GetFilePath()) {
+	if m.HasTexture(file.FilePath()) {
 		return
 	}
 	m.textureReadMutex.Lock()
-	m.textures[strings.ToLower(file.GetFilePath())] = file
+	m.textures[strings.ToLower(file.FilePath())] = file
 	m.textureReadMutex.Unlock()
 	event.Manager().Dispatch(message.LoadedTexture(file))
 }
 
 // Add a new model
 func (m *manager) AddModel(file *model.Model) {
-	if m.HasModel(file.GetFilePath()) {
+	if m.HasModel(file.FilePath()) {
 		return
 	}
 	m.modelReadMutex.Lock()
-	m.models[strings.ToLower(file.GetFilePath())] = file
+	m.models[strings.ToLower(file.FilePath())] = file
 	m.modelReadMutex.Unlock()
 	event.Manager().Dispatch(message.LoadedModel(file))
 }
 
 // Get Find a specific filesystem
-func (m *manager) GetMaterial(filePath string) material.IMaterial {
+func (m *manager) Material(filePath string) material.IMaterial {
 	return m.materials[strings.ToLower(filePath)]
 }
 
-func (m *manager) GetTexture(filePath string) texture.ITexture {
+func (m *manager) Texture(filePath string) texture.ITexture {
 	return m.textures[strings.ToLower(filePath)]
 }
 
-func (m *manager) GetModel(filePath string) *model.Model {
+func (m *manager) Model(filePath string) *model.Model {
 	return m.models[strings.ToLower(filePath)]
 }
 
@@ -155,7 +155,7 @@ func (m *manager) Empty() {
 
 var resourceManager manager
 
-// manager returns the static filemanager
+// Manager returns the static filemanager
 func Manager() *manager {
 	if resourceManager.materials == nil {
 		resourceManager.errorModelName = filesystem.BasePathModels + "error.mdl"

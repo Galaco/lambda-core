@@ -13,7 +13,7 @@ import (
 // Note that this covers bsp referenced materials only, model & entity
 // materials are loaded mostly ad-hoc.
 func LoadMaterials(fs filesystem.IFileSystem, stringData *lumps.TexDataStringData, stringTable *lumps.TexDataStringTable, texInfos *[]texinfo.TexInfo) *texdatastringtable.TexDataStringTable {
-	materialStringTable := stringtable.GetTable(stringData, stringTable)
+	materialStringTable := stringtable.NewTable(stringData, stringTable)
 	LoadErrorMaterial()
 	LoadMaterialList(fs, stringtable.SortUnique(materialStringTable, texInfos))
 

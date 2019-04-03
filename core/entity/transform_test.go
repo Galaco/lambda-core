@@ -2,6 +2,6 @@ package entity
 
 import "testing"
 
-func TestTransform_GetTransformationMatrix(t *testing.T) {
+func TestTransform_TransformationMatrix(t *testing.T) {
 	t.Skip()
 }

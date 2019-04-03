@@ -6,8 +6,8 @@ import (
 	"github.com/galaco/source-tools-common/texdatastringtable"
 )
 
-// GetTable returns a new StringTable
-func GetTable(stringData *lumps.TexDataStringData, stringTable *lumps.TexDataStringTable) *texdatastringtable.TexDataStringTable {
+// NewTable returns a new StringTable
+func NewTable(stringData *lumps.TexDataStringData, stringTable *lumps.TexDataStringTable) *texdatastringtable.TexDataStringTable {
 	// Prepare texture lookup table
 	return texdatastringtable.NewTable(stringData.GetData(), stringTable.GetData())
 }

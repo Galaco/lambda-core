@@ -4,7 +4,7 @@ import "github.com/galaco/Lambda-Core/core/model"
 
 // IProp Base renderable prop interface
 type IProp interface {
-	GetModel() *model.Model
+	Model() *model.Model
 	SetModel(model *model.Model)
 }
 
@@ -13,10 +13,12 @@ type PropBase struct {
 	model *model.Model
 }
 
+// SetModel
 func (prop *PropBase) SetModel(model *model.Model) {
 	prop.model = model
 }
 
-func (prop *PropBase) GetModel() *model.Model {
+// Model
+func (prop *PropBase) Model() *model.Model {
 	return prop.model
 }

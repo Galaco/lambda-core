@@ -4,7 +4,7 @@ import (
 	"github.com/galaco/vtf"
 )
 
-// Generic GPU material struct
+// Texture2D is a generic GPU material struct
 type Texture2D struct {
 	filePath string
 	width    int
@@ -12,8 +12,8 @@ type Texture2D struct {
 	vtf      *vtf.Vtf
 }
 
-// GetFilePath Get the filepath this data was loaded from
-func (tex *Texture2D) GetFilePath() string {
+// FilePath Get the filepath this data was loaded from
+func (tex *Texture2D) FilePath() string {
 	return tex.filePath
 }
 
@@ -42,7 +42,7 @@ func (tex *Texture2D) Thumbnail() []byte {
 	return tex.vtf.GetLowResImageData()
 }
 
-// NewMaterial returns a new material from Vtf
+// NewTexture2D returns a new texture from Vtf
 func NewTexture2D(filePath string, vtf *vtf.Vtf, width int, height int) *Texture2D {
 	return &Texture2D{
 		filePath: filePath,

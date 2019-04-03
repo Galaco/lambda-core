@@ -5,8 +5,8 @@ import (
 	"github.com/galaco/Lambda-Core/game/entity/common"
 )
 
-type CounterstrikeSource struct {
-}
+// CounterstrikeSource
+type CounterstrikeSource struct{}
 
 // RegisterEntityClasses loads all Game entity classes into the engine.
 func (target *CounterstrikeSource) RegisterEntityClasses() {
