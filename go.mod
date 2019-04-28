@@ -13,5 +13,5 @@ require (
 	github.com/go-gl/gl v0.0.0-20190320195200-bf2b1f2f34d7
 	github.com/go-gl/glfw v0.0.0-20190217223436-93b30450e032
 	github.com/go-gl/mathgl v0.0.0-20180804195959-cdf14b6b8f8a
-	github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e
+	github.com/logrusorgru/aurora v0.0.0-20190428113919-cea283e61946
 )
