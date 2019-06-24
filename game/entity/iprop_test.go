@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"github.com/galaco/Lambda-Core/core/model"
+	"github.com/galaco/lambda-core/model"
 	"testing"
 )
 
