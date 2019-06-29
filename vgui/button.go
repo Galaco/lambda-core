@@ -12,7 +12,7 @@ func (btn *Button) Resize(parentWidth, parentHeight float64) {
 
 }
 
-func NewButton(label string) *Button{
+func NewButton(label string) *Button {
 	return &Button{
 		text: label,
 	}

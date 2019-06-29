@@ -2,7 +2,7 @@ package filesystem
 
 import (
 	"github.com/galaco/KeyValues"
-	"github.com/galaco/lambda-core/logger"
+	"github.com/galaco/lambda-core/lib/util"
 	"github.com/galaco/lambda-core/lib/vpk"
 	"path/filepath"
 	"regexp"
@@ -48,18 +48,18 @@ func CreateFilesystemFromGameInfoDefinitions(basePath string, gameInfo *keyvalue
 			path = strings.Replace(path, ".vpk", "", 1)
 			vpkHandle, err := vpk.OpenVPK(path)
 			if err != nil {
-				logger.Error(err)
+				util.Logger().Error(err)
 				continue
 			}
 			fs.RegisterVpk(path, vpkHandle)
-			logger.Notice("Registered vpk: " + path)
+			util.Logger().Notice("Registered vpk: " + path)
 		} else {
 			// wildcard suffixes not useful
 			if strings.HasSuffix(path, "/*") {
 				path = strings.Replace(path, "/*", "", -1)
 			}
 			fs.RegisterLocalDirectory(path)
-			logger.Notice("Registered path: " + path)
+			util.Logger().Notice("Registered path: " + path)
 		}
 	}
 

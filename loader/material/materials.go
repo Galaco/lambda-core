@@ -1,10 +1,10 @@
 package material
 
 import (
-	"github.com/galaco/lambda-core/filesystem"
-	"github.com/galaco/lambda-core/lib/stringtable"
 	"github.com/galaco/bsp/lumps"
 	"github.com/galaco/bsp/primitives/texinfo"
+	"github.com/galaco/lambda-core/filesystem"
+	"github.com/galaco/lambda-core/lib/stringtable"
 	"github.com/galaco/source-tools-common/texdatastringtable"
 )
 

@@ -2,9 +2,9 @@ package vgui
 
 // Panel
 type Panel struct {
-	X float64
-	Y float64
-	Width float64
+	X      float64
+	Y      float64
+	Width  float64
 	Height float64
 
 	enabled      bool
@@ -53,26 +53,26 @@ func (panel *Panel) Draw() {
 	if !panel.enabled {
 		return
 	}
-	for _,p := range panel.elements {
+	for _, p := range panel.elements {
 		p.Draw()
 	}
-	for _,child := range panel.Children() {
+	for _, child := range panel.Children() {
 		child.Draw()
 	}
 }
 
 // Resize
-func (panel* Panel) Resize(parentWidth, parentHeight float64) {
-	for _,p := range panel.elements {
+func (panel *Panel) Resize(parentWidth, parentHeight float64) {
+	for _, p := range panel.elements {
 		p.Resize(parentWidth, parentHeight)
 	}
-	for _,child := range panel.Children() {
+	for _, child := range panel.Children() {
 		child.Resize(parentWidth, parentHeight)
 	}
 }
 
 // NewChildPanel
-func (panel *Panel) NewChildPanel(X,Y, Width, Height float64, Enabled bool) *Panel {
+func (panel *Panel) NewChildPanel(X, Y, Width, Height float64, Enabled bool) *Panel {
 	p := &Panel{
 		X:       X,
 		Y:       Y,

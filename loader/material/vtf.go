@@ -2,7 +2,7 @@ package material
 
 import (
 	"github.com/galaco/lambda-core/filesystem"
-	"github.com/galaco/lambda-core/logger"
+	"github.com/galaco/lambda-core/lib/util"
 	"github.com/galaco/lambda-core/resource"
 	"github.com/galaco/lambda-core/texture"
 	"github.com/galaco/vtf"
@@ -23,7 +23,7 @@ func LoadSingleTexture(filePath string, fs filesystem.IFileSystem) texture.IText
 	}
 	mat, err := readVtf(filesystem.BasePathMaterial+filePath, fs)
 	if err != nil {
-		logger.Warn("Failed to load texture: %s. Reason: %s", filesystem.BasePathMaterial+filePath, err)
+		util.Logger().Warn("Failed to load texture: %s. Reason: %s", filesystem.BasePathMaterial+filePath, err)
 		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture)
 	}
 	return mat

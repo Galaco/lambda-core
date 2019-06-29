@@ -25,9 +25,9 @@ func LoadVGUI(fs filesystem.IFileSystem, resourceName string) (*vgui.Panel, erro
 		return nil, errors.New("empty vgui resource keyvalues")
 	}
 
-	children,err := kv.Children()
+	children, err := kv.Children()
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	panel := recursiveBuildVGUITree(children[0], nil)
 
@@ -36,10 +36,10 @@ func LoadVGUI(fs filesystem.IFileSystem, resourceName string) (*vgui.Panel, erro
 
 func recursiveBuildVGUITree(node *keyvalues.KeyValue, parent *vgui.Panel) *vgui.Panel {
 	if node.HasChildren() {
-		children,_ := node.Children()
+		children, _ := node.Children()
 		var isPanel bool
 		// If a child also has children, then it should be a panel
-		for _,c := range children {
+		for _, c := range children {
 			if c.HasChildren() {
 				isPanel = true
 			}
@@ -55,7 +55,7 @@ func recursiveBuildVGUITree(node *keyvalues.KeyValue, parent *vgui.Panel) *vgui.
 				p = parent.NewChildPanel(0, 0, 640, 480, true)
 			}
 
-			for _,c := range children {
+			for _, c := range children {
 				childPanel := recursiveBuildVGUITree(c, p)
 
 				if childPanel != nil {
@@ -63,9 +63,9 @@ func recursiveBuildVGUITree(node *keyvalues.KeyValue, parent *vgui.Panel) *vgui.
 				}
 			}
 		} else {
-			for _,c := range children {
+			for _, c := range children {
 				if c.Key() == "label" {
-					if text,err := c.AsString(); err == nil {
+					if text, err := c.AsString(); err == nil {
 						parent.AddElement(vgui.NewButton(text))
 					}
 				}

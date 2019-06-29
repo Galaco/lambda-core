@@ -15,4 +15,3 @@ const (
 	// BasePathModels is path prefix for all models/props
 	BasePathModels = "models/"
 )
-

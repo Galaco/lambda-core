@@ -1,8 +1,8 @@
 package model
 
 import (
-	"github.com/galaco/lambda-core/entity"
 	"github.com/galaco/bsp/primitives/game"
+	"github.com/galaco/lambda-core/entity"
 )
 
 // StaticProp is a somewhat specialised model

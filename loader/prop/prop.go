@@ -1,19 +1,19 @@
 package prop
 
 import (
-	"github.com/galaco/lambda-core/filesystem"
-	material2 "github.com/galaco/lambda-core/loader/material"
-	"github.com/galaco/lambda-core/logger"
-	"github.com/galaco/lambda-core/material"
-	"github.com/galaco/lambda-core/mesh"
-	"github.com/galaco/lambda-core/model"
-	"github.com/galaco/lambda-core/resource"
-	studiomodellib "github.com/galaco/lambda-core/lib/studiomodel"
 	"github.com/galaco/StudioModel"
 	"github.com/galaco/StudioModel/mdl"
 	"github.com/galaco/StudioModel/phy"
 	"github.com/galaco/StudioModel/vtx"
 	"github.com/galaco/StudioModel/vvd"
+	"github.com/galaco/lambda-core/filesystem"
+	studiomodellib "github.com/galaco/lambda-core/lib/studiomodel"
+	"github.com/galaco/lambda-core/lib/util"
+	material2 "github.com/galaco/lambda-core/loader/material"
+	"github.com/galaco/lambda-core/material"
+	"github.com/galaco/lambda-core/mesh"
+	"github.com/galaco/lambda-core/model"
+	"github.com/galaco/lambda-core/resource"
 	"strings"
 )
 
@@ -97,7 +97,7 @@ func loadProp(filePath string, fs filesystem.IFileSystem) (*studiomodel.StudioMo
 func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs filesystem.IFileSystem) *model.Model {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
-		logger.Error(err)
+		util.Logger().Error(err)
 		return nil
 	}
 	outModel := model.NewModel(filename)

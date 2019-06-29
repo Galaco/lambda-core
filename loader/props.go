@@ -1,13 +1,12 @@
 package loader
 
 import (
+	"github.com/galaco/bsp/primitives/game"
 	"github.com/galaco/lambda-core/filesystem"
+	"github.com/galaco/lambda-core/lib/util"
 	"github.com/galaco/lambda-core/loader/prop"
-	"github.com/galaco/lambda-core/logger"
 	"github.com/galaco/lambda-core/model"
 	"github.com/galaco/lambda-core/resource"
-	"github.com/galaco/lambda-core/lib/util"
-	"github.com/galaco/bsp/primitives/game"
 	"strings"
 )
 
@@ -18,7 +17,7 @@ func LoadStaticProps(propLump *game.StaticPropLump, fs filesystem.IFileSystem) [
 	errorProp, err := prop.LoadProp(ResourceManager.ErrorModelName(), fs)
 	// If we have no error model, expect this to be fatal issue
 	if errorProp == nil && err != nil {
-		logger.Panic(err)
+		util.Logger().Panic(err)
 	}
 
 	propPaths := make([]string, 0)
@@ -27,7 +26,7 @@ func LoadStaticProps(propLump *game.StaticPropLump, fs filesystem.IFileSystem) [
 	}
 
 	propPaths = util.RemoveDuplicatesFromList(propPaths)
-	logger.Notice("Found %d staticprops", len(propPaths))
+	util.Logger().Notice("Found %d staticprops", len(propPaths))
 
 	numLoaded := 0
 	for _, path := range propPaths {
@@ -41,7 +40,7 @@ func LoadStaticProps(propLump *game.StaticPropLump, fs filesystem.IFileSystem) [
 		numLoaded++
 	}
 
-	logger.Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
+	util.Logger().Notice("Loaded %d props, failed to load %d props", numLoaded, len(propPaths)-numLoaded)
 
 	staticPropList := make([]model.StaticProp, 0)
 

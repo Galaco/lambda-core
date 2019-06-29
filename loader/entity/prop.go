@@ -3,9 +3,9 @@ package entity
 import (
 	"github.com/galaco/lambda-core/entity"
 	"github.com/galaco/lambda-core/filesystem"
+	entity2 "github.com/galaco/lambda-core/game/entity"
 	"github.com/galaco/lambda-core/loader/prop"
 	"github.com/galaco/lambda-core/resource"
-	entity2 "github.com/galaco/lambda-core/game/entity"
 	"strings"
 )
 

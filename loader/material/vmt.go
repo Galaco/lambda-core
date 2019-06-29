@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/galaco/KeyValues"
 	"github.com/galaco/lambda-core/filesystem"
+	"github.com/galaco/lambda-core/lib/util"
 	keyvalues2 "github.com/galaco/lambda-core/loader/keyvalues"
-	"github.com/galaco/lambda-core/logger"
 	"github.com/galaco/lambda-core/material"
 	"github.com/galaco/lambda-core/resource"
 	"github.com/galaco/lambda-core/texture"
@@ -54,7 +54,7 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 
 		mat, err := readVmt(filesystem.BasePathMaterial+materialPath, fs)
 		if err != nil {
-			logger.Warn("Failed to load material: %s. Reason: %s", filesystem.BasePathMaterial+materialPath, err)
+			util.Logger().Warn("Failed to load material: %s. Reason: %s", filesystem.BasePathMaterial+materialPath, err)
 			missingList = append(missingList, materialPath)
 			continue
 		}
