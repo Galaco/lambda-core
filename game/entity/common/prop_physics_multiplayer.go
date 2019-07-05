@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/galaco/Lambda-Core/core/entity"
-	entity2 "github.com/galaco/Lambda-Core/game/entity"
+	"github.com/galaco/lambda-core/entity"
+	entity2 "github.com/galaco/lambda-core/game/entity"
 )
 
 // PropPhysicsMultiplayer
