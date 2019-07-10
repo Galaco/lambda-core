@@ -5,4 +5,18 @@ jobs:
       - image: circleci/golang:1.12
     steps:
       - checkout
-      - run: go test -v ./...
+      - run:
+          name: Install Go Dependencies
+          command: |
+            go get -u
+            go get -v github.com/golangci/golangci-lint/cmd/golangci-lint
+      - run:
+          name: Lint
+          command: golangci-lint run --deadline=2m
+      - run:
+          name: Test
+          command: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+      - run:
+          name: Upload Codecov Results
+          command: bash <(curl -s https://codecov.io/bash)
+          when: on_success

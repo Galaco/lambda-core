@@ -13,4 +13,3 @@ func Logger() *loggy.Loggy {
 
 	return logger
 }
-
