@@ -10,7 +10,7 @@ import (
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/lambda-core/event"
-	"github.com/galaco/lambda-core/filesystem"
+	filesystem2 "github.com/galaco/lambda-core/filesystem"
 	matloader "github.com/galaco/lambda-core/loader/material"
 	"github.com/galaco/lambda-core/material"
 	"github.com/galaco/lambda-core/mesh"
@@ -20,6 +20,7 @@ import (
 	"github.com/galaco/lambda-core/scene"
 	"github.com/galaco/lambda-core/texture"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/golang-source-engine/filesystem"
 	"math"
 	"strings"
 	"unsafe"
@@ -44,7 +45,7 @@ type bspstructs struct {
 // BSP Geometry
 // BSP Materials
 // StaticProps (materials loaded as required)
-func LoadMap(fs filesystem.IFileSystem, file *bsp.Bsp) scene.IScene {
+func LoadMap(fs *filesystem.FileSystem, file *bsp.Bsp) scene.IScene {
 	ResourceManager := resource.Manager()
 	bspStructure := bspstructs{
 		faces:     file.Lump(bsp.LumpFaces).(*lumps.Face).GetData(),
@@ -101,8 +102,8 @@ func LoadMap(fs filesystem.IFileSystem, file *bsp.Bsp) scene.IScene {
 
 	// Add MATERIALS TO FACES
 	for idx, bspFace := range bspFaces {
-		faceVmt, _ := stringTable.GetString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		vmtPath := filesystem.BasePathMaterial + faceVmt + filesystem.ExtensionVmt
+		faceVmt, _ := stringTable.FindString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
+		vmtPath := filesystem2.BasePathMaterial + faceVmt + filesystem2.ExtensionVmt
 		var mat material.IMaterial
 		if ResourceManager.HasMaterial(vmtPath) {
 			mat = ResourceManager.Material(vmtPath).(material.IMaterial)

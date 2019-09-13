@@ -2,11 +2,11 @@ package entity
 
 import (
 	entity3 "github.com/galaco/lambda-core/entity"
-	"github.com/galaco/lambda-core/filesystem"
 	"github.com/galaco/lambda-core/loader/entity/classmap"
 	"github.com/galaco/source-tools-common/entity"
 	"github.com/galaco/vmf"
 	"github.com/go-gl/mathgl/mgl32"
+	"github.com/golang-source-engine/filesystem"
 	"strings"
 )
 
@@ -22,7 +22,7 @@ func ParseEntities(data string) (vmf.Vmf, error) {
 
 // CreateEntity creates a new entity with common properties
 // e.g. origin and angles
-func CreateEntity(ent *entity.Entity, fs filesystem.IFileSystem) entity3.IEntity {
+func CreateEntity(ent *entity.Entity, fs *filesystem.FileSystem) entity3.IEntity {
 	localEdict := loader.New(ent.ValueForKey("classname"))
 	if localEdict == nil {
 		localEdict = entity3.NewGenericEntity(ent)
@@ -43,7 +43,7 @@ func CreateEntity(ent *entity.Entity, fs filesystem.IFileSystem) entity3.IEntity
 // AssignProperties assigns type specific properties.
 // @TODO This is probably going to grow massively as more common types get implemented.
 // It should probably be refactored.
-func AssignProperties(ent entity3.IEntity, fs filesystem.IFileSystem) {
+func AssignProperties(ent entity3.IEntity, fs *filesystem.FileSystem) {
 	if DoesEntityReferenceStudioModel(ent) {
 		AssignStudioModelToEntity(ent, fs)
 	}

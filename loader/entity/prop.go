@@ -2,10 +2,10 @@ package entity
 
 import (
 	"github.com/galaco/lambda-core/entity"
-	"github.com/galaco/lambda-core/filesystem"
 	entity2 "github.com/galaco/lambda-core/game/entity"
 	"github.com/galaco/lambda-core/loader/prop"
 	"github.com/galaco/lambda-core/resource"
+	"github.com/golang-source-engine/filesystem"
 	"strings"
 )
 
@@ -16,7 +16,7 @@ func DoesEntityReferenceStudioModel(ent entity.IEntity) bool {
 }
 
 // AssignStudioModelToEntity sets a renderable entity's model
-func AssignStudioModelToEntity(entity entity.IEntity, fs filesystem.IFileSystem) {
+func AssignStudioModelToEntity(entity entity.IEntity, fs *filesystem.FileSystem) {
 	modelName := entity.KeyValues().ValueForKey("model")
 	if !resource.Manager().HasModel(modelName) {
 		m, _ := prop.LoadProp(modelName, fs)

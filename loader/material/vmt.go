@@ -3,12 +3,13 @@ package material
 import (
 	"errors"
 	"github.com/galaco/KeyValues"
-	"github.com/galaco/lambda-core/filesystem"
+	filesystem2 "github.com/galaco/lambda-core/filesystem"
 	"github.com/galaco/lambda-core/lib/util"
 	keyvalues2 "github.com/galaco/lambda-core/loader/keyvalues"
 	"github.com/galaco/lambda-core/material"
 	"github.com/galaco/lambda-core/resource"
 	"github.com/galaco/lambda-core/texture"
+	"github.com/golang-source-engine/filesystem"
 	"strings"
 )
 
@@ -18,7 +19,7 @@ import (
 // 2. Game directory
 // 3. Game VPK
 // 4. Other game shared VPK
-func LoadMaterialList(fs filesystem.IFileSystem, materialList []string) {
+func LoadMaterialList(fs *filesystem.FileSystem, materialList []string) {
 	loadMaterials(fs, materialList...)
 }
 
@@ -39,22 +40,22 @@ func LoadErrorMaterial() {
 }
 
 // loadMaterials "private" function that actually does the loading
-func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingList []string) {
+func loadMaterials(fs *filesystem.FileSystem, materialList ...string) (missingList []string) {
 	ResourceManager := resource.Manager()
 
 	for _, materialPath := range materialList {
 		vtfTexturePath := ""
 
-		if !strings.HasSuffix(materialPath, filesystem.ExtensionVmt) {
-			materialPath += filesystem.ExtensionVmt
+		if !strings.HasSuffix(materialPath, filesystem2.ExtensionVmt) {
+			materialPath += filesystem2.ExtensionVmt
 		}
-		if ResourceManager.HasMaterial(filesystem.BasePathMaterial + materialPath) {
+		if ResourceManager.HasMaterial(filesystem2.BasePathMaterial + materialPath) {
 			continue
 		}
 
-		mat, err := readVmt(filesystem.BasePathMaterial+materialPath, fs)
+		mat, err := readVmt(filesystem2.BasePathMaterial+materialPath, fs)
 		if err != nil {
-			util.Logger().Warn("Failed to load material: %s. Reason: %s", filesystem.BasePathMaterial+materialPath, err)
+			util.Logger().Warn("Failed to load material: %s. Reason: %s", filesystem2.BasePathMaterial+materialPath, err)
 			missingList = append(missingList, materialPath)
 			continue
 		}
@@ -70,8 +71,8 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 
 		// NOTE: in patch vmts include is not supported
 		vtfTexturePath = vmt.BaseTextureName
-		if !strings.HasSuffix(vtfTexturePath, filesystem.ExtensionVtf) {
-			vtfTexturePath = vtfTexturePath + filesystem.ExtensionVtf
+		if !strings.HasSuffix(vtfTexturePath, filesystem2.ExtensionVtf) {
+			vtfTexturePath = vtfTexturePath + filesystem2.ExtensionVtf
 		}
 
 		vmt.Textures.Albedo = LoadSingleTexture(vtfTexturePath, fs)
@@ -91,20 +92,20 @@ func loadMaterials(fs filesystem.IFileSystem, materialList ...string) (missingLi
 }
 
 // LoadSingleMaterial loads a single material with known file path
-func LoadSingleMaterial(filePath string, fs filesystem.IFileSystem) material.IMaterial {
-	if resource.Manager().HasMaterial(filesystem.BasePathMaterial + filePath) {
-		return resource.Manager().Material(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+func LoadSingleMaterial(filePath string, fs *filesystem.FileSystem) material.IMaterial {
+	if resource.Manager().HasMaterial(filesystem2.BasePathMaterial + filePath) {
+		return resource.Manager().Material(filesystem2.BasePathMaterial + filePath).(material.IMaterial)
 	}
 
 	result := loadMaterials(fs, filePath)
 	if len(result) == 0 {
-		return resource.Manager().Material(filesystem.BasePathMaterial + filePath).(material.IMaterial)
+		return resource.Manager().Material(filesystem2.BasePathMaterial + filePath).(material.IMaterial)
 
 	}
 	return resource.Manager().Material(resource.Manager().ErrorTextureName()).(material.IMaterial)
 }
 
-func readVmt(path string, fs filesystem.IFileSystem) (material.IMaterial, error) {
+func readVmt(path string, fs *filesystem.FileSystem) (material.IMaterial, error) {
 	kvs, err := keyvalues2.ReadKeyValues(path, fs)
 	if err != nil {
 		return nil, err
@@ -132,12 +133,12 @@ func readVmt(path string, fs filesystem.IFileSystem) (material.IMaterial, error)
 	return mat, nil
 }
 
-func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string, fs filesystem.IFileSystem) (*keyvalues.KeyValue, error) {
+func mergeIncludedVmtRecursive(base *keyvalues.KeyValue, includePath string, fs *filesystem.FileSystem) (*keyvalues.KeyValue, error) {
 	parent, err := keyvalues2.ReadKeyValues(includePath, fs)
 	if err != nil {
 		return base, errors.New("failed to read included vmt")
 	}
-	parents,_ := parent.Children()
+	parents, _ := parent.Children()
 	result, err := base.Patch(parents[0])
 	if err != nil {
 		return base, errors.New("failed to merge included vmt")

@@ -4,13 +4,13 @@ import (
 	"errors"
 	"fmt"
 	keyvalues "github.com/galaco/KeyValues"
-	"github.com/galaco/lambda-core/filesystem"
 	"github.com/galaco/lambda-core/vgui"
+	"github.com/golang-source-engine/filesystem"
 	"log"
 )
 
 // LoadVGUI
-func LoadVGUI(fs filesystem.IFileSystem, resourceName string) (*vgui.Panel, error) {
+func LoadVGUI(fs *filesystem.FileSystem, resourceName string) (*vgui.Panel, error) {
 	stream, err := fs.GetFile(fmt.Sprintf("/resource/%s.res", resourceName))
 	if err != nil {
 		return nil, err

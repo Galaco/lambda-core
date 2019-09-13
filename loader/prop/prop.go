@@ -6,7 +6,7 @@ import (
 	"github.com/galaco/StudioModel/phy"
 	"github.com/galaco/StudioModel/vtx"
 	"github.com/galaco/StudioModel/vvd"
-	"github.com/galaco/lambda-core/filesystem"
+	filesystem2 "github.com/galaco/lambda-core/filesystem"
 	studiomodellib "github.com/galaco/lambda-core/lib/studiomodel"
 	"github.com/galaco/lambda-core/lib/util"
 	material2 "github.com/galaco/lambda-core/loader/material"
@@ -14,6 +14,7 @@ import (
 	"github.com/galaco/lambda-core/mesh"
 	"github.com/galaco/lambda-core/model"
 	"github.com/galaco/lambda-core/resource"
+	"github.com/golang-source-engine/filesystem"
 	"strings"
 )
 
@@ -22,7 +23,7 @@ import (
 // some corruption.
 
 // LoadProp loads a single prop/model of known filepath
-func LoadProp(path string, fs filesystem.IFileSystem) (*model.Model, error) {
+func LoadProp(path string, fs *filesystem.FileSystem) (*model.Model, error) {
 	ResourceManager := resource.Manager()
 	if ResourceManager.HasModel(path) {
 		return ResourceManager.Model(path), nil
@@ -42,7 +43,7 @@ func LoadProp(path string, fs filesystem.IFileSystem) (*model.Model, error) {
 	return ResourceManager.Model(path), err
 }
 
-func loadProp(filePath string, fs filesystem.IFileSystem) (*studiomodel.StudioModel, error) {
+func loadProp(filePath string, fs *filesystem.FileSystem) (*studiomodel.StudioModel, error) {
 	prop := studiomodel.NewStudioModel(filePath)
 
 	// MDL
@@ -94,7 +95,7 @@ func loadProp(filePath string, fs filesystem.IFileSystem) (*studiomodel.StudioMo
 	return prop, nil
 }
 
-func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs filesystem.IFileSystem) *model.Model {
+func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs *filesystem.FileSystem) *model.Model {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
 		util.Logger().Error(err)
@@ -118,11 +119,11 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel,
 	return outModel
 }
 
-func materialsForStudioModel(mdlData *mdl.Mdl, fs filesystem.IFileSystem) []material.IMaterial {
+func materialsForStudioModel(mdlData *mdl.Mdl, fs *filesystem.FileSystem) []material.IMaterial {
 	materials := make([]material.IMaterial, 0)
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
-			path := strings.Replace(dir, "\\", "/", -1) + name + filesystem.ExtensionVmt
+			path := strings.Replace(dir, "\\", "/", -1) + name + filesystem2.ExtensionVmt
 			materials = append(materials, material2.LoadSingleMaterial(path, fs))
 		}
 	}
