@@ -19,6 +19,8 @@ github.com/galaco/vpk2 v0.0.0-20181012095330-21e4d1f6c888 h1:QCMt6AZ5gwsJ3SNsvTU
 github.com/galaco/vpk2 v0.0.0-20181012095330-21e4d1f6c888/go.mod h1:jL22XAWuUlYUmONuamxDdbDlGJhuOFkqNRPJwuBA3X8=
 github.com/galaco/vtf v0.0.0-20190404150943-92f43cff5944 h1:1IAlqWQcZjU5KJMPsqnwQF2ayKOb69ZHGTgdL5J9DPk=
 github.com/galaco/vtf v0.0.0-20190404150943-92f43cff5944/go.mod h1:/qXLzN9Et3Ed61RUR4rYXO/eMMFgvEyc4opw/Nw6xkM=
+github.com/galaco/vtf v1.1.1 h1:EuL4jYmxdrc1dngPBlc0RPZLIOqwjAqnveFqwn9Llnk=
+github.com/galaco/vtf v1.1.1/go.mod h1:/qXLzN9Et3Ed61RUR4rYXO/eMMFgvEyc4opw/Nw6xkM=
 github.com/go-gl/mathgl v0.0.0-20180804195959-cdf14b6b8f8a h1:2n5w2v3knlspzjJWyQPC0j88Mwvq0SZV0Jdws34GJwc=
 github.com/go-gl/mathgl v0.0.0-20180804195959-cdf14b6b8f8a/go.mod h1:dvrdneKbyWbK2skTda0nM4B9zSlS2GZSnjX7itr/skQ=
 github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a h1:yoAEv7yeWqfL/l9A/J5QOndXIJCldv+uuQB1DSNQbS0=
