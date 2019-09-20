@@ -1,5 +1,7 @@
 github.com/galaco/KeyValues v1.3.1 h1:Mka6aZcMSrFawDAGTk7Y0mKHTlGmqiqfz1zIaHs5jYc=
 github.com/galaco/KeyValues v1.3.1/go.mod h1:EByNBjnai9BpKGMykvBD3G28R+L6OubVnRkvZrYxP2Y=
+github.com/galaco/KeyValues v1.4.1 h1:g50MJ4Ephqe1EqG8WB2S55Zye1JFnjOsHP5TwIKM7Ao=
+github.com/galaco/KeyValues v1.4.1/go.mod h1:00r0hZpLlOBIHehyWAgUngjKPoo3vCVP25BgWLwOP7E=
 github.com/galaco/StudioModel v0.1.0 h1:TLDYjlx3C1yNfDjV2XI5NW+UayIQexfNBQfF1JJsNTI=
 github.com/galaco/StudioModel v0.1.0/go.mod h1:kMK3O6si6tHlxuxYvUAOuPsINUq00i+N5FqusJqaEvs=
 github.com/galaco/bsp v0.2.1 h1:wejBNZoIM8kJvCPxlP8zAOUBk0e8dDFxOna9MFl4UmQ=
@@ -27,6 +29,8 @@ github.com/golang-source-engine/filesystem v0.0.0-20190913033602-ed9f96a174a3 h1
 github.com/golang-source-engine/filesystem v0.0.0-20190913033602-ed9f96a174a3/go.mod h1:DZXpd6Jy1diQ8PVqKcLhVS8gNKHf4PLQSxjEbFkSGeo=
 github.com/golang-source-engine/filesystem v0.1.0 h1:KyOT6ibo5k6UpLg3JfVRRpwVSX6k2AgQEARNDjDFUIA=
 github.com/golang-source-engine/filesystem v0.1.0/go.mod h1:yWGjkMHmaX6NvpUKueRi7/QubJDFp2dxyHKhEWZRwcM=
+github.com/golang-source-engine/filesystem v0.1.2 h1:6e+E71FSrohJlcbTNmOh1cVnPDP04/V4Gkfno/5VdGI=
+github.com/golang-source-engine/filesystem v0.1.2/go.mod h1:HKc/2NsiY0wj9uRSM6s5AQIt/8J9T7qx2nITY8JBKEU=
 github.com/golang-source-engine/stringtable v0.0.0-20190913033235-eaef52ce1e72 h1:KPiKye0XiBxqoJdUuHJs/4YI48puP73X8wZHclRJUss=
 github.com/golang-source-engine/stringtable v0.0.0-20190913033235-eaef52ce1e72/go.mod h1:yPUfG400Fm5FuXdq7xw4r3WtCfwe4TAsuAtz/f7nlPU=
 github.com/golang-source-engine/stringtable v0.1.0 h1:jMGCA6rfByrSH5Q64I+MXg6oF6tjwO5gHP5+lhkNRt0=
