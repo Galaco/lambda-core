@@ -18,12 +18,12 @@ func LoadSky(materialName string, fs *filesystem.FileSystem) *model.Model {
 
 	mats := make([]material.IMaterial, 6)
 
-	mats[0] = material2.LoadSingleMaterial(skyboxRootDir+materialName+"up.vmt", fs)
-	mats[1] = material2.LoadSingleMaterial(skyboxRootDir+materialName+"dn.vmt", fs)
-	mats[2] = material2.LoadSingleMaterial(skyboxRootDir+materialName+"lf.vmt", fs)
-	mats[3] = material2.LoadSingleMaterial(skyboxRootDir+materialName+"rt.vmt", fs)
-	mats[4] = material2.LoadSingleMaterial(skyboxRootDir+materialName+"ft.vmt", fs)
-	mats[5] = material2.LoadSingleMaterial(skyboxRootDir+materialName+"bk.vmt", fs)
+	mats[0],_ = material2.LoadMaterialFromFilesystem(fs, skyboxRootDir+materialName+"up.vmt")
+	mats[1],_ = material2.LoadMaterialFromFilesystem(fs, skyboxRootDir+materialName+"dn.vmt")
+	mats[2],_ = material2.LoadMaterialFromFilesystem(fs, skyboxRootDir+materialName+"lf.vmt")
+	mats[3],_ = material2.LoadMaterialFromFilesystem(fs, skyboxRootDir+materialName+"rt.vmt")
+	mats[4],_ = material2.LoadMaterialFromFilesystem(fs, skyboxRootDir+materialName+"ft.vmt")
+	mats[5],_ = material2.LoadMaterialFromFilesystem(fs, skyboxRootDir+materialName+"bk.vmt")
 
 	texs := make([]texture.ITexture, 6)
 	for i := 0; i < 6; i++ {

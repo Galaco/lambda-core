@@ -10,7 +10,6 @@ import (
 	"github.com/galaco/bsp/primitives/plane"
 	"github.com/galaco/bsp/primitives/texinfo"
 	"github.com/galaco/lambda-core/event"
-	filesystem2 "github.com/galaco/lambda-core/filesystem"
 	matloader "github.com/galaco/lambda-core/loader/material"
 	"github.com/galaco/lambda-core/material"
 	"github.com/galaco/lambda-core/mesh"
@@ -103,10 +102,9 @@ func LoadMap(fs *filesystem.FileSystem, file *bsp.Bsp) scene.IScene {
 	// Add MATERIALS TO FACES
 	for idx, bspFace := range bspFaces {
 		faceVmt, _ := stringTable.FindString(int(bspStructure.texInfos[bspStructure.faces[idx].TexInfo].TexData))
-		vmtPath := filesystem2.BasePathMaterial + faceVmt + filesystem2.ExtensionVmt
 		var mat material.IMaterial
-		if ResourceManager.HasMaterial(vmtPath) {
-			mat = ResourceManager.Material(vmtPath).(material.IMaterial)
+		if ResourceManager.HasMaterial(faceVmt) {
+			mat = ResourceManager.Material(faceVmt).(material.IMaterial)
 		} else {
 			mat = ResourceManager.Material(resource.Manager().ErrorTextureName()).(material.IMaterial)
 		}

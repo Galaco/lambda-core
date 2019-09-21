@@ -8,7 +8,6 @@ import (
 	"github.com/galaco/StudioModel/vvd"
 	filesystem2 "github.com/galaco/lambda-core/filesystem"
 	studiomodellib "github.com/galaco/lambda-core/lib/studiomodel"
-	"github.com/galaco/lambda-core/lib/util"
 	material2 "github.com/galaco/lambda-core/loader/material"
 	"github.com/galaco/lambda-core/material"
 	"github.com/galaco/lambda-core/mesh"
@@ -30,7 +29,7 @@ func LoadProp(path string, fs *filesystem.FileSystem) (*model.Model, error) {
 	}
 	prop, err := loadProp(strings.Split(path, ".mdl")[0], fs)
 	if prop != nil {
-		m := modelFromStudioModel(path, prop, fs)
+		m,err := modelFromStudioModel(path, prop, fs)
 		if m != nil {
 			ResourceManager.AddModel(m)
 		} else {
@@ -95,11 +94,10 @@ func loadProp(filePath string, fs *filesystem.FileSystem) (*studiomodel.StudioMo
 	return prop, nil
 }
 
-func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs *filesystem.FileSystem) *model.Model {
+func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel, fs *filesystem.FileSystem) (*model.Model, error) {
 	verts, normals, textureCoordinates, err := studiomodellib.VertexDataForModel(studioModel, 0)
 	if err != nil {
-		util.Logger().Error(err)
-		return nil
+		return nil, err
 	}
 	outModel := model.NewModel(filename)
 	mats := materialsForStudioModel(studioModel.Mdl, fs)
@@ -116,7 +114,7 @@ func modelFromStudioModel(filename string, studioModel *studiomodel.StudioModel,
 		outModel.AddMesh(smMesh)
 	}
 
-	return outModel
+	return outModel, nil
 }
 
 func materialsForStudioModel(mdlData *mdl.Mdl, fs *filesystem.FileSystem) []material.IMaterial {
@@ -124,7 +122,8 @@ func materialsForStudioModel(mdlData *mdl.Mdl, fs *filesystem.FileSystem) []mate
 	for _, dir := range mdlData.TextureDirs {
 		for _, name := range mdlData.TextureNames {
 			path := strings.Replace(dir, "\\", "/", -1) + name + filesystem2.ExtensionVmt
-			materials = append(materials, material2.LoadSingleMaterial(path, fs))
+			mat,_ := material2.LoadMaterialFromFilesystem(fs, path)
+			materials = append(materials, mat)
 		}
 	}
 	return materials

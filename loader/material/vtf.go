@@ -2,7 +2,6 @@ package material
 
 import (
 	filesystem2 "github.com/galaco/lambda-core/filesystem"
-	"github.com/galaco/lambda-core/lib/util"
 	"github.com/galaco/lambda-core/resource"
 	"github.com/galaco/lambda-core/texture"
 	"github.com/galaco/vtf"
@@ -10,24 +9,23 @@ import (
 	"strings"
 )
 
-// LoadSingleTexture
-func LoadSingleTexture(filePath string, fs *filesystem.FileSystem) texture.ITexture {
-	filePath = filesystem.NormalisePath(filePath)
+// LoadVtfFromFilesystem
+func LoadVtfFromFilesystem(fs *filesystem.FileSystem, filePath string) (texture.ITexture, error) {
+	if filePath == "" {
+		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture), nil
+	}
+	filePath = filesystem2.BasePathMaterial + filesystem.NormalisePath(filePath)
 	if !strings.HasSuffix(filePath, filesystem2.ExtensionVtf) {
 		filePath = filePath + filesystem2.ExtensionVtf
 	}
-	if resource.Manager().Texture(filesystem2.BasePathMaterial+filePath) != nil {
-		return resource.Manager().Texture(filesystem2.BasePathMaterial + filePath).(texture.ITexture)
+	if resource.Manager().HasTexture(filePath) {
+		return resource.Manager().Texture(filePath).(texture.ITexture), nil
 	}
-	if filePath == "" {
-		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture)
-	}
-	mat, err := readVtf(filesystem2.BasePathMaterial+filePath, fs)
+	mat, err := readVtf(filePath, fs)
 	if err != nil {
-		util.Logger().Warn("Failed to load texture: %s. Reason: %s", filesystem2.BasePathMaterial+filePath, err)
-		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture)
+		return resource.Manager().Texture(resource.Manager().ErrorTextureName()).(texture.ITexture), err
 	}
-	return mat
+	return mat, nil
 }
 
 // readVtf
