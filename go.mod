@@ -15,5 +15,5 @@ require (
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a
 	github.com/golang-source-engine/filesystem v0.1.2
 	github.com/golang-source-engine/stringtable v0.1.0
-	github.com/golang-source-engine/vmt v0.1.0
+	github.com/golang-source-engine/vmt v0.1.1
 )
