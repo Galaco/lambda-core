@@ -1,11 +1,6 @@
 package prop
 
 import (
-	"github.com/galaco/StudioModel"
-	"github.com/galaco/StudioModel/mdl"
-	"github.com/galaco/StudioModel/phy"
-	"github.com/galaco/StudioModel/vtx"
-	"github.com/galaco/StudioModel/vvd"
 	filesystem2 "github.com/galaco/lambda-core/filesystem"
 	studiomodellib "github.com/galaco/lambda-core/lib/studiomodel"
 	material2 "github.com/galaco/lambda-core/loader/material"
@@ -13,6 +8,11 @@ import (
 	"github.com/galaco/lambda-core/mesh"
 	"github.com/galaco/lambda-core/model"
 	"github.com/galaco/lambda-core/resource"
+	"github.com/galaco/studiomodel"
+	"github.com/galaco/studiomodel/mdl"
+	"github.com/galaco/studiomodel/phy"
+	"github.com/galaco/studiomodel/vtx"
+	"github.com/galaco/studiomodel/vvd"
 	"github.com/golang-source-engine/filesystem"
 	"strings"
 )
