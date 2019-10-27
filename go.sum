@@ -27,6 +27,8 @@ github.com/golang-source-engine/stringtable v0.1.0 h1:jMGCA6rfByrSH5Q64I+MXg6oF6
 github.com/golang-source-engine/stringtable v0.1.0/go.mod h1:1wsLmMF67JvlpOSe0JVmTy43io7OfvcD3AMEifKIrIA=
 github.com/golang-source-engine/vmt v0.1.1 h1:yBl2XzwBhmwmpEWxEK5t7HpfL63ZTOwGcEMsA/xUrTc=
 github.com/golang-source-engine/vmt v0.1.1/go.mod h1:devs1P7sA/Spthvxw8+wzuEsN3Ibadbia6n3SQQfdW8=
+github.com/golang-source-engine/vmt v0.1.2 h1:T/xZw4tAnqmwQ/Na7iMQkoMYVidA/YnwcChnii1TADo=
+github.com/golang-source-engine/vmt v0.1.2/go.mod h1:devs1P7sA/Spthvxw8+wzuEsN3Ibadbia6n3SQQfdW8=
 github.com/logrusorgru/aurora v0.0.0-20190428105938-cea283e61946 h1:z+WaKrgu3kCpcdnbK9YG+JThpOCd1nU5jO5ToVmSlR4=
 github.com/logrusorgru/aurora v0.0.0-20190428105938-cea283e61946/go.mod h1:7rIyQOR62GCctdiQpZ/zOJlFyk6y+94wXzv6RNZgaR4=
 golang.org/x/image v0.0.0-20190209060608-ef4a1470e0dc/go.mod h1:ux5Hcp/YLpHSI86hEcLt0YII63i6oz57MZXIpbrjZUs=
