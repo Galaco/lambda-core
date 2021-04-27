@@ -14,6 +14,6 @@ require (
 	github.com/galaco/vtf v1.2.0
 	github.com/go-gl/mathgl v1.0.0
 	github.com/golang-source-engine/filesystem v0.1.3
-	github.com/golang-source-engine/stringtable v0.1.0
+	github.com/golang-source-engine/stringtable v0.1.1
 	github.com/golang-source-engine/vmt v0.1.3
 )
