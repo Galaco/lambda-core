@@ -19,7 +19,7 @@ import (
 	"github.com/galaco/lambda-core/scene"
 	"github.com/galaco/lambda-core/texture"
 	"github.com/go-gl/mathgl/mgl32"
-	"github.com/golang-source-engine/filesystem"
+	"github.com/galaco/filesystem"
 	"math"
 	"strings"
 	"unsafe"
