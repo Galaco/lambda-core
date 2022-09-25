@@ -1,6 +1,6 @@
 module github.com/galaco/lambda-core
 
-go 1.13
+go 1.19
 
 require (
 	github.com/galaco/KeyValues v1.4.1
