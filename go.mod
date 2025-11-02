@@ -14,5 +14,5 @@ require (
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a
 	github.com/galaco/filesystem v0.1.3
 	github.com/galaco/stringtable v0.1.1
-	github.com/galaco/vmt v0.1.3
+	github.com/galaco/vmt v0.1.4
 )
